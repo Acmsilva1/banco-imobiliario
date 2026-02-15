@@ -4,6 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>BANCO IMOBILIÁRIO</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#dc2626">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="logo.png">
+
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         .no-scrollbar::-webkit-scrollbar { display: none; }
@@ -11,6 +18,8 @@
         @keyframes pop { 0% { transform: scale(0.98); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
         .modal-bg { background-color: rgba(2, 6, 23, 0.95); backdrop-filter: blur(10px); }
         body { overflow: hidden; height: 100vh; display: flex; flex-direction: column; }
+        /* Garante que o conteúdo central não "vaze" para baixo do menu fixo */
+        #dashboard { padding-bottom: 20px; }
     </style>
 </head>
 <body class="bg-slate-950 text-slate-100 font-sans">
@@ -34,30 +43,30 @@
                 <input type="number" id="init-val" value="25000" class="w-full bg-slate-950 border border-slate-700 p-4 rounded-2xl text-2xl font-mono text-yellow-500 text-center outline-none">
             </div>
             <div>
-                <label class="text-[10px] uppercase font-black text-slate-500 mb-2 block tracking-widest">Adicionar Jogadores</label>
+                <label class="text-[10px] uppercase font-black text-slate-500 mb-2 block tracking-widest">Jogadores</label>
                 <div class="flex gap-2">
                     <input type="text" id="player-in" placeholder="Nome" class="flex-1 bg-slate-950 border border-slate-700 p-4 rounded-2xl outline-none text-white">
-                    <button onclick="addPlayer()" class="bg-red-600 px-6 rounded-2xl font-bold text-2xl active:scale-90 transition-all"> + </button>
+                    <button onclick="addPlayer()" class="bg-red-600 px-6 rounded-2xl font-bold text-2xl active:scale-90 transition-all">+</button>
                 </div>
             </div>
             <div id="player-list" class="space-y-2 max-h-40 overflow-y-auto no-scrollbar"></div>
         </div>
-        <button onclick="initGame()" class="mt-8 w-full bg-white text-slate-950 font-black py-5 rounded-[1.5rem] uppercase tracking-tighter text-lg active:bg-red-600 active:text-white transition-all">Iniciar Jogo</button>
+        <button onclick="initGame()" class="mt-8 w-full bg-white text-slate-950 font-black py-5 rounded-[1.5rem] uppercase tracking-tighter text-lg active:bg-red-600 active:text-white transition-all">Começar Partida</button>
     </main>
 
     <main id="screen-game" class="hidden h-full flex flex-col p-4 max-w-4xl mx-auto overflow-hidden">
-        <nav class="flex justify-between items-center pt-2 pb-4">
-            <h2 class="text-lg font-black italic text-white tracking-tighter">BANCO <span class="text-red-600">IMOBILIÁRIO</span></h2>
-            <button onclick="resetApp()" class="text-[9px] border border-slate-800 px-3 py-1 rounded-full text-slate-600 uppercase font-black">Finalizar</button>
+        <nav class="flex justify-between items-center pt-2 pb-2">
+            <h2 class="text-lg font-black italic text-white tracking-tighter uppercase">Banco <span class="text-red-600">Imobiliário</span></h2>
+            <button onclick="resetApp()" class="text-[9px] border border-slate-800 px-3 py-1 rounded-full text-slate-600 uppercase font-black">Reset Partida</button>
         </nav>
 
-        <div class="flex-1 flex flex-col min-h-0"> 
+        <div class="flex-1 flex flex-col min-h-0 overflow-hidden"> 
             <div id="dashboard" class="my-auto grid grid-cols-1 gap-4 overflow-y-auto no-scrollbar py-4">
                 </div>
         </div>
 
         <section class="flex flex-col gap-3 py-4 mt-auto">
-            <div class="bg-slate-900 border-t-2 border-red-600 rounded-[2.2rem] p-5 shadow-2xl shadow-black/50">
+            <div class="bg-slate-900 border-t-2 border-red-600 rounded-[2.2rem] p-5 shadow-2xl">
                 <div class="flex gap-2 mb-3">
                     <select id="select-from" class="flex-1 bg-slate-800 p-3 rounded-xl text-[11px] font-black outline-none border border-slate-700 text-white text-center appearance-none"></select>
                     <div class="flex items-center text-red-600 font-bold">➔</div>
@@ -65,19 +74,28 @@
                 </div>
                 <div class="flex gap-2">
                     <input type="number" id="trans-val" placeholder="Valor $" class="flex-1 bg-slate-950 border border-slate-700 p-3 rounded-xl text-xl font-mono outline-none text-white text-center focus:border-red-600">
-                    <button onclick="execTransfer()" class="bg-red-600 px-8 rounded-xl font-black uppercase text-[11px] active:scale-95 transition-all text-white">Transferir</button>
+                    <button onclick="execTransfer()" class="bg-red-600 px-8 rounded-xl font-black uppercase text-[11px] active:scale-95 transition-all">Transferir</button>
                 </div>
             </div>
 
             <div class="grid grid-cols-3 gap-2">
-                <button onclick="openActionModal(2000, 'Salário')" class="bg-slate-900 border border-green-900/40 p-4 rounded-2xl text-[10px] font-black uppercase text-green-500 active:bg-green-600 active:text-white">Salário</button>
-                <button onclick="openActionModal(2000, 'Restituição')" class="bg-slate-900 border border-emerald-900/40 p-4 rounded-2xl text-[10px] font-black uppercase text-emerald-400 active:bg-emerald-600 active:text-white">Restituição</button>
-                <button onclick="openActionModal(-2000, 'Imposto')" class="bg-slate-900 border border-red-900/40 p-4 rounded-2xl text-[10px] font-black uppercase text-red-500 active:bg-red-600 active:text-white">Imposto</button>
+                <button onclick="openActionModal(2000, 'Salário')" class="bg-slate-900 border border-green-900/40 p-4 rounded-2xl text-[10px] font-black uppercase text-green-500 active:bg-green-600 active:text-white transition-all">Salário</button>
+                <button onclick="openActionModal(2000, 'Restituição')" class="bg-slate-900 border border-emerald-900/40 p-4 rounded-2xl text-[10px] font-black uppercase text-emerald-400 active:bg-emerald-600 active:text-white transition-all">Restituição</button>
+                <button onclick="openActionModal(-2000, 'Imposto')" class="bg-slate-900 border border-red-900/40 p-4 rounded-2xl text-[10px] font-black uppercase text-red-500 active:bg-red-600 active:text-white transition-all">Imposto</button>
             </div>
         </section>
     </main>
 
     <script>
+        // REGISTRO DO SERVICE WORKER PARA PWA
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js').then(reg => {
+                    console.log('SW Operacional!', reg.scope);
+                }).catch(err => console.log('SW Falhou!', err));
+            });
+        }
+
         let state = {
             players: JSON.parse(localStorage.getItem('bankit_players')) || [],
             gameStarted: JSON.parse(localStorage.getItem('bankit_started')) || false,
@@ -107,7 +125,7 @@
         }
 
         function initGame() {
-            if(state.players.length < 2) return alert("Pelo menos 2 jogadores!");
+            if(state.players.length < 2) return alert("Pelo menos 2 jogadores para o compliance aceitar.");
             const initial = parseInt(document.getElementById('init-val').value) || 0;
             state.players = state.players.map(p => ({ ...p, balance: initial }));
             state.gameStarted = true; save(); showGame();
@@ -132,12 +150,11 @@
                     <div class="flex gap-1.5 bg-slate-950 p-2 rounded-[1.2rem] border border-slate-800 shrink-0">
                         <input type="number" id="manual-val-${idx}" placeholder="Valor" class="w-20 bg-transparent text-center text-xs font-mono text-yellow-500 outline-none">
                         <div class="flex gap-1">
-                            <button onclick="manualAdjustment(${idx}, -1)" class="bg-red-900/30 text-red-500 w-9 h-9 rounded-lg font-bold active:bg-red-600 active:text-white">-</button>
-                            <button onclick="manualAdjustment(${idx}, 1)" class="bg-green-900/30 text-green-500 w-9 h-9 rounded-lg font-bold active:bg-green-600 active:text-white">+</button>
+                            <button onclick="manualAdjustment(${idx}, -1)" class="bg-red-900/20 text-red-500 w-9 h-9 rounded-xl font-bold active:bg-red-600 active:text-white transition-colors">-</button>
+                            <button onclick="manualAdjustment(${idx}, 1)" class="bg-green-900/20 text-green-500 w-9 h-9 rounded-xl font-bold active:bg-green-600 active:text-white transition-colors">+</button>
                         </div>
                     </div>
-                </div>
-            `).join('');
+                </div>`).join('');
 
             const options = state.players.map((p, i) => `<option value="${i}">${p.name}</option>`).join('');
             document.getElementById('select-from').innerHTML = `<option value="">ORIGEM</option>` + options;
@@ -167,7 +184,7 @@
             document.getElementById('modal-title').innerText = title;
             const list = document.getElementById('modal-player-list');
             list.innerHTML = state.players.map((p, i) => `
-                <button onclick="applySystemAction(${i})" class="w-full bg-slate-800 p-5 rounded-[1.5rem] text-left font-black text-white border border-slate-700 flex justify-between items-center active:bg-red-600 transition-all uppercase italic shadow-md">
+                <button onclick="applySystemAction(${i})" class="w-full bg-slate-800 p-5 rounded-[1.5rem] text-left font-black text-white border border-slate-700 flex justify-between items-center active:bg-red-600 active:text-white transition-all uppercase italic shadow-md">
                     ${p.name} <span class="text-red-600 text-xl">➔</span>
                 </button>`).join('');
             document.getElementById('modal-selection').classList.remove('hidden');
@@ -175,7 +192,7 @@
 
         function applySystemAction(playerIdx) { state.players[playerIdx].balance += state.pendingAction; closeModal(); save(); updateUI(); }
         function closeModal() { document.getElementById('modal-selection').classList.add('hidden'); state.pendingAction = null; }
-        function resetApp() { if(confirm("Deseja encerrar esta partida?")) { localStorage.clear(); location.reload(); } }
+        function resetApp() { if(confirm("Deseja encerrar esta partida? Todos os dados serão limpos.")) { localStorage.clear(); location.reload(); } }
     </script>
 </body>
 </html>

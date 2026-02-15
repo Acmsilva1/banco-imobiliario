@@ -1,10 +1,29 @@
-const CACHE_NAME = 'banco-v1';
-const assets = ['./', './index.html', './manifest.json'];
+const CACHE_NAME = 'banco-it-v1';
+// Lista de arquivos para salvar no cache do celular
+const assets = [
+  './',
+  './index.html',
+  './manifest.json',
+  './sw.js',
+  './logo.png'
+];
 
-self.addEventListener('install', e => {
-  e.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(assets)));
+// Instalação: Salva os arquivos no cache
+self.addEventListener('install', event => {
+  event.waitUntil(
+    caches.open(CACHE_NAME).then(cache => {
+      console.log('Cache aberto: salvando assets');
+      return cache.addAll(assets);
+    })
+  );
 });
 
-self.addEventListener('fetch', e => {
-  e.respondWith(caches.match(e.request).then(res => res || fetch(e.request)));
+// Intercepta as chamadas para permitir funcionamento offline
+self.addEventListener('fetch', event => {
+  event.respondWith(
+    caches.match(event.request).then(response => {
+      // Retorna o arquivo do cache ou busca na rede
+      return response || fetch(event.request);
+    })
+  );
 });
