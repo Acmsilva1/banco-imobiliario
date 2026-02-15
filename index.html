@@ -25,28 +25,31 @@
             background-color: #020617;
         }
 
-        /* Ajuste de enquadramento para telas de 7-8 polegadas */
         main {
             width: 100%;
-            max-width: 500px; /* Limite para não esticar demais em tablets */
+            max-width: 500px;
             margin: 0 auto;
             height: 100dvh;
             display: flex;
             flex-direction: column;
-            padding-left: env(safe-area-inset-left);
-            padding-right: env(safe-area-inset-right);
+            padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
         }
 
+        /* Cores dos Cards */
         .card-red { border-left: 6px solid #ef4444; }
         .card-blue { border-left: 6px solid #3b82f6; }
         .card-green { border-left: 6px solid #22c55e; }
         .card-yellow { border-left: 6px solid #eab308; }
         .card-purple { border-left: 6px solid #a855f7; }
         .card-pink { border-left: 6px solid #ec4899; }
-        .card-gold { border-left: 6px solid #ffd700; background: linear-gradient(90deg, #1e293b 0%, #0f172a 100%); }
+        .card-gold { 
+            border-left: 6px solid #ffd700; 
+            background: linear-gradient(90deg, #1e293b 0%, #0f172a 100%); 
+        }
 
-        /* Garante que os inputs manuais não quebrem o layout */
-        .manual-area { min-width: 110px; flex-shrink: 0; }
+        .manual-area { min-width: 115px; flex-shrink: 0; }
+        .animate-pop { animation: pop 0.2s ease-out; }
+        @keyframes pop { 0% { transform: scale(0.98); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
     </style>
 </head>
 <body class="bg-slate-950 text-slate-100 font-sans">
@@ -55,7 +58,7 @@
         <div class="bg-slate-900 border border-slate-700 w-full max-w-sm rounded-[2rem] p-6 mb-4 animate-pop">
             <h3 id="modal-title" class="text-yellow-500 font-black uppercase text-center mb-4 text-xl italic underline decoration-red-600">Ação</h3>
             <div id="modal-player-list" class="grid grid-cols-1 gap-2 max-h-[45vh] overflow-y-auto no-scrollbar"></div>
-            <button onclick="closeModal()" class="w-full mt-4 py-3 text-slate-500 text-xs font-black uppercase">Fechar</button>
+            <button onclick="closeModal()" class="w-full mt-4 py-3 text-slate-500 text-xs font-black uppercase tracking-widest">Fechar</button>
         </div>
     </div>
 
@@ -63,6 +66,7 @@
         <div class="flex-1 flex flex-col justify-center">
             <header class="text-center mb-6">
                 <h1 class="text-4xl font-black text-white uppercase tracking-tighter leading-none">BANCO<br><span class="text-5xl text-red-600 italic">IMOBILIÁRIO</span></h1>
+                <p class="text-[8px] text-slate-500 uppercase font-bold tracking-[0.3em] mt-2">Strategic Audit Edition</p>
             </header>
             
             <div class="bg-slate-900 border border-slate-800 p-5 rounded-[2rem] shadow-2xl space-y-4">
@@ -71,9 +75,9 @@
                     <input type="number" id="init-val" value="25000" class="w-full bg-slate-950 border border-slate-700 p-3 rounded-2xl text-xl font-mono text-yellow-500 text-center outline-none">
                 </div>
                 <div class="space-y-3">
-                    <label class="text-[10px] uppercase font-black text-slate-500 block">Stakeholders</label>
+                    <label class="text-[10px] uppercase font-black text-slate-500 block">Novo Stakeholder</label>
                     <div class="flex gap-2">
-                        <input type="text" id="player-in" placeholder="Nome" class="flex-1 bg-slate-950 border border-slate-700 p-3 rounded-2xl outline-none text-white text-sm">
+                        <input type="text" id="player-in" placeholder="Nome do Jogador" class="flex-1 bg-slate-950 border border-slate-700 p-3 rounded-2xl outline-none text-white text-sm">
                         <button onclick="addPlayer()" class="bg-red-600 px-5 rounded-2xl font-bold text-xl active:scale-90">+</button>
                     </div>
                     <div class="flex justify-between bg-slate-950 p-2 rounded-2xl border border-slate-800 gap-1 overflow-x-auto">
@@ -87,14 +91,14 @@
                 </div>
                 <div id="player-list" class="space-y-1 max-h-32 overflow-y-auto no-scrollbar"></div>
             </div>
-            <button onclick="initGame()" class="mt-6 w-full bg-white text-slate-950 font-black py-4 rounded-[1.2rem] uppercase tracking-tighter text-md active:bg-red-600 active:text-white">Iniciar Partida</button>
+            <button onclick="initGame()" class="mt-6 w-full bg-white text-slate-950 font-black py-4 rounded-[1.2rem] uppercase tracking-tighter text-md active:bg-red-600 active:text-white transition-all">Iniciar Partida</button>
         </div>
     </main>
 
     <main id="screen-game" class="hidden p-4">
         <nav class="flex justify-between items-center py-2 shrink-0">
-            <h2 class="text-sm font-black italic text-white uppercase">Banco <span class="text-red-600">Imobiliário</span></h2>
-            <button onclick="resetApp()" class="text-[8px] border border-slate-800 px-2 py-1 rounded-full text-slate-500 uppercase font-black">Reset</button>
+            <h2 class="text-sm font-black italic text-white uppercase tracking-tighter">BANCO <span class="text-red-600">IMOBILIÁRIO</span></h2>
+            <button onclick="resetApp()" class="text-[8px] border border-slate-800 px-2 py-1 rounded-full text-slate-500 uppercase font-black">Reset Partida</button>
         </nav>
 
         <div class="flex-1 overflow-y-auto no-scrollbar py-2"> 
@@ -102,6 +106,15 @@
         </div>
 
         <section class="shrink-0 flex flex-col gap-2 pb-2">
+            
+            <div id="log-container" class="bg-black/40 rounded-xl p-2 h-20 overflow-y-auto no-scrollbar border border-slate-900 relative">
+                <div class="flex justify-between items-center mb-1 border-b border-slate-800 pb-1">
+                    <p class="text-[7px] uppercase font-black text-slate-600 tracking-widest">Logs de Transação</p>
+                    <button onclick="clearLogs()" class="text-[7px] text-red-900 font-bold uppercase">Limpar Logs</button>
+                </div>
+                <div id="log-list" class="space-y-0.5 text-[9px] font-mono text-slate-400"></div>
+            </div>
+
             <div class="bg-slate-900 border-t-2 border-red-600 rounded-[1.5rem] p-4 shadow-2xl">
                 <div class="flex gap-2 mb-2">
                     <select id="select-from" class="flex-1 bg-slate-800 p-2 rounded-lg text-[10px] font-black border border-slate-700 text-white appearance-none"></select>
@@ -109,7 +122,7 @@
                     <select id="select-to" class="flex-1 bg-slate-800 p-2 rounded-lg text-[10px] font-black border border-slate-700 text-white appearance-none"></select>
                 </div>
                 <div class="flex gap-2">
-                    <input type="number" id="trans-val" placeholder="R$ Valor" class="flex-1 bg-slate-950 border border-slate-700 p-2 rounded-lg text-lg font-mono text-white text-center outline-none">
+                    <input type="number" id="trans-val" placeholder="R$ Valor" class="flex-1 bg-slate-950 border border-slate-700 p-2 rounded-lg text-lg font-mono text-white text-center outline-none focus:border-red-600">
                     <button onclick="execTransfer()" class="bg-red-600 px-4 rounded-lg font-black uppercase text-[10px]">Pagar</button>
                 </div>
             </div>
@@ -127,13 +140,40 @@
 
         let state = {
             players: JSON.parse(localStorage.getItem('bankit_players')) || [],
+            logs: JSON.parse(localStorage.getItem('bankit_logs')) || [],
             gameStarted: JSON.parse(localStorage.getItem('bankit_started')) || false,
             currentColor: 'red',
             pendingAction: null
         };
 
         window.onload = () => { if (state.gameStarted && state.players.length > 0) showGame(); else renderSetup(); };
-        function save() { localStorage.setItem('bankit_players', JSON.stringify(state.players)); localStorage.setItem('bankit_started', JSON.stringify(state.gameStarted)); }
+        
+        function save() { 
+            localStorage.setItem('bankit_players', JSON.stringify(state.players)); 
+            localStorage.setItem('bankit_logs', JSON.stringify(state.logs)); 
+            localStorage.setItem('bankit_started', JSON.stringify(state.gameStarted)); 
+        }
+
+        function addLog(msg) {
+            const time = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+            state.logs.unshift(`[${time}] ${msg}`);
+            if (state.logs.length > 25) state.logs.pop();
+            renderLogs();
+            save();
+        }
+
+        function renderLogs() {
+            const list = document.getElementById('log-list');
+            list.innerHTML = state.logs.map(l => `<div class="border-b border-slate-900/50 py-0.5">${l}</div>`).join('');
+        }
+
+        function clearLogs() {
+            if(confirm("Apagar histórico de transações?")) {
+                state.logs = [];
+                renderLogs();
+                save();
+            }
+        }
 
         function selectColor(color) {
             state.currentColor = color;
@@ -151,7 +191,10 @@
             input.value = ''; renderSetup(); save();
         }
 
-        function removePlayer(id) { state.players = state.players.filter(p => p.id !== id); renderSetup(); save(); }
+        function removePlayer(id) { 
+            state.players = state.players.filter(p => p.id !== id); 
+            renderSetup(); save(); 
+        }
         
         function renderSetup() {
             const list = document.getElementById('player-list');
@@ -166,19 +209,22 @@
             if(state.players.length < 2) return alert("Adicione os sócios.");
             const initial = parseInt(document.getElementById('init-val').value) || 0;
             state.players = state.players.map(p => ({ ...p, balance: initial }));
-            state.gameStarted = true; save(); showGame();
+            state.gameStarted = true;
+            addLog("--- NOVA PARTIDA INICIADA ---");
+            save(); showGame();
         }
 
         function showGame() {
             document.getElementById('screen-setup').classList.add('hidden');
             document.getElementById('screen-game').classList.remove('hidden');
             updateUI();
+            renderLogs();
         }
 
         function updateUI() {
             const dash = document.getElementById('dashboard');
             dash.innerHTML = state.players.map((p, idx) => `
-                <div class="bg-slate-900 border border-slate-800 p-3 rounded-2xl flex justify-between items-center card-${p.color}">
+                <div class="bg-slate-900 border border-slate-800 p-3 rounded-2xl flex justify-between items-center card-${p.color} animate-pop">
                     <div class="flex-1 min-w-0 pr-2">
                         <p class="text-[8px] uppercase font-black text-slate-500 tracking-widest truncate">${p.name}</p>
                         <p class="text-lg font-mono font-black ${p.balance < 0 ? 'text-red-400' : 'text-white'} truncate">R$ ${p.balance.toLocaleString()}</p>
@@ -196,10 +242,12 @@
         }
 
         function manualAdjustment(idx, mult) {
-            const val = parseInt(document.getElementById(`manual-val-${idx}`).value);
+            const input = document.getElementById(`manual-val-${idx}`);
+            const val = parseInt(input.value);
             if(isNaN(val) || val <= 0) return;
             state.players[idx].balance += (val * mult);
-            document.getElementById(`manual-val-${idx}`).value = ''; save(); updateUI();
+            addLog(`${state.players[idx].name} ${mult > 0 ? '+' : '-'} R$ ${val}`);
+            input.value = ''; save(); updateUI();
         }
 
         function execTransfer() {
@@ -209,6 +257,7 @@
             if(from === "" || to === "" || isNaN(val) || from === to) return;
             state.players[from].balance -= val;
             state.players[to].balance += val;
+            addLog(`${state.players[from].name} ➔ ${state.players[to].name}: R$ ${val}`);
             document.getElementById('trans-val').value = ''; save(); updateUI();
         }
 
@@ -216,15 +265,29 @@
             state.pendingAction = amount;
             document.getElementById('modal-title').innerText = title;
             document.getElementById('modal-player-list').innerHTML = state.players.map((p, i) => `
-                <button onclick="applyAction(${i})" class="w-full bg-slate-800 p-4 rounded-xl text-left font-black text-white flex justify-between items-center active:bg-red-600">
-                    ${p.name} <span class="text-red-600">➔</span>
+                <button onclick="applyAction(${i})" class="w-full bg-slate-800 p-4 rounded-xl text-left font-black text-white flex justify-between items-center active:bg-red-600 transition-all">
+                    ${p.name} <span class="text-red-600 font-bold">➔</span>
                 </button>`).join('');
             document.getElementById('modal-selection').classList.remove('hidden');
         }
 
-        function applyAction(idx) { state.players[idx].balance += state.pendingAction; closeModal(); save(); updateUI(); }
+        function applyAction(idx) { 
+            state.players[idx].balance += state.pendingAction; 
+            addLog(`${document.getElementById('modal-title').innerText}: ${state.players[idx].name} (${state.pendingAction > 0 ? '+' : ''}${state.pendingAction})`);
+            closeModal(); save(); updateUI(); 
+        }
+
         function closeModal() { document.getElementById('modal-selection').classList.add('hidden'); }
-        function resetApp() { if(confirm("Resetar?")) { localStorage.clear(); location.reload(); } }
+        
+        function resetApp() { 
+            if(confirm("Encerrar partida? Os logs serão mantidos para auditoria final.")) { 
+                state.gameStarted = false;
+                state.players = [];
+                addLog("--- PARTIDA FINALIZADA ---");
+                save();
+                location.reload(); 
+            } 
+        }
     </script>
 </body>
 </html>
