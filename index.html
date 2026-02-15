@@ -2,111 +2,112 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>BANCO IMOBILIÁRIO</title>
     
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#dc2626">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <link rel="apple-touch-icon" href="logo.png">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .animate-pop { animation: pop 0.2s ease-out; }
         @keyframes pop { 0% { transform: scale(0.98); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
-        .modal-bg { background-color: rgba(2, 6, 23, 0.95); backdrop-filter: blur(10px); }
-        body { overflow: hidden; height: 100vh; display: flex; flex-direction: column; }
         
-        /* Cores de Stakeholder */
-        .card-red { border-left: 8px solid #ef4444; }
-        .card-blue { border-left: 8px solid #3b82f6; }
-        .card-green { border-left: 8px solid #22c55e; }
-        .card-yellow { border-left: 8px solid #eab308; }
-        .card-purple { border-left: 8px solid #a855f7; }
-        .card-pink { border-left: 8px solid #ec4899; }
-        .card-gold { border-left: 8px solid #ffd700; background: linear-gradient(90deg, #1e293b 0%, #0f172a 100%); }
+        /* AJUSTE DE ENQUADRAMENTO PROFISSIONAL */
+        :root { --app-height: 100%; }
+        html, body { 
+            overflow: hidden; 
+            height: 100dvh; /* Altura dinâmica para mobile */
+            width: 100vw;
+            position: fixed; /* Evita o "bounce" do iOS/Android */
+        }
+        
+        .card-red { border-left: 6px solid #ef4444; }
+        .card-blue { border-left: 6px solid #3b82f6; }
+        .card-green { border-left: 6px solid #22c55e; }
+        .card-yellow { border-left: 6px solid #eab308; }
+        .card-purple { border-left: 6px solid #a855f7; }
+        .card-pink { border-left: 6px solid #ec4899; }
+        .card-gold { border-left: 6px solid #ffd700; background: linear-gradient(90deg, #1e293b 0%, #0f172a 100%); }
     </style>
 </head>
-<body class="bg-slate-950 text-slate-100 font-sans">
+<body class="bg-slate-950 text-slate-100 font-sans flex flex-col">
 
-    <div id="modal-selection" class="hidden fixed inset-0 z-[100] modal-bg flex items-end justify-center p-4">
-        <div class="bg-slate-900 border border-slate-700 w-full max-w-sm rounded-[2.5rem] p-8 shadow-2xl animate-pop mb-4">
-            <h3 id="modal-title" class="text-yellow-500 font-black uppercase text-center mb-6 tracking-tighter text-2xl italic underline decoration-red-600">Ação</h3>
-            <div id="modal-player-list" class="grid grid-cols-1 gap-3 max-h-[40vh] overflow-y-auto no-scrollbar"></div>
-            <button onclick="closeModal()" class="w-full mt-6 py-2 text-slate-500 text-xs font-black uppercase tracking-widest italic">Cancelar</button>
+    <div id="modal-selection" class="hidden fixed inset-0 z-[100] bg-black/90 backdrop-blur-md flex items-end justify-center p-4">
+        <div class="bg-slate-900 border border-slate-700 w-full max-w-sm rounded-[2.5rem] p-6 shadow-2xl animate-pop mb-2">
+            <h3 id="modal-title" class="text-yellow-500 font-black uppercase text-center mb-4 text-xl italic underline decoration-red-600">Ação</h3>
+            <div id="modal-player-list" class="grid grid-cols-1 gap-2 max-h-[50vh] overflow-y-auto no-scrollbar"></div>
+            <button onclick="closeModal()" class="w-full mt-4 py-2 text-slate-500 text-xs font-black uppercase tracking-widest">Fechar</button>
         </div>
     </div>
 
-    <main id="screen-setup" class="p-6 max-w-md mx-auto h-full flex flex-col justify-center overflow-y-auto">
-        <header class="text-center mb-8">
-            <h1 class="text-4xl font-black text-white uppercase tracking-tighter leading-none">BANCO<br><span class="text-6xl text-red-600 italic">IMOBILIÁRIO</span></h1>
+    <main id="screen-setup" class="flex-1 flex flex-col justify-center p-6 max-w-md mx-auto w-full overflow-y-auto no-scrollbar">
+        <header class="text-center mb-6">
+            <h1 class="text-3xl font-black text-white uppercase tracking-tighter leading-none">BANCO<br><span class="text-5xl text-red-600 italic">IMOBILIÁRIO</span></h1>
         </header>
         
-        <div class="bg-slate-900 border border-slate-800 p-6 rounded-[2rem] shadow-2xl space-y-6">
+        <div class="bg-slate-900 border border-slate-800 p-5 rounded-[2rem] shadow-2xl space-y-4">
             <div>
-                <label class="text-[10px] uppercase font-black text-slate-500 mb-2 block tracking-widest text-center">Capital Inicial</label>
-                <input type="number" id="init-val" value="25000" class="w-full bg-slate-950 border border-slate-700 p-4 rounded-2xl text-2xl font-mono text-yellow-500 text-center outline-none">
+                <label class="text-[10px] uppercase font-black text-slate-500 mb-1 block text-center">Capital Inicial</label>
+                <input type="number" id="init-val" value="25000" class="w-full bg-slate-950 border border-slate-700 p-3 rounded-2xl text-xl font-mono text-yellow-500 text-center outline-none">
             </div>
             
-            <div>
-                <label class="text-[10px] uppercase font-black text-slate-500 mb-2 block tracking-widest">Novo Jogador e Cor</label>
-                <div class="flex flex-col gap-3">
-                    <div class="flex gap-2">
-                        <input type="text" id="player-in" placeholder="Nome" class="flex-1 bg-slate-950 border border-slate-700 p-4 rounded-2xl outline-none text-white">
-                        <button onclick="addPlayer()" class="bg-red-600 px-6 rounded-2xl font-bold text-2xl active:scale-90 transition-all">+</button>
-                    </div>
-                    <div class="flex justify-between bg-slate-950 p-3 rounded-2xl border border-slate-800 overflow-x-auto no-scrollbar gap-2">
-                        <button onclick="selectColor('red')" class="w-8 h-8 rounded-full bg-red-500 border-2 border-white color-opt" data-color="red"></button>
-                        <button onclick="selectColor('blue')" class="w-8 h-8 rounded-full bg-blue-500 color-opt" data-color="blue"></button>
-                        <button onclick="selectColor('green')" class="w-8 h-8 rounded-full bg-green-500 color-opt" data-color="green"></button>
-                        <button onclick="selectColor('yellow')" class="w-8 h-8 rounded-full bg-yellow-500 color-opt" data-color="yellow"></button>
-                        <button onclick="selectColor('purple')" class="w-8 h-8 rounded-full bg-purple-500 color-opt" data-color="purple"></button>
-                        <button onclick="selectColor('gold')" class="w-8 h-8 rounded-full bg-yellow-600 border border-yellow-300 color-opt" data-color="gold"></button>
-                    </div>
+            <div class="space-y-3">
+                <label class="text-[10px] uppercase font-black text-slate-500 block">Stakeholders</label>
+                <div class="flex gap-2">
+                    <input type="text" id="player-in" placeholder="Nome" class="flex-1 bg-slate-950 border border-slate-700 p-3 rounded-2xl outline-none text-white text-sm">
+                    <button onclick="addPlayer()" class="bg-red-600 px-5 rounded-2xl font-bold text-xl active:scale-90">+</button>
+                </div>
+                <div class="flex justify-between bg-slate-950 p-2 rounded-2xl border border-slate-800 gap-2">
+                    <button onclick="selectColor('red')" class="w-7 h-7 rounded-full bg-red-500 border-2 border-white color-opt" data-color="red"></button>
+                    <button onclick="selectColor('blue')" class="w-7 h-7 rounded-full bg-blue-500 color-opt" data-color="blue"></button>
+                    <button onclick="selectColor('green')" class="w-7 h-7 rounded-full bg-green-500 color-opt" data-color="green"></button>
+                    <button onclick="selectColor('yellow')" class="w-7 h-7 rounded-full bg-yellow-500 color-opt" data-color="yellow"></button>
+                    <button onclick="selectColor('purple')" class="w-7 h-7 rounded-full bg-purple-500 color-opt" data-color="purple"></button>
+                    <button onclick="selectColor('gold')" class="w-7 h-7 rounded-full bg-yellow-600 border border-yellow-300 color-opt" data-color="gold"></button>
                 </div>
             </div>
-            <div id="player-list" class="space-y-2 max-h-40 overflow-y-auto no-scrollbar text-sm"></div>
+            <div id="player-list" class="space-y-2 max-h-32 overflow-y-auto no-scrollbar text-xs"></div>
         </div>
-        <button onclick="initGame()" class="mt-8 w-full bg-white text-slate-950 font-black py-5 rounded-[1.5rem] uppercase tracking-tighter text-lg active:bg-red-600 active:text-white transition-all">Iniciar Partida</button>
+        <button onclick="initGame()" class="mt-6 w-full bg-white text-slate-950 font-black py-4 rounded-[1.2rem] uppercase tracking-tighter text-md active:bg-red-600 active:text-white">Iniciar Partida</button>
     </main>
 
-    <main id="screen-game" class="hidden h-full flex flex-col p-4 max-w-4xl mx-auto overflow-hidden">
-        <nav class="flex justify-between items-center pt-2 pb-2">
-            <h2 class="text-lg font-black italic text-white tracking-tighter">BANCO <span class="text-red-600">IMOBILIÁRIO</span></h2>
-            <button onclick="resetApp()" class="text-[9px] border border-slate-800 px-3 py-1 rounded-full text-slate-600 uppercase font-black">Finalizar</button>
+    <main id="screen-game" class="hidden h-full flex flex-col p-4 w-full max-w-xl mx-auto overflow-hidden">
+        <nav class="flex justify-between items-center py-2 shrink-0">
+            <h2 class="text-md font-black italic text-white uppercase tracking-tighter">Banco <span class="text-red-600">Imobiliário</span></h2>
+            <button onclick="resetApp()" class="text-[8px] border border-slate-800 px-2 py-1 rounded-full text-slate-500 uppercase font-black">Reset</button>
         </nav>
 
         <div class="flex-1 flex flex-col min-h-0"> 
-            <div id="dashboard" class="my-auto grid grid-cols-1 gap-3 overflow-y-auto no-scrollbar py-4"></div>
+            <div id="dashboard" class="my-auto grid grid-cols-1 gap-3 overflow-y-auto no-scrollbar py-2"></div>
         </div>
 
-        <section class="flex flex-col gap-3 py-4 mt-auto">
-            <div class="bg-slate-900 border-t-2 border-red-600 rounded-[2.2rem] p-5 shadow-2xl">
-                <div class="flex gap-2 mb-3">
-                    <select id="select-from" class="flex-1 bg-slate-800 p-3 rounded-xl text-[10px] font-black border border-slate-700 text-white appearance-none text-center"></select>
-                    <div class="flex items-center text-red-600 font-bold">➔</div>
-                    <select id="select-to" class="flex-1 bg-slate-800 p-3 rounded-xl text-[10px] font-black border border-slate-700 text-white appearance-none text-center"></select>
+        <section class="shrink-0 flex flex-col gap-2 pb-2">
+            <div class="bg-slate-900 border-t-2 border-red-600 rounded-[1.8rem] p-4 shadow-2xl">
+                <div class="flex gap-2 mb-2">
+                    <select id="select-from" class="flex-1 bg-slate-800 p-2 rounded-lg text-[10px] font-black border border-slate-700 text-white text-center appearance-none"></select>
+                    <div class="flex items-center text-red-600 font-bold text-xs">➔</div>
+                    <select id="select-to" class="flex-1 bg-slate-800 p-2 rounded-lg text-[10px] font-black border border-slate-700 text-white text-center appearance-none"></select>
                 </div>
                 <div class="flex gap-2">
-                    <input type="number" id="trans-val" placeholder="R$ 0,00" class="flex-1 bg-slate-950 border border-slate-700 p-3 rounded-xl text-xl font-mono outline-none text-white text-center focus:border-red-600">
-                    <button onclick="execTransfer()" class="bg-red-600 px-6 rounded-xl font-black uppercase text-[11px] active:scale-95 transition-all">Transferir</button>
+                    <input type="number" id="trans-val" placeholder="R$ Valor" class="flex-1 bg-slate-950 border border-slate-700 p-2 rounded-lg text-lg font-mono text-white text-center outline-none focus:border-red-600">
+                    <button onclick="execTransfer()" class="bg-red-600 px-4 rounded-lg font-black uppercase text-[10px]">Pagar</button>
                 </div>
             </div>
 
             <div class="grid grid-cols-3 gap-2">
-                <button onclick="openActionModal(2000, 'Salário')" class="bg-slate-900 border border-green-900/40 p-4 rounded-2xl text-[10px] font-black uppercase text-green-500 active:bg-green-600 active:text-white transition-all">Salário</button>
-                <button onclick="openActionModal(2000, 'Restituição')" class="bg-slate-900 border border-emerald-900/40 p-4 rounded-2xl text-[10px] font-black uppercase text-emerald-400 active:bg-emerald-600 active:text-white transition-all">Restituição</button>
-                <button onclick="openActionModal(-2000, 'Imposto')" class="bg-slate-900 border border-red-900/40 p-4 rounded-2xl text-[10px] font-black uppercase text-red-500 active:bg-red-600 active:text-white transition-all">Imposto</button>
+                <button onclick="openActionModal(2000, 'Salário')" class="bg-slate-900 border border-green-900/40 py-3 rounded-xl text-[9px] font-black uppercase text-green-500 active:bg-green-600 active:text-white">Salário</button>
+                <button onclick="openActionModal(2000, 'Restituição')" class="bg-slate-900 border border-emerald-900/40 py-3 rounded-xl text-[9px] font-black uppercase text-emerald-400 active:bg-emerald-600 active:text-white">Restituição</button>
+                <button onclick="openActionModal(-2000, 'Imposto')" class="bg-slate-900 border border-red-900/40 py-3 rounded-xl text-[9px] font-black uppercase text-red-500 active:bg-red-600 active:text-white">Imposto</button>
             </div>
         </section>
     </main>
 
     <script>
-        // PWA REGISTRATION
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => { navigator.serviceWorker.register('./sw.js'); });
-        }
+        if ('serviceWorker' in navigator) { navigator.serviceWorker.register('./sw.js'); }
 
         let state = {
             players: JSON.parse(localStorage.getItem('bankit_players')) || [],
@@ -116,10 +117,7 @@
         };
 
         window.onload = () => { if (state.gameStarted && state.players.length > 0) showGame(); else renderSetup(); };
-        function save() { 
-            localStorage.setItem('bankit_players', JSON.stringify(state.players)); 
-            localStorage.setItem('bankit_started', JSON.stringify(state.gameStarted)); 
-        }
+        function save() { localStorage.setItem('bankit_players', JSON.stringify(state.players)); localStorage.setItem('bankit_started', JSON.stringify(state.gameStarted)); }
 
         function selectColor(color) {
             state.currentColor = color;
@@ -142,14 +140,14 @@
         function renderSetup() {
             const list = document.getElementById('player-list');
             list.innerHTML = state.players.map(p => `
-                <div class="flex justify-between items-center bg-slate-800 p-3 rounded-xl mb-2 border-l-4 border-${p.color === 'gold' ? 'yellow-600' : p.color + '-500'}">
+                <div class="flex justify-between items-center bg-slate-800 p-2 rounded-lg mb-1 border-l-4 border-${p.color === 'gold' ? 'yellow-600' : p.color + '-500'}">
                     <span class="font-bold text-white">${p.name}</span>
                     <button onclick="removePlayer(${p.id})" class="text-red-500 px-2 font-black">×</button>
                 </div>`).join('');
         }
 
         function initGame() {
-            if(state.players.length < 2) return alert("Pelo menos 2 jogadores.");
+            if(state.players.length < 2) return alert("Mínimo 2 jogadores.");
             const initial = parseInt(document.getElementById('init-val').value) || 0;
             state.players = state.players.map(p => ({ ...p, balance: initial }));
             state.gameStarted = true; save(); showGame();
@@ -164,25 +162,21 @@
         function updateUI() {
             const dash = document.getElementById('dashboard');
             dash.innerHTML = state.players.map((p, idx) => `
-                <div class="bg-slate-900 border border-slate-800 p-4 rounded-[1.8rem] flex justify-between items-center animate-pop card-${p.color}">
+                <div class="bg-slate-900/80 border border-slate-800 p-3 rounded-2xl flex justify-between items-center animate-pop card-${p.color}">
                     <div class="flex-1 min-w-0 pr-2">
-                        <p class="text-[9px] uppercase font-black text-slate-500 tracking-widest truncate">${p.name}</p>
-                        <p class="text-2xl font-mono font-black ${p.balance < 0 ? 'text-red-400' : 'text-white'} tracking-tighter">
-                            R$ ${p.balance.toLocaleString()}
-                        </p>
+                        <p class="text-[8px] uppercase font-black text-slate-500 tracking-widest truncate">${p.name}</p>
+                        <p class="text-xl font-mono font-black ${p.balance < 0 ? 'text-red-400' : 'text-white'} truncate">R$ ${p.balance.toLocaleString()}</p>
                     </div>
-                    <div class="flex gap-1.5 bg-slate-950 p-2 rounded-[1.2rem] border border-slate-800 shrink-0">
-                        <input type="number" id="manual-val-${idx}" placeholder="0" class="w-16 bg-transparent text-center text-xs font-mono text-yellow-500 outline-none">
-                        <div class="flex gap-1">
-                            <button onclick="manualAdjustment(${idx}, -1)" class="bg-red-900/20 text-red-500 w-9 h-9 rounded-lg font-bold active:bg-red-600">-</button>
-                            <button onclick="manualAdjustment(${idx}, 1)" class="bg-green-900/20 text-green-500 w-9 h-9 rounded-lg font-bold active:bg-green-600">+</button>
-                        </div>
+                    <div class="flex gap-1 bg-slate-950 p-1.5 rounded-xl border border-slate-800 shrink-0">
+                        <input type="number" id="manual-val-${idx}" placeholder="0" class="w-12 bg-transparent text-center text-xs font-mono text-yellow-500 outline-none">
+                        <button onclick="manualAdjustment(${idx}, -1)" class="bg-red-900/20 text-red-500 w-7 h-7 rounded-lg font-bold">-</button>
+                        <button onclick="manualAdjustment(${idx}, 1)" class="bg-green-900/20 text-green-500 w-7 h-7 rounded-lg font-bold">+</button>
                     </div>
                 </div>`).join('');
 
             const opts = state.players.map((p, i) => `<option value="${i}">${p.name}</option>`).join('');
-            document.getElementById('select-from').innerHTML = `<option value="">ORIGEM</option>` + opts;
-            document.getElementById('select-to').innerHTML = `<option value="">DESTINO</option>` + opts;
+            document.getElementById('select-from').innerHTML = `<option value="">DE</option>` + opts;
+            document.getElementById('select-to').innerHTML = `<option value="">PARA</option>` + opts;
         }
 
         function manualAdjustment(idx, mult) {
@@ -206,15 +200,15 @@
             state.pendingAction = amount;
             document.getElementById('modal-title').innerText = title;
             document.getElementById('modal-player-list').innerHTML = state.players.map((p, i) => `
-                <button onclick="applyAction(${i})" class="w-full bg-slate-800 p-5 rounded-2xl text-left font-black text-white flex justify-between items-center active:bg-red-600">
-                    ${p.name} <span class="text-red-600 font-bold">➔</span>
+                <button onclick="applyAction(${i})" class="w-full bg-slate-800 p-4 rounded-xl text-left font-black text-white flex justify-between items-center active:bg-red-600 transition-all">
+                    ${p.name} <span class="text-red-600">➔</span>
                 </button>`).join('');
             document.getElementById('modal-selection').classList.remove('hidden');
         }
 
         function applyAction(idx) { state.players[idx].balance += state.pendingAction; closeModal(); save(); updateUI(); }
         function closeModal() { document.getElementById('modal-selection').classList.add('hidden'); }
-        function resetApp() { if(confirm("Encerrar partida?")) { localStorage.clear(); location.reload(); } }
+        function resetApp() { if(confirm("Resetar?")) { localStorage.clear(); location.reload(); } }
     </script>
 </body>
 </html>

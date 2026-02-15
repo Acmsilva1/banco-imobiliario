@@ -1,4 +1,4 @@
-const CACHE_NAME = 'banco-it-v1';
+const CACHE_NAME = 'banco-it-v2';
 // Lista de arquivos para salvar no cache do celular
 const assets = [
   './',
