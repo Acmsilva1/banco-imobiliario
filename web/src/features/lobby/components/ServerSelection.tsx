@@ -56,11 +56,11 @@ export const ServerSelection = ({ rooms, myRooms, onCreateRoom, onJoinRoom, onDe
               whileHover={{ y: -5 }}
               className="bento-card border-slate-800 bg-slate-900/80 p-6 flex flex-col justify-between group relative overflow-hidden"
             >
-              <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+              <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity pointer-events-none">
                 <Globe className="w-20 h-20 text-blue-500" />
               </div>
               
-              <div>
+              <div className="relative z-10">
                 <div className="flex justify-between items-start mb-4">
                   <div className="bg-blue-600/20 text-blue-400 text-[10px] font-black px-2 py-1 rounded uppercase tracking-wider">
                     ONLINE
