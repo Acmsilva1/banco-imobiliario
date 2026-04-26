@@ -1,0 +1,17 @@
+{
+  "name": "Banco Imobiliário Digital",
+  "short_name": "Banco",
+  "description": "Gerenciador de banco digital para Banco Imobiliário",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#020617",
+  "theme_color": "#2563eb",
+  "icons": [
+    {
+      "src": "/logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
