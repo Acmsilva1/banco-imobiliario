@@ -44,20 +44,29 @@ export const useSocket = (partidaId: string) => {
   }, [partidaId]);
 
   const transfer = async (payload: TransferPayload) => {
+    // Atualização Otimista (Instantânea na UI)
+    const originalState = { ...gameState };
+    setGameState(prev => ({
+      ...prev,
+      players: prev.players.map(p => {
+        if (p.id === payload.fromId) return { ...p, saldo: p.saldo - payload.amount };
+        if (p.id === payload.toId) return { ...p, saldo: p.saldo + payload.amount };
+        return p;
+      })
+    }));
+
     try {
-      const { data: fromPlayer } = await supabase.from('jogadores').select('saldo, nickname').eq('id', payload.fromId).single();
-      const { data: toPlayer } = await supabase.from('jogadores').select('saldo, nickname').eq('id', payload.toId).single();
+      const { error } = await supabase.rpc('transferir_saldo', {
+        from_player_id: payload.fromId,
+        to_player_id: payload.toId,
+        amount_val: payload.amount,
+        room_id: payload.partidaId
+      });
 
-      if (!fromPlayer || !toPlayer) throw new Error('Jogadores não encontrados');
-      if (fromPlayer.saldo < payload.amount) throw new Error('Saldo insuficiente');
-
-      await supabase.from('jogadores').update({ saldo: fromPlayer.saldo - payload.amount }).eq('id', payload.fromId);
-      await supabase.from('jogadores').update({ saldo: toPlayer.saldo + payload.amount }).eq('id', payload.toId);
-
-      const mensagem = `${fromPlayer.nickname} ➔ ${toPlayer.nickname}: R$ ${payload.amount.toLocaleString()}`;
-      await supabase.from('transacoes').insert({ partida_id: payload.partidaId, mensagem });
+      if (error) throw error;
       
     } catch (err: any) {
+      setGameState(originalState); // Rollback se der erro
       setError(err.message);
       setTimeout(() => setError(null), 3000);
     }
