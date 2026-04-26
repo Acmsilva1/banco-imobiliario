@@ -20,8 +20,17 @@ app.ready((err: Error | null) => {
   app.io.on('connection', (socket: Socket) => {
     socket.on('join_room', async (partidaId: string) => {
       socket.join(partidaId);
+      (socket as any).partidaId = partidaId;
+      await bankService.incrementPlayerCount(partidaId);
       const state = await bankService.getGameState(partidaId);
       socket.emit('sync_state', state);
+    });
+
+    socket.on('disconnect', async () => {
+      const partidaId = (socket as any).partidaId;
+      if (partidaId) {
+        await bankService.decrementPlayerCount(partidaId);
+      }
     });
 
     socket.on('exec_transfer', async (payload: TransferPayload) => {

@@ -75,4 +75,18 @@ export class BankService {
 
     return this.getGameState(partidaId);
   }
+
+  async incrementPlayerCount(partidaId: string) {
+    const { data: partida } = await supabase.from('partidas').select('players_count').eq('id', partidaId).single();
+    if (partida) {
+      await supabase.from('partidas').update({ players_count: (partida.players_count || 0) + 1 }).eq('id', partidaId);
+    }
+  }
+
+  async decrementPlayerCount(partidaId: string) {
+    const { data: partida } = await supabase.from('partidas').select('players_count').eq('id', partidaId).single();
+    if (partida && partida.players_count && partida.players_count > 0) {
+      await supabase.from('partidas').update({ players_count: partida.players_count - 1 }).eq('id', partidaId);
+    }
+  }
 }

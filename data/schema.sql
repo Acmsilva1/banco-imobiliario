@@ -13,7 +13,8 @@ CREATE TABLE partidas (
     codigo_sala TEXT UNIQUE NOT NULL,
     criado_em TIMESTAMPTZ DEFAULT NOW(),
     capital_inicial INTEGER DEFAULT 25000,
-    status TEXT DEFAULT 'LOBBY'
+    status TEXT DEFAULT 'LOBBY',
+    players_count INTEGER DEFAULT 0
 );
 
 -- 2. Tabela de Jogadores

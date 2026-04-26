@@ -11,6 +11,7 @@ type Screen = 'LOBBY' | 'SETUP' | 'GAME';
 export default function App() {
   const [screen, setScreen] = useState<Screen>('LOBBY');
   const [rooms, setRooms] = useState<any[]>([]);
+  const [myRooms, setMyRooms] = useState<string[]>(JSON.parse(localStorage.getItem('my_rooms') || '[]'));
   const [selectedRoomId, setSelectedRoomId] = useState<string | null>(null);
   const [myId, setMyId] = useState<string | null>(null);
   const [isTransferModalOpen, setIsTransferModalOpen] = useState(false);
@@ -67,7 +68,13 @@ export default function App() {
 
   const handleJoinRoom = (roomId: string) => {
     setSelectedRoomId(roomId);
-    setScreen('SETUP');
+    const savedId = localStorage.getItem('session_' + roomId);
+    if (savedId) {
+      setMyId(savedId);
+      setScreen('GAME');
+    } else {
+      setScreen('SETUP');
+    }
   };
 
   const handleSetupComplete = async (nickname: string, avatarId: string) => {
@@ -84,6 +91,7 @@ export default function App() {
     }).select().single();
     
     if (data) {
+      localStorage.setItem('session_' + selectedRoomId, data.id);
       setMyId(data.id);
       setScreen('GAME');
     } else {
@@ -167,7 +175,11 @@ export default function App() {
                   </div>
                 )}
                 <button 
-                  onClick={() => setScreen('LOBBY')}
+                  onClick={() => {
+                    setScreen('LOBBY');
+                    setSelectedRoomId(null);
+                    setMyId(null);
+                  }}
                   className="p-3 bg-slate-900 border border-slate-800 rounded-xl hover:bg-blue-600/20 hover:border-blue-500 text-slate-500 hover:text-blue-400 transition-all"
                   title="Voltar ao Lobby"
                 >
