@@ -1,5 +1,5 @@
 import { supabase } from '../../core/supabase.js';
-import { Player, TransferPayload } from './bank.types.js';
+import type { Player, TransferPayload } from './bank.types.js';
 
 export class BankService {
   async getGameState(partidaId: string) {

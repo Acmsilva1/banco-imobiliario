@@ -1,8 +1,8 @@
-import fastify, { FastifyError } from 'fastify';
+import fastify from 'fastify';
 import fastifyIO from 'fastify-socket.io';
 import { BankService } from './features/bank/bank.service.js';
-import { TransferPayload } from './features/bank/bank.types.js';
-import { Socket } from 'socket.io';
+import type { TransferPayload } from './features/bank/bank.types.js';
+import type { Socket } from 'socket.io';
 
 const app = fastify({ logger: true });
 const bankService = new BankService();
