@@ -1,0 +1,82 @@
+import { motion } from 'framer-motion';
+import { Shield, Users, Plus, Globe, Zap } from 'lucide-react';
+
+interface ServerSelectionProps {
+  rooms: any[];
+  onCreateRoom: () => void;
+  onJoinRoom: (roomId: string) => void;
+}
+
+export const ServerSelection = ({ rooms, onCreateRoom, onJoinRoom }: ServerSelectionProps) => {
+  return (
+    <div className="min-h-screen bg-[#020617] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-900/20 via-slate-950 to-slate-950 p-6 flex flex-col items-center justify-center">
+      <motion.div 
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="text-center mb-12"
+      >
+        <h1 className="text-6xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-blue-600 to-purple-600 mb-4 filter drop-shadow-[0_0_15px_rgba(37,99,235,0.4)]">
+          BANCO IMOBILIÁRIO
+        </h1>
+        <p className="text-blue-400 font-bold uppercase tracking-[0.3em] text-sm animate-pulse">
+          Seja bem-vindo ao servidor global
+        </p>
+      </motion.div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-6xl">
+        <motion.button 
+          whileHover={{ scale: 1.02, borderColor: '#2563eb' }}
+          whileTap={{ scale: 0.98 }}
+          onClick={onCreateRoom}
+          className="group relative h-64 rounded-3xl border-2 border-dashed border-slate-800 bg-slate-900/50 flex flex-col items-center justify-center gap-4 transition-all overflow-hidden"
+        >
+          <div className="absolute inset-0 bg-blue-600/5 group-hover:bg-blue-600/10 transition-colors" />
+          <div className="w-16 h-16 rounded-full bg-blue-600/20 flex items-center justify-center group-hover:bg-blue-600 group-hover:shadow-[0_0_20px_rgba(37,99,235,0.6)] transition-all">
+            <Plus className="w-8 h-8 text-blue-400 group-hover:text-white" />
+          </div>
+          <span className="text-xl font-bold text-slate-300 group-hover:text-white">CRIAR NOVA SALA</span>
+          <p className="text-slate-500 text-sm">Torne-se o líder da partida</p>
+        </motion.button>
+
+        {rooms.map((room, i) => (
+          <motion.div
+            key={room.id}
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: i * 0.1 }}
+            whileHover={{ y: -5 }}
+            className="bento-card border-slate-800 bg-slate-900/80 p-6 flex flex-col justify-between group relative overflow-hidden"
+          >
+            <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+              <Globe className="w-20 h-20 text-blue-500" />
+            </div>
+            
+            <div>
+              <div className="flex justify-between items-start mb-4">
+                <div className="bg-blue-600/20 text-blue-400 text-[10px] font-black px-2 py-1 rounded uppercase tracking-wider">
+                  ONLINE
+                </div>
+                <div className="flex items-center gap-1 text-slate-500">
+                  <Users className="w-4 h-4" />
+                  <span className="text-xs font-bold">{room.players_count}/6</span>
+                </div>
+              </div>
+              <h3 className="text-2xl font-black text-white mb-1 group-hover:text-blue-400 transition-colors">
+                {room.name || `SALA #${room.id.slice(0,4)}`}
+              </h3>
+              <p className="text-slate-500 text-xs font-medium italic">Líder: {room.leader_name}</p>
+            </div>
+
+            <button 
+              onClick={() => onJoinRoom(room.id)}
+              className="mt-8 w-full py-4 rounded-xl bg-slate-800 group-hover:bg-blue-600 text-white font-black uppercase tracking-widest transition-all flex items-center justify-center gap-2"
+            >
+              <Zap className="w-4 h-4" />
+              ENTRAR NO SERVIDOR
+            </button>
+          </motion.div>
+        ))}
+      </div>
+    </div>
+  );
+};
