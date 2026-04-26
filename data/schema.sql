@@ -1,6 +1,11 @@
 -- Habilitar extensões necessárias
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
+-- Limpar banco para aplicar nova estrutura (CUIDADO: Apaga dados existentes)
+DROP TABLE IF EXISTS transacoes CASCADE;
+DROP TABLE IF EXISTS jogadores CASCADE;
+DROP TABLE IF EXISTS partidas CASCADE;
+
 -- 1. Tabela de Partidas (Rooms)
 CREATE TABLE partidas (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
