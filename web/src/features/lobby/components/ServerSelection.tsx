@@ -1,13 +1,15 @@
 import { motion } from 'framer-motion';
-import { Users, Plus, Globe, Zap } from 'lucide-react';
+import { Users, Plus, Globe, Zap, Trash2 } from 'lucide-react';
 
 interface ServerSelectionProps {
   rooms: any[];
+  myRooms: string[];
   onCreateRoom: () => void;
   onJoinRoom: (roomId: string) => void;
+  onDeleteRoom: (roomId: string) => void;
 }
 
-export const ServerSelection = ({ rooms, onCreateRoom, onJoinRoom }: ServerSelectionProps) => {
+export const ServerSelection = ({ rooms, myRooms, onCreateRoom, onJoinRoom, onDeleteRoom }: ServerSelectionProps) => {
   return (
     <div className="min-h-screen bg-[#020617] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-900/20 via-slate-950 to-slate-950 p-6 flex flex-col items-center justify-center">
       <motion.div 
@@ -63,9 +65,20 @@ export const ServerSelection = ({ rooms, onCreateRoom, onJoinRoom }: ServerSelec
                   <div className="bg-blue-600/20 text-blue-400 text-[10px] font-black px-2 py-1 rounded uppercase tracking-wider">
                     ONLINE
                   </div>
-                  <div className="flex items-center gap-1 text-slate-500">
-                    <Users className="w-4 h-4" />
-                    <span className="text-xs font-bold">{room.players_count || 0}/6</span>
+                  <div className="flex items-center gap-2">
+                    {myRooms.includes(room.id) && (
+                      <button 
+                        onClick={(e) => { e.stopPropagation(); onDeleteRoom(room.id); }}
+                        className="text-slate-500 hover:text-red-500 transition-colors bg-slate-950 p-1.5 rounded-lg border border-slate-800 hover:border-red-500/50"
+                        title="Deletar Sala"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    )}
+                    <div className="flex items-center gap-1 text-slate-500 bg-slate-950 px-2 py-1 rounded-lg border border-slate-800">
+                      <Users className="w-4 h-4" />
+                      <span className="text-xs font-bold">{room.players_count || 0}/6</span>
+                    </div>
                   </div>
                 </div>
                 <h3 className="text-2xl font-black text-white mb-1 group-hover:text-blue-400 transition-colors">

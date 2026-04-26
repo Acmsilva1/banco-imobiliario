@@ -49,8 +49,19 @@ export default function App() {
     }).select().single();
     
     if (data) {
+      const newMyRooms = [...myRooms, data.id];
+      setMyRooms(newMyRooms);
+      localStorage.setItem('my_rooms', JSON.stringify(newMyRooms));
       setSelectedRoomId(data.id);
       setScreen('SETUP');
+    }
+  };
+
+  const handleDeleteRoom = async (roomId: string) => {
+    if (window.confirm('Tem certeza que deseja encerrar e deletar esta sala?')) {
+      await supabase.from('partidas').delete().eq('id', roomId);
+      setMyRooms(myRooms.filter(id => id !== roomId));
+      localStorage.setItem('my_rooms', JSON.stringify(myRooms.filter(id => id !== roomId)));
     }
   };
 
@@ -111,8 +122,10 @@ export default function App() {
           <motion.div key="lobby" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
             <ServerSelection 
               rooms={rooms} 
+              myRooms={myRooms}
               onCreateRoom={handleCreateRoom} 
               onJoinRoom={handleJoinRoom} 
+              onDeleteRoom={handleDeleteRoom}
             />
           </motion.div>
         )}
