@@ -74,7 +74,7 @@ export default function App() {
       setScreen('GAME');
       await incrementPlayerCount(roomId);
     } else {
-      setScreen('SETUP');
+      setScreen('GAME');
     }
   };
 
@@ -225,16 +225,46 @@ export default function App() {
               </motion.div>
             )}
 
-            {!myId && gameState.players.length > 0 ? (
+            {!myId ? (
               <div className="max-w-md mx-auto bento-card text-center py-10 bg-slate-900/50 border-blue-600/30">
-                <h2 className="text-2xl font-black mb-6 uppercase tracking-tighter">Escolha seu <span className="text-blue-500">Slot</span></h2>
-                <div className="grid gap-3">
-                  {gameState.players.map(p => (
-                    <button key={p.id} onClick={() => setMyId(p.id)} className="bg-slate-950 border border-slate-800 hover:border-blue-600 hover:bg-blue-600/10 p-5 rounded-2xl font-black transition-all flex justify-between items-center group">
-                      <span className="group-hover:text-blue-400">{p.nickname}</span>
-                      <span className="text-[10px] text-slate-600 font-mono">ID: {p.id.slice(0,4)}</span>
-                    </button>
-                  ))}
+                <h2 className="text-2xl font-black mb-6 uppercase tracking-tighter">Quem é <span className="text-blue-500">você?</span></h2>
+                
+                {gameState.players.length > 0 && (
+                  <div className="grid gap-3 mb-8">
+                    {gameState.players.map(p => (
+                      <button 
+                        key={p.id} 
+                        onClick={() => {
+                          setMyId(p.id);
+                          localStorage.setItem('session_' + selectedRoomId, p.id);
+                        }} 
+                        className="bg-slate-950 border border-slate-800 hover:border-blue-600 hover:bg-blue-600/10 p-5 rounded-2xl font-black transition-all flex justify-between items-center group"
+                      >
+                        <span className="group-hover:text-blue-400">{p.nickname}</span>
+                        <span className="text-[10px] text-slate-600 font-mono">ID: {p.id.slice(0,4)}</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
+
+                <div className="relative">
+                  {gameState.players.length > 0 && (
+                    <div className="absolute inset-0 flex items-center">
+                      <div className="w-full border-t border-slate-800"></div>
+                    </div>
+                  )}
+                  {gameState.players.length > 0 && (
+                    <div className="relative flex justify-center mb-6">
+                      <span className="bg-[#020617] px-4 text-[10px] font-black uppercase tracking-widest text-slate-600">OU</span>
+                    </div>
+                  )}
+                  
+                  <button 
+                    onClick={() => setScreen('SETUP')}
+                    className="w-full bg-blue-600 hover:bg-blue-500 text-white font-black uppercase tracking-widest py-4 rounded-xl transition-all"
+                  >
+                    CRIAR NOVO PERSONAGEM
+                  </button>
                 </div>
               </div>
             ) : (
@@ -285,7 +315,7 @@ export default function App() {
                     <h3 className="text-[10px] text-blue-500 font-black uppercase tracking-widest mb-4 flex items-center gap-2">
                       <Wallet className="w-4 h-4" /> Ações do Sistema (Banco)
                     </h3>
-                    <div className="grid grid-cols-3 gap-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                       <button onClick={() => handleBankAction(2000, 'Salário (Início)')} className="bg-slate-950 border border-green-900/40 p-3 rounded-xl text-[10px] font-black uppercase tracking-widest text-green-500 hover:bg-green-900/20 hover:border-green-500/50 transition-all">
                         + SALÁRIO
                       </button>
