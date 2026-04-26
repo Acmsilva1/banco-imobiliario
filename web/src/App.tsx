@@ -22,6 +22,11 @@ export default function App() {
   const [bankActionType, setBankActionType] = useState<'PAY' | 'RECEIVE'>('PAY');
   const [bankAmount, setBankAmount] = useState<string>('');
 
+  // Modais custom
+  const [isCreateRoomModalOpen, setIsCreateRoomModalOpen] = useState(false);
+  const [newRoomName, setNewRoomName] = useState('');
+  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
+
   const { gameState, isConnected, error, transfer, adjustBalance } = useSocket(selectedRoomId || '');
 
   useEffect(() => {
@@ -41,14 +46,18 @@ export default function App() {
     if (data) setRooms(data);
   };
 
-  const handleCreateRoom = async () => {
-    const nome = prompt('Nome da Sala:');
-    if (!nome) return;
+  const handleCreateRoom = () => {
+    setNewRoomName('');
+    setIsCreateRoomModalOpen(true);
+  };
+
+  const confirmCreateRoom = async () => {
+    if (!newRoomName.trim()) return;
     const { data } = await supabase.from('partidas').insert({ 
-      nome, 
+      nome: newRoomName.trim(), 
       codigo_sala: Math.random().toString(36).substring(7).toUpperCase() 
     }).select().single();
-    
+    setIsCreateRoomModalOpen(false);
     if (data) {
       const newMyRooms = [...myRooms, data.id];
       setMyRooms(newMyRooms);
@@ -58,12 +67,17 @@ export default function App() {
     }
   };
 
-  const handleDeleteRoom = async (roomId: string) => {
-    if (window.confirm('Tem certeza que deseja encerrar e deletar esta sala?')) {
-      await supabase.from('partidas').delete().eq('id', roomId);
-      setMyRooms(myRooms.filter(id => id !== roomId));
-      localStorage.setItem('my_rooms', JSON.stringify(myRooms.filter(id => id !== roomId)));
-    }
+  const handleDeleteRoom = (roomId: string) => {
+    setDeleteConfirmId(roomId);
+  };
+
+  const confirmDeleteRoom = async () => {
+    if (!deleteConfirmId) return;
+    await supabase.from('partidas').delete().eq('id', deleteConfirmId);
+    const updated = myRooms.filter(id => id !== deleteConfirmId);
+    setMyRooms(updated);
+    localStorage.setItem('my_rooms', JSON.stringify(updated));
+    setDeleteConfirmId(null);
   };
 
   const handleJoinRoom = async (roomId: string) => {
@@ -427,6 +441,120 @@ export default function App() {
                   }
                 }} className={`w-full py-5 rounded-xl text-lg font-black uppercase tracking-widest text-white transition-all ${bankActionType === 'PAY' ? 'bg-red-600 hover:bg-red-500 shadow-[0_10px_20px_rgba(220,38,38,0.3)]' : 'bg-blue-600 hover:bg-blue-500 shadow-[0_10px_20px_rgba(37,99,235,0.3)]'}`}>
                   CONFIRMAR
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Modal: Criar Sala */}
+      <AnimatePresence>
+        {isCreateRoomModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <motion.div
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              onClick={() => setIsCreateRoomModalOpen(false)}
+              className="absolute inset-0 bg-slate-950/80 backdrop-blur-xl"
+            />
+            <motion.div
+              initial={{ scale: 0.85, opacity: 0, y: 30 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.85, opacity: 0, y: 30 }}
+              transition={{ type: 'spring', stiffness: 260, damping: 22 }}
+              className="relative w-full max-w-md rounded-3xl border border-blue-500/30 bg-gradient-to-br from-slate-900 via-slate-900 to-blue-950/40 p-8 shadow-[0_0_80px_rgba(37,99,235,0.15)]"
+            >
+              {/* Glow de fundo decorativo */}
+              <div className="absolute -top-10 -right-10 w-48 h-48 rounded-full bg-blue-600/10 blur-3xl pointer-events-none" />
+
+              <div className="flex items-center gap-3 mb-8">
+                <div className="w-12 h-12 rounded-2xl bg-blue-600 flex items-center justify-center shadow-[0_0_20px_rgba(37,99,235,0.5)]">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" /></svg>
+                </div>
+                <div>
+                  <h3 className="text-xl font-black tracking-tighter text-white">Nova Sala</h3>
+                  <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Configure sua partida</p>
+                </div>
+              </div>
+
+              <div className="space-y-6 relative z-10">
+                <div>
+                  <label className="block text-[10px] font-black text-blue-400 uppercase tracking-widest mb-3">Nome da Sala</label>
+                  <input
+                    autoFocus
+                    type="text"
+                    value={newRoomName}
+                    onChange={(e) => setNewRoomName(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && confirmCreateRoom()}
+                    placeholder="Ex: Familia Silva, Turma do Rolê..."
+                    className="w-full bg-slate-950/80 border-2 border-slate-700 focus:border-blue-500 p-4 rounded-2xl text-lg font-bold text-white placeholder:text-slate-600 outline-none transition-all"
+                  />
+                </div>
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => setIsCreateRoomModalOpen(false)}
+                    className="flex-1 py-4 rounded-2xl border-2 border-slate-700 hover:border-slate-500 text-slate-400 hover:text-white font-black uppercase tracking-widest transition-all text-sm"
+                  >
+                    Cancelar
+                  </button>
+                  <button
+                    onClick={confirmCreateRoom}
+                    disabled={!newRoomName.trim()}
+                    className="flex-1 py-4 rounded-2xl bg-blue-600 hover:bg-blue-500 disabled:opacity-30 disabled:cursor-not-allowed text-white font-black uppercase tracking-widest transition-all text-sm shadow-[0_0_20px_rgba(37,99,235,0.4)]"
+                  >
+                    Criar Sala 🚀
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Modal: Confirmar Exclusão */}
+      <AnimatePresence>
+        {deleteConfirmId && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <motion.div
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              onClick={() => setDeleteConfirmId(null)}
+              className="absolute inset-0 bg-slate-950/80 backdrop-blur-xl"
+            />
+            <motion.div
+              initial={{ scale: 0.85, opacity: 0, y: 30 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.85, opacity: 0, y: 30 }}
+              transition={{ type: 'spring', stiffness: 260, damping: 22 }}
+              className="relative w-full max-w-sm rounded-3xl border border-red-500/30 bg-gradient-to-br from-slate-900 via-slate-900 to-red-950/30 p-8 shadow-[0_0_80px_rgba(220,38,38,0.1)]"
+            >
+              <div className="absolute -top-10 -right-10 w-48 h-48 rounded-full bg-red-600/10 blur-3xl pointer-events-none" />
+
+              <div className="flex items-center gap-3 mb-6 relative z-10">
+                <div className="w-12 h-12 rounded-2xl bg-red-500/20 border border-red-500/30 flex items-center justify-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M1 7h22M8 7V5a2 2 0 012-2h4a2 2 0 012 2v2" /></svg>
+                </div>
+                <div>
+                  <h3 className="text-xl font-black tracking-tighter text-white">Encerrar Sala?</h3>
+                  <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Esta ação é irreversível</p>
+                </div>
+              </div>
+
+              <p className="text-slate-400 text-sm mb-8 relative z-10 leading-relaxed">
+                Todos os jogadores serão desconectados e o histórico da partida será <span className="text-red-400 font-bold">permanentemente apagado</span>.
+              </p>
+
+              <div className="flex gap-3 relative z-10">
+                <button
+                  onClick={() => setDeleteConfirmId(null)}
+                  className="flex-1 py-4 rounded-2xl border-2 border-slate-700 hover:border-slate-500 text-slate-400 hover:text-white font-black uppercase tracking-widest transition-all text-sm"
+                >
+                  Cancelar
+                </button>
+                <button
+                  onClick={confirmDeleteRoom}
+                  className="flex-1 py-4 rounded-2xl bg-red-600 hover:bg-red-500 text-white font-black uppercase tracking-widest transition-all text-sm shadow-[0_0_20px_rgba(220,38,38,0.3)]"
+                >
+                  Deletar 🗑️
                 </button>
               </div>
             </motion.div>
