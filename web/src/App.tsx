@@ -388,22 +388,29 @@ export default function App() {
                     <h3 className="text-[10px] text-blue-500 font-black uppercase tracking-widest mb-4 flex items-center gap-2">
                       <Wallet className="w-4 h-4" /> Ações do Sistema (Banco)
                     </h3>
-                    <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
-                      <button onClick={() => handleBankAction(2000, 'Salário (Início)')} className="bg-slate-950 border border-green-900/40 p-3 rounded-xl text-[10px] font-black uppercase tracking-widest text-green-500 hover:bg-green-900/20 hover:border-green-500/50 transition-all">
-                        + SALÁRIO
-                      </button>
-                      <button onClick={() => { setBankActionType('RECEIVE'); setIsBankModalOpen(true); }} className="bg-slate-950 border border-blue-900/40 p-3 rounded-xl text-[10px] font-black uppercase tracking-widest text-blue-400 hover:bg-blue-900/20 hover:border-blue-500/50 transition-all">
-                        + RECEBER
-                      </button>
-                      <button onClick={() => { setBankActionType('PAY'); setIsBankModalOpen(true); }} className="bg-slate-950 border border-red-900/40 p-3 rounded-xl text-[10px] font-black uppercase tracking-widest text-red-500 hover:bg-red-900/20 hover:border-red-500/50 transition-all">
-                        - PAGAR
-                      </button>
-                      <button onClick={() => handleBankAction(-2000, 'Imposto de Renda')} className="bg-slate-950 border border-orange-900/40 p-3 rounded-xl text-[10px] font-black uppercase tracking-widest text-orange-500 hover:bg-orange-900/20 hover:border-orange-500/50 transition-all">
-                        - IMPOSTO
-                      </button>
-                      <button onClick={() => handleBankAction(2000, 'Restituição IR')} className="bg-slate-950 border border-emerald-900/40 p-3 rounded-xl text-[10px] font-black uppercase tracking-widest text-emerald-400 hover:bg-emerald-900/20 hover:border-emerald-500/50 transition-all">
-                        + RESTITUIÇÃO
-                      </button>
+                    <div className="space-y-3">
+                      {/* Linha 1: Automáticos */}
+                      <div className="grid grid-cols-3 gap-3">
+                        <button onClick={() => handleBankAction(2000, 'Salário (Início)')} className="bg-slate-950 border border-green-900/40 p-3 rounded-xl text-[10px] font-black uppercase tracking-widest text-green-500 hover:bg-green-900/20 hover:border-green-500/50 transition-all">
+                          + SALÁRIO
+                        </button>
+                        <button onClick={() => handleBankAction(-2000, 'Imposto de Renda')} className="bg-slate-950 border border-orange-900/40 p-3 rounded-xl text-[10px] font-black uppercase tracking-widest text-orange-500 hover:bg-orange-900/20 hover:border-orange-500/50 transition-all">
+                          - IMPOSTO
+                        </button>
+                        <button onClick={() => handleBankAction(2000, 'Restituição IR')} className="bg-slate-950 border border-emerald-900/40 p-3 rounded-xl text-[10px] font-black uppercase tracking-widest text-emerald-400 hover:bg-emerald-900/20 hover:border-emerald-500/50 transition-all">
+                          + RESTITUIÇÃO
+                        </button>
+                      </div>
+                      
+                      {/* Linha 2: Manuais */}
+                      <div className="grid grid-cols-2 gap-3">
+                        <button onClick={() => { setBankActionType('RECEIVE'); setIsBankModalOpen(true); }} className="bg-blue-600/10 border border-blue-600/30 p-4 rounded-xl text-[11px] font-black uppercase tracking-widest text-blue-400 hover:bg-blue-600/20 hover:border-blue-500 transition-all flex items-center justify-center gap-2">
+                          <Plus className="w-4 h-4" /> RECEBER VALOR
+                        </button>
+                        <button onClick={() => { setBankActionType('PAY'); setIsBankModalOpen(true); }} className="bg-red-600/10 border border-red-600/30 p-4 rounded-xl text-[11px] font-black uppercase tracking-widest text-red-500 hover:bg-red-600/20 hover:border-red-500 transition-all flex items-center justify-center gap-2">
+                          <Trash2 className="w-4 h-4 rotate-45" /> PAGAR VALOR
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
