@@ -15,12 +15,14 @@ export default function App() {
   const [myId, setMyId] = useState<string | null>(null);
   const [isTransferModalOpen, setIsTransferModalOpen] = useState(false);
   const [selectedRecipientId, setSelectedRecipientId] = useState<string | null>(null);
+  const [transferAmount, setTransferAmount] = useState<string>('');
 
   const me = gameState.players.find(p => p.id === myId);
 
   const handleTransfer = (amount: number) => {
     if (!myId || !selectedRecipientId) return;
     transfer({ fromId: myId, toId: selectedRecipientId, amount, partidaId });
+    setTransferAmount('');
     setIsTransferModalOpen(false);
   };
 
@@ -179,13 +181,20 @@ export default function App() {
                   <input 
                     type="number" 
                     placeholder="R$ 0,00"
+                    value={transferAmount}
+                    onChange={(e) => setTransferAmount(e.target.value)}
                     className="w-full input-field text-2xl font-bold"
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        const val = Number(transferAmount);
+                        if (val > 0) handleTransfer(val);
+                      }
+                    }}
                   />
                 </div>
                 <button 
                   onClick={() => {
-                    const input = document.querySelector('input[type="number"]') as HTMLInputElement;
-                    const val = Number(input.value);
+                    const val = Number(transferAmount);
                     if (val > 0) handleTransfer(val);
                   }}
                   className="w-full btn-primary"

@@ -1,19 +1,16 @@
 {
-  "name": "banco-imobiliario-api",
-  "version": "1.0.0",
-  "main": "dist/index.js",
+  "name": "banco-imobiliario-monorepo",
+  "private": true,
+  "workspaces": [
+    "api",
+    "web"
+  ],
   "scripts": {
-    "build": "tsc",
-    "start": "node dist/index.js",
-    "dev": "ts-node-dev --respawn src/index.ts"
-  },
-  "dependencies": {
-    "fastify": "^4.26.0",
-    "socket.io": "^4.7.4"
+    "build:api": "npm run build -w api",
+    "build:web": "npm run build -w web",
+    "build": "npm run build:api && npm run build:web"
   },
   "devDependencies": {
-    "@types/node": "^20.11.0",
-    "ts-node-dev": "^2.0.0",
     "typescript": "^5.3.3"
   }
 }
