@@ -4,7 +4,7 @@ import { ServerSelection } from './features/lobby/components/ServerSelection';
 import { PlayerSetup } from './features/lobby/components/PlayerSetup';
 import { useSocket } from './features/bank/hooks/useSocket';
 import { supabase } from './core/supabase';
-import { Wallet, ArrowRightLeft, History, TrendingUp, AlertCircle, Home, Trash2 } from 'lucide-react';
+import { Wallet, ArrowRightLeft, History, TrendingUp, AlertCircle, Home, Trash2, Plus } from 'lucide-react';
 
 type Screen = 'LOBBY' | 'SETUP' | 'GAME';
 
@@ -314,45 +314,36 @@ export default function App() {
             )}
 
             {!myId ? (
-              <div className="max-w-md mx-auto bento-card text-center py-10 bg-slate-900/50 border-blue-600/30">
-                <h2 className="text-2xl font-black mb-6 uppercase tracking-tighter">Quem é <span className="text-blue-500">você?</span></h2>
+              <div className="max-w-2xl mx-auto bento-card text-center py-10 bg-slate-900/50 border-blue-600/30">
+                <h2 className="text-3xl font-black mb-8 uppercase tracking-tighter">Quem está <span className="text-blue-500">jogando?</span></h2>
                 
-                {gameState.players.length > 0 && (
-                  <div className="grid gap-3 mb-8">
-                    {gameState.players.map(p => (
-                      <button 
-                        key={p.id} 
-                        onClick={() => {
-                          setMyId(p.id);
-                          // O incremento agora é automático via useEffect assim que myId é setado
-                        }} 
-                        className="bg-slate-950 border border-slate-800 hover:border-blue-600 hover:bg-blue-600/10 p-5 rounded-2xl font-black transition-all flex justify-between items-center group"
-                      >
-                        <span className="group-hover:text-blue-400">{p.nickname}</span>
-                        <span className="text-[10px] text-slate-600 font-mono">ID: {p.id.slice(0,4)}</span>
-                      </button>
-                    ))}
-                  </div>
-                )}
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-10">
+                  {baseProfiles.map(profile => (
+                    <motion.button 
+                      key={profile.id} 
+                      whileHover={{ scale: 1.05, borderColor: '#2563eb' }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={() => handleSetupComplete(profile.nickname, profile.avatar)} 
+                      className="bg-slate-950 border border-slate-800 hover:bg-blue-600/10 p-6 rounded-3xl font-black transition-all flex flex-col items-center gap-3 group"
+                    >
+                      <span className="text-4xl group-hover:scale-110 transition-transform">{getAvatarEmoji(profile.avatar)}</span>
+                      <span className="uppercase text-xs tracking-widest text-slate-300 group-hover:text-blue-400">{profile.nickname}</span>
+                    </motion.button>
+                  ))}
 
-                <div className="relative">
-                  {gameState.players.length > 0 && (
-                    <div className="absolute inset-0 flex items-center pointer-events-none">
-                      <div className="w-full border-t border-slate-800"></div>
-                    </div>
-                  )}
-                  {gameState.players.length > 0 && (
-                    <div className="relative flex justify-center mb-6 pointer-events-none">
-                      <span className="bg-[#020617] px-4 text-[10px] font-black uppercase tracking-widest text-slate-600">OU</span>
-                    </div>
-                  )}
-                  
                   <button 
-                    onClick={() => setScreen('SETUP')}
-                    className="w-full bg-blue-600 hover:bg-blue-500 text-white font-black uppercase tracking-widest py-4 rounded-xl transition-all"
+                    onClick={() => setIsFamilyModalOpen(true)}
+                    className="border-2 border-dashed border-slate-800 hover:border-blue-500/50 hover:bg-blue-600/5 p-6 rounded-3xl flex flex-col items-center justify-center gap-2 transition-all group"
                   >
-                    CRIAR NOVO PERSONAGEM
+                    <div className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center group-hover:bg-blue-600 transition-colors">
+                      <Plus className="w-4 h-4 text-slate-500 group-hover:text-white" />
+                    </div>
+                    <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Novo Perfil</span>
                   </button>
+                </div>
+
+                <div className="pt-6 border-t border-slate-800/50">
+                  <p className="text-slate-600 text-[10px] font-bold uppercase tracking-[0.2em]">Selecione seu perfil para carregar seu saldo</p>
                 </div>
               </div>
             ) : (
