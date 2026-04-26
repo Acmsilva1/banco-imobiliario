@@ -78,5 +78,5 @@ export const useSocket = (partidaId: string) => {
     }
   };
 
-  return { gameState, isConnected, error, transfer, adjustBalance };
+  return { gameState, isConnected, error, transfer, adjustBalance, fetchState };
 };
