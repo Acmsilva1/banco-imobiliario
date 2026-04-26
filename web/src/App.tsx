@@ -4,7 +4,7 @@ import { ServerSelection } from './features/lobby/components/ServerSelection';
 import { PlayerSetup } from './features/lobby/components/PlayerSetup';
 import { useSocket } from './features/bank/hooks/useSocket';
 import { supabase } from './core/supabase';
-import { Wallet, ArrowRightLeft, History, TrendingUp, AlertCircle, LogOut, Home } from 'lucide-react';
+import { Wallet, ArrowRightLeft, History, TrendingUp, AlertCircle, Home } from 'lucide-react';
 
 type Screen = 'LOBBY' | 'SETUP' | 'GAME';
 
@@ -17,7 +17,11 @@ export default function App() {
   const [transferAmount, setTransferAmount] = useState<string>('');
   const [selectedRecipientId, setSelectedRecipientId] = useState<string | null>(null);
 
-  const { gameState, isConnected, error, transfer } = useSocket(selectedRoomId || '');
+  const [isBankModalOpen, setIsBankModalOpen] = useState(false);
+  const [bankActionType, setBankActionType] = useState<'PAY' | 'RECEIVE'>('PAY');
+  const [bankAmount, setBankAmount] = useState<string>('');
+
+  const { gameState, isConnected, error, transfer, adjustBalance } = useSocket(selectedRoomId || '');
 
   useEffect(() => {
     fetchRooms();
@@ -91,6 +95,13 @@ export default function App() {
     transfer({ fromId: myId, toId: selectedRecipientId, amount, partidaId: selectedRoomId });
     setTransferAmount('');
     setIsTransferModalOpen(false);
+  };
+
+  const handleBankAction = (amount: number, label: string) => {
+    if (!myId) return;
+    adjustBalance(myId, amount, label);
+    setBankAmount('');
+    setIsBankModalOpen(false);
   };
 
   return (
@@ -213,6 +224,24 @@ export default function App() {
                       </div>
                     ))}
                   </div>
+
+                  {/* Painel de Ações do Banco */}
+                  <div className="bento-card bg-slate-900/60 border-slate-800/50 mt-2">
+                    <h3 className="text-[10px] text-blue-500 font-black uppercase tracking-widest mb-4 flex items-center gap-2">
+                      <Wallet className="w-4 h-4" /> Ações do Sistema (Banco)
+                    </h3>
+                    <div className="grid grid-cols-3 gap-3">
+                      <button onClick={() => handleBankAction(2000, 'Salário (Início)')} className="bg-slate-950 border border-green-900/40 p-3 rounded-xl text-[10px] font-black uppercase tracking-widest text-green-500 hover:bg-green-900/20 hover:border-green-500/50 transition-all">
+                        + SALÁRIO
+                      </button>
+                      <button onClick={() => { setBankActionType('RECEIVE'); setIsBankModalOpen(true); }} className="bg-slate-950 border border-blue-900/40 p-3 rounded-xl text-[10px] font-black uppercase tracking-widest text-blue-400 hover:bg-blue-900/20 hover:border-blue-500/50 transition-all">
+                        + RECEBER
+                      </button>
+                      <button onClick={() => { setBankActionType('PAY'); setIsBankModalOpen(true); }} className="bg-slate-950 border border-red-900/40 p-3 rounded-xl text-[10px] font-black uppercase tracking-widest text-red-500 hover:bg-red-900/20 hover:border-red-500/50 transition-all">
+                        - PAGAR
+                      </button>
+                    </div>
+                  </div>
                 </div>
 
                 <div className="bento-card bg-slate-950/50 border-slate-800/50 h-full flex flex-col">
@@ -260,6 +289,32 @@ export default function App() {
                 </div>
                 <button onClick={() => { const val = Number(transferAmount); if (val > 0) handleTransfer(val); }} className="w-full btn-primary py-5 text-lg font-black uppercase tracking-widest shadow-[0_10px_20px_rgba(37,99,235,0.3)]">
                   EFETUAR TRANSFERÊNCIA
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+
+        {isBankModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setIsBankModalOpen(false)} className="absolute inset-0 bg-slate-950/90 backdrop-blur-md" />
+            <motion.div initial={{ scale: 0.9, opacity: 0, y: 20 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 0.9, opacity: 0, y: 20 }} className={`relative w-full max-w-sm bento-card bg-slate-900 border shadow-[0_0_50px_rgba(0,0,0,0.5)] ${bankActionType === 'PAY' ? 'border-red-500/50' : 'border-blue-500/50'}`}>
+              <h3 className="text-2xl font-black mb-6 uppercase tracking-tighter">
+                {bankActionType === 'PAY' ? 'Pagar ao Banco' : 'Receber do Banco'}
+              </h3>
+              <div className="space-y-6">
+                <div>
+                  <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Valor da Transação</label>
+                  <input type="number" value={bankAmount} onChange={(e) => setBankAmount(e.target.value)} placeholder="0,00" className={`w-full bg-slate-950 border-2 border-slate-800 p-5 rounded-2xl text-3xl font-black outline-none transition-all text-center ${bankActionType === 'PAY' ? 'text-red-400 focus:border-red-600' : 'text-blue-400 focus:border-blue-600'}`} />
+                </div>
+                <button onClick={() => { 
+                  const val = Number(bankAmount); 
+                  if (val > 0) {
+                    if (bankActionType === 'PAY') handleBankAction(-val, 'Pagamento ao Banco');
+                    else handleBankAction(val, 'Recebimento do Banco');
+                  }
+                }} className={`w-full py-5 rounded-xl text-lg font-black uppercase tracking-widest text-white transition-all ${bankActionType === 'PAY' ? 'bg-red-600 hover:bg-red-500 shadow-[0_10px_20px_rgba(220,38,38,0.3)]' : 'bg-blue-600 hover:bg-blue-500 shadow-[0_10px_20px_rgba(37,99,235,0.3)]'}`}>
+                  CONFIRMAR
                 </button>
               </div>
             </motion.div>
