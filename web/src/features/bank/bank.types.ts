@@ -2,6 +2,7 @@ export interface Player {
   id: string;
   partida_id: string;
   nickname: string;
+  avatar: string;
   saldo: number;
   token_acesso: string;
   is_admin: boolean;

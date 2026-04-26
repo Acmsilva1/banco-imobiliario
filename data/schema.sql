@@ -4,6 +4,7 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 -- 1. Tabela de Partidas (Rooms)
 CREATE TABLE partidas (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    nome TEXT NOT NULL DEFAULT 'Nova Sala',
     codigo_sala TEXT UNIQUE NOT NULL,
     criado_em TIMESTAMPTZ DEFAULT NOW(),
     capital_inicial INTEGER DEFAULT 25000,
@@ -15,6 +16,7 @@ CREATE TABLE jogadores (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     partida_id UUID REFERENCES partidas(id) ON DELETE CASCADE,
     nickname TEXT NOT NULL,
+    avatar TEXT DEFAULT '1',
     saldo INTEGER NOT NULL,
     token_acesso UUID DEFAULT uuid_generate_v4(),
     is_admin BOOLEAN DEFAULT false
