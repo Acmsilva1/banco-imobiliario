@@ -4,7 +4,7 @@ import { ServerSelection } from './features/lobby/components/ServerSelection';
 import { PlayerSetup } from './features/lobby/components/PlayerSetup';
 import { useSocket } from './features/bank/hooks/useSocket';
 import { supabase } from './core/supabase';
-import { Wallet, ArrowRightLeft, History, TrendingUp, AlertCircle, Home } from 'lucide-react';
+import { Wallet, ArrowRightLeft, History, TrendingUp, AlertCircle, Home, Trash2 } from 'lucide-react';
 
 type Screen = 'LOBBY' | 'SETUP' | 'GAME';
 
@@ -29,6 +29,12 @@ export default function App() {
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
+  // Perfis da Família
+  const [baseProfiles, setBaseProfiles] = useState<any[]>([]);
+  const [isFamilyModalOpen, setIsFamilyModalOpen] = useState(false);
+  const [newProfileName, setNewProfileName] = useState('');
+  const [selectedAvatar, setSelectedAvatar] = useState('1');
+
   const { gameState, isConnected, error, transfer, adjustBalance, fetchState } = useSocket(selectedRoomId || '');
 
   const handleManualRefresh = async () => {
@@ -39,15 +45,23 @@ export default function App() {
 
   useEffect(() => {
     fetchRooms();
+    fetchBaseProfiles();
+    
     const subscription = supabase
-      .channel('public:partidas')
+      .channel('public:realtime')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'partidas' }, fetchRooms)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'perfis_base' }, fetchBaseProfiles)
       .subscribe();
 
     return () => {
       supabase.removeChannel(subscription);
     };
   }, []);
+
+  const fetchBaseProfiles = async () => {
+    const { data } = await supabase.from('perfis_base').select('*').order('nickname');
+    if (data) setBaseProfiles(data);
+  };
 
   const fetchRooms = async () => {
     const { data } = await supabase.from('partidas').select('*').eq('status', 'LOBBY');
@@ -87,6 +101,21 @@ export default function App() {
     localStorage.setItem('my_rooms', JSON.stringify(updated));
     setDeleteConfirmId(null);
   };
+
+  const handleAddProfile = async () => {
+    if (!newProfileName.trim()) return;
+    await supabase.from('perfis_base').insert({
+      nickname: newProfileName.trim(),
+      avatar: selectedAvatar
+    });
+    setNewProfileName('');
+    setIsFamilyModalOpen(false);
+  };
+
+  const handleDeleteProfile = async (id: string) => {
+    await supabase.from('perfis_base').delete().eq('id', id);
+  };
+
 
   const handleJoinRoom = async (roomId: string) => {
     setSelectedRoomId(roomId);
@@ -208,13 +237,18 @@ export default function App() {
               onCreateRoom={handleCreateRoom} 
               onJoinRoom={handleJoinRoom} 
               onDeleteRoom={handleDeleteRoom}
+              onOpenFamilyManager={() => setIsFamilyModalOpen(true)}
             />
           </motion.div>
         )}
 
         {screen === 'SETUP' && (
           <motion.div key="setup" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-            <PlayerSetup onComplete={handleSetupComplete} onBack={() => setScreen('LOBBY')} />
+            <PlayerSetup 
+              baseProfiles={baseProfiles}
+              onComplete={handleSetupComplete} 
+              onBack={() => setScreen('LOBBY')} 
+            />
           </motion.div>
         )}
 
@@ -601,6 +635,93 @@ export default function App() {
                 >
                   Deletar 🗑️
                 </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+      {/* Modal: Gerenciar Família */}
+      <AnimatePresence>
+        {isFamilyModalOpen && (
+          <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
+            <motion.div
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              onClick={() => setIsFamilyModalOpen(false)}
+              className="absolute inset-0 bg-slate-950/90 backdrop-blur-xl"
+            />
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }}
+              className="relative w-full max-w-2xl bento-card bg-slate-900 border-blue-500/30 p-8 overflow-hidden"
+            >
+              <div className="absolute -right-20 -top-20 w-64 h-64 bg-blue-600/10 rounded-full blur-3xl" />
+              
+              <div className="flex justify-between items-center mb-8 relative z-10">
+                <div>
+                  <h3 className="text-2xl font-black text-white uppercase tracking-tighter">Jogadores da <span className="text-blue-500">Família</span></h3>
+                  <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mt-1">Perfis salvos para acesso rápido</p>
+                </div>
+                <button onClick={() => setIsFamilyModalOpen(false)} className="text-slate-500 hover:text-white transition-colors">
+                  <AlertCircle className="w-6 h-6 rotate-45" />
+                </button>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 relative z-10">
+                {/* Formulário Novo Perfil */}
+                <div className="space-y-6 bg-slate-950/50 p-6 rounded-3xl border border-slate-800">
+                  <h4 className="text-xs font-black text-blue-400 uppercase tracking-widest">Adicionar Novo Herói</h4>
+                  <div>
+                    <label className="block text-[10px] text-slate-600 font-bold uppercase mb-2">Nickname</label>
+                    <input 
+                      type="text" 
+                      value={newProfileName}
+                      onChange={(e) => setNewProfileName(e.target.value)}
+                      placeholder="Nome do jogador..."
+                      className="w-full bg-slate-900 border-2 border-slate-800 p-3 rounded-xl text-white outline-none focus:border-blue-600 transition-all"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] text-slate-600 font-bold uppercase mb-2">Avatar / Emoji</label>
+                    <div className="grid grid-cols-6 gap-2">
+                      {['1','2','3','4','5','6'].map(id => (
+                        <button 
+                          key={id}
+                          onClick={() => setSelectedAvatar(id)}
+                          className={`text-xl p-2 rounded-lg border-2 transition-all ${selectedAvatar === id ? 'border-blue-600 bg-blue-600/20' : 'border-slate-800 bg-slate-900'}`}
+                        >
+                          {getAvatarEmoji(id)}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <button 
+                    onClick={handleAddProfile}
+                    className="w-full py-4 bg-blue-600 hover:bg-blue-500 text-white font-black uppercase text-xs tracking-widest rounded-xl transition-all shadow-[0_10px_20px_rgba(37,99,235,0.3)]"
+                  >
+                    Salvar Perfil
+                  </button>
+                </div>
+
+                {/* Lista de Perfis */}
+                <div className="space-y-4 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
+                  <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest">Perfis Cadastrados ({baseProfiles.length})</h4>
+                  {baseProfiles.map(profile => (
+                    <div key={profile.id} className="flex items-center justify-between bg-slate-900/50 border border-slate-800 p-4 rounded-2xl group hover:border-blue-500/30 transition-all">
+                      <div className="flex items-center gap-3">
+                        <span className="text-2xl">{getAvatarEmoji(profile.avatar)}</span>
+                        <span className="font-bold text-slate-200">{profile.nickname}</span>
+                      </div>
+                      <button 
+                        onClick={() => handleDeleteProfile(profile.id)}
+                        className="opacity-0 group-hover:opacity-100 p-2 text-slate-600 hover:text-red-500 transition-all"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ))}
+                  {baseProfiles.length === 0 && (
+                    <p className="text-center text-slate-600 text-xs py-10 italic">Nenhum herói cadastrado ainda.</p>
+                  )}
+                </div>
               </div>
             </motion.div>
           </div>

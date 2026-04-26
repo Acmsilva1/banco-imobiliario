@@ -12,11 +12,12 @@ const AVATARS = [
 ];
 
 interface PlayerSetupProps {
+  baseProfiles: any[];
   onComplete: (nickname: string, avatarId: string) => void;
   onBack: () => void;
 }
 
-export const PlayerSetup = ({ onComplete, onBack }: PlayerSetupProps) => {
+export const PlayerSetup = ({ baseProfiles, onComplete, onBack }: PlayerSetupProps) => {
   const [nickname, setNickname] = useState('');
   const [selectedAvatar, setSelectedAvatar] = useState(AVATARS[0].id);
 
@@ -36,12 +37,41 @@ export const PlayerSetup = ({ onComplete, onBack }: PlayerSetupProps) => {
 
         <div className="text-center mb-10 mt-4">
           <h2 className="text-3xl font-black text-white mb-2 uppercase tracking-tighter">
-            Configure seu <span className="text-blue-500">Personagem</span>
+            Quem está <span className="text-blue-500">Jogando?</span>
           </h2>
-          <p className="text-slate-500 font-bold text-xs uppercase tracking-widest">Acesso Autorizado</p>
+          <p className="text-slate-500 font-bold text-xs uppercase tracking-widest">Selecione seu perfil ou crie um novo</p>
         </div>
 
         <div className="space-y-8">
+          {/* Perfis Base (Família) */}
+          {baseProfiles.length > 0 && (
+            <div className="grid grid-cols-2 gap-4">
+              {baseProfiles.map(profile => (
+                <motion.button
+                  key={profile.id}
+                  whileHover={{ scale: 1.05, borderColor: '#2563eb' }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={() => onComplete(profile.nickname, profile.avatar)}
+                  className="p-5 rounded-3xl bg-slate-950 border border-slate-800 hover:bg-blue-600/10 flex flex-col items-center gap-3 transition-all"
+                >
+                  <span className="text-4xl">
+                    {profile.avatar === '1' ? '🦊' : 
+                     profile.avatar === '2' ? '🐉' : 
+                     profile.avatar === '3' ? '🤖' : 
+                     profile.avatar === '4' ? '🦄' : 
+                     profile.avatar === '5' ? '🐱' : 
+                     profile.avatar === '6' ? '👑' : '👤'}
+                  </span>
+                  <span className="font-black text-slate-100 uppercase text-xs tracking-widest">{profile.nickname}</span>
+                </motion.button>
+              ))}
+            </div>
+          )}
+
+          <div className="relative flex items-center justify-center py-2">
+            <div className="w-full border-t border-slate-800"></div>
+            <span className="absolute bg-[#020617] px-4 text-[10px] font-black text-slate-700 uppercase tracking-widest">OU CRIE UM NOVO</span>
+          </div>
           <div>
             <label className="block text-[10px] font-black text-blue-400 uppercase tracking-[0.2em] mb-3">Nickname do Herói</label>
             <div className="relative">

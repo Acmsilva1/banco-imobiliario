@@ -7,9 +7,10 @@ interface ServerSelectionProps {
   onCreateRoom: () => void;
   onJoinRoom: (roomId: string) => void;
   onDeleteRoom: (roomId: string) => void;
+  onOpenFamilyManager: () => void;
 }
 
-export const ServerSelection = ({ rooms, myRooms, onCreateRoom, onJoinRoom, onDeleteRoom }: ServerSelectionProps) => {
+export const ServerSelection = ({ rooms, myRooms, onCreateRoom, onJoinRoom, onDeleteRoom, onOpenFamilyManager }: ServerSelectionProps) => {
   return (
     <div className="min-h-screen bg-[#020617] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-900/20 via-slate-950 to-slate-950 p-6 flex flex-col items-center justify-center">
       <motion.div 
@@ -20,9 +21,16 @@ export const ServerSelection = ({ rooms, myRooms, onCreateRoom, onJoinRoom, onDe
         <h1 className="text-6xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-blue-600 to-purple-600 mb-4 filter drop-shadow-[0_0_15px_rgba(37,99,235,0.4)]">
           BANCO IMOBILIÁRIO
         </h1>
-        <p className="text-blue-400 font-bold uppercase tracking-[0.3em] text-sm animate-pulse">
+        <p className="text-blue-400 font-bold uppercase tracking-[0.3em] text-sm animate-pulse mb-6">
           Seja bem-vindo ao servidor global
         </p>
+        <button 
+          onClick={onOpenFamilyManager}
+          className="inline-flex items-center gap-2 px-6 py-3 bg-slate-900/80 border border-slate-800 rounded-2xl text-blue-400 hover:text-white hover:border-blue-500/50 hover:bg-blue-600/10 transition-all font-black uppercase text-[10px] tracking-widest"
+        >
+          <Users className="w-4 h-4" />
+          Gerenciar Jogadores da Família
+        </button>
       </motion.div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-6xl">
