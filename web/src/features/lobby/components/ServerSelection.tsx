@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Shield, Users, Plus, Globe, Zap } from 'lucide-react';
+import { Users, Plus, Globe, Zap } from 'lucide-react';
 
 interface ServerSelectionProps {
   rooms: any[];
