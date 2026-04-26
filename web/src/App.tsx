@@ -413,17 +413,21 @@ export default function App() {
                   <div className="flex-1 flex flex-col gap-3 overflow-y-auto pr-2 custom-scrollbar relative z-10" style={{ maxHeight: '500px' }}>
                     <AnimatePresence initial={false}>
                       {gameState.logs.map((log) => {
-                        const isCredit = log.mensagem.includes('(+');
-                        const isDebit = log.mensagem.includes('(-');
-                        const isTransfer = !isCredit && !isDebit;
+                        const isMySentTransfer = me && log.mensagem.startsWith(me.nickname + ' ➔');
+                        const isMyReceivedTransfer = me && log.mensagem.includes(' ➔ ' + me.nickname);
+                        const isMyBankPlus = me && log.mensagem.includes('(+') && log.mensagem.includes(me.nickname);
+                        const isMyBankMinus = me && log.mensagem.includes('(-') && log.mensagem.includes(me.nickname);
+
+                        const isPositive = isMyReceivedTransfer || isMyBankPlus;
+                        const isNegative = isMySentTransfer || isMyBankMinus;
                         
-                        const colorStyle = isCredit 
+                        const colorStyle = isPositive 
                           ? 'border-l-green-500/70 bg-gradient-to-r from-green-500/10 to-transparent text-green-300' 
-                          : isDebit 
+                          : isNegative 
                             ? 'border-l-red-500/70 bg-gradient-to-r from-red-500/10 to-transparent text-red-300'
                             : 'border-l-blue-500/70 bg-gradient-to-r from-blue-500/10 to-transparent text-blue-300';
                             
-                        const dotColor = isCredit ? 'bg-green-400 shadow-[0_0_8px_rgba(74,222,128,0.8)]' : isDebit ? 'bg-red-400 shadow-[0_0_8px_rgba(248,113,113,0.8)]' : 'bg-blue-400 shadow-[0_0_8px_rgba(96,165,250,0.8)]';
+                        const dotColor = isPositive ? 'bg-green-400 shadow-[0_0_8px_rgba(74,222,128,0.8)]' : isNegative ? 'bg-red-400 shadow-[0_0_8px_rgba(248,113,113,0.8)]' : 'bg-blue-400 shadow-[0_0_8px_rgba(96,165,250,0.8)]';
 
                         return (
                           <motion.div 
