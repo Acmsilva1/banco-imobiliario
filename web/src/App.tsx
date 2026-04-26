@@ -349,17 +349,20 @@ export default function App() {
             ) : (
               <main className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="md:col-span-2 grid gap-6">
-                  <div className="bento-card bg-gradient-to-br from-blue-600/20 via-slate-900 to-slate-900 border-blue-500/30 overflow-hidden relative">
-                    <div className="absolute -right-20 -top-20 w-64 h-64 bg-blue-600/10 rounded-full blur-3xl" />
-                    <div className="flex justify-between items-start mb-8 relative z-10">
-                      <div>
-                        <p className="text-blue-400 font-black text-[10px] uppercase tracking-[0.3em] mb-1">Tesouro Disponível</p>
-                        <h2 className="text-6xl font-black text-white tracking-tighter">
-                          R$ <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-blue-500">{me ? me.saldo.toLocaleString() : '---'}</span>
-                        </h2>
-                      </div>
-                      <div className="bg-blue-600/20 p-4 rounded-2xl shadow-[0_0_20px_rgba(37,99,235,0.2)]">
-                        <TrendingUp className="text-blue-400 w-8 h-8" />
+                  <div className="bento-card bg-gradient-to-br from-blue-600/20 via-slate-900 to-slate-900 border-blue-500/30 p-6 relative overflow-hidden group max-w-2xl">
+                    <div className="absolute -right-20 -top-20 w-64 h-64 bg-blue-600/10 rounded-full blur-3xl group-hover:bg-blue-600/20 transition-all duration-700" />
+                    
+                    <div className="relative z-10">
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <p className="text-[10px] text-blue-400 font-black uppercase tracking-[0.3em] mb-1">Tesouro Disponível</p>
+                          <h2 className="text-5xl font-black text-white tracking-tighter">
+                            R$ <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-blue-500">{me ? me.saldo.toLocaleString() : '---'}</span>
+                          </h2>
+                        </div>
+                        <div className="bg-blue-600/20 p-3 rounded-2xl shadow-[0_0_20px_rgba(37,99,235,0.2)]">
+                          <TrendingUp className="text-blue-400 w-6 h-6" />
+                        </div>
                       </div>
                     </div>
                   </div>
