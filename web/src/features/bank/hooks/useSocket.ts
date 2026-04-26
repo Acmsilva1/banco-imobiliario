@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { supabase } from '../../core/supabase';
+import { supabase } from '../../../core/supabase';
 import type { GameState, TransferPayload } from '../bank.types';
 
 export const useSocket = (partidaId: string) => {
