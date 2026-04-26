@@ -4,7 +4,7 @@ import { ServerSelection } from './features/lobby/components/ServerSelection';
 import { PlayerSetup } from './features/lobby/components/PlayerSetup';
 import { useSocket } from './features/bank/hooks/useSocket';
 import { supabase } from './core/supabase';
-import { Wallet, ArrowRightLeft, History, TrendingUp, AlertCircle, Home, Trash2, Plus } from 'lucide-react';
+import { Wallet, ArrowRightLeft, History, TrendingUp, AlertCircle, Home, Trash2, Plus, Users } from 'lucide-react';
 
 type Screen = 'LOBBY' | 'SETUP' | 'GAME';
 
@@ -348,69 +348,104 @@ export default function App() {
               </div>
             ) : (
               <main className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="md:col-span-2 grid gap-6">
-                  <div className="bento-card bg-gradient-to-br from-blue-600/20 via-slate-900 to-slate-900 border-blue-500/30 overflow-hidden relative">
-                    <div className="absolute -right-20 -top-20 w-64 h-64 bg-blue-600/10 rounded-full blur-3xl" />
-                    <div className="flex justify-between items-start mb-8 relative z-10">
-                      <div>
-                        <p className="text-blue-400 font-black text-[10px] uppercase tracking-[0.3em] mb-1">Tesouro Disponível</p>
-                        <h2 className="text-6xl font-black text-white tracking-tighter">
-                          R$ <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-blue-500">{me ? me.saldo.toLocaleString() : '---'}</span>
-                        </h2>
+                              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+                  {/* Coluna Esquerda: Seu Saldo e Ações */}
+                  <div className="lg:col-span-2 space-y-6">
+                    <div className="bento-card bg-gradient-to-br from-blue-600/20 via-slate-900 to-slate-900 border-blue-500/30 p-8 relative overflow-hidden group">
+                      <div className="absolute -right-20 -top-20 w-64 h-64 bg-blue-600/10 rounded-full blur-3xl group-hover:bg-blue-600/20 transition-all duration-700" />
+                      
+                      <div className="relative z-10">
+                        <div className="flex justify-between items-start mb-4">
+                          <div>
+                            <p className="text-[10px] text-blue-400 font-black uppercase tracking-[0.3em] mb-1">Tesouro Disponível</p>
+                            <h2 className="text-6xl font-black text-white tracking-tighter filter drop-shadow-[0_0_15px_rgba(37,99,235,0.3)]">
+                              R$ {me ? me.saldo.toLocaleString() : '---'}
+                            </h2>
+                          </div>
+                          <div className="p-3 bg-slate-950/50 rounded-2xl border border-slate-800">
+                            <TrendingUp className="text-blue-400 w-8 h-8" />
+                          </div>
+                        </div>
                       </div>
-                      <div className="bg-blue-600/20 p-4 rounded-2xl shadow-[0_0_20px_rgba(37,99,235,0.2)]">
-                        <TrendingUp className="text-blue-400 w-8 h-8" />
+                    </div>
+
+                    <div className="bento-card bg-slate-900/60 border-slate-800/50">
+                      <h3 className="text-[10px] text-blue-500 font-black uppercase tracking-widest mb-4 flex items-center gap-2">
+                        <Wallet className="w-4 h-4" /> Ações do Sistema (Banco)
+                      </h3>
+                      <div className="space-y-3">
+                        {/* Linha 1: Automáticos */}
+                        <div className="grid grid-cols-3 gap-3">
+                          <button onClick={() => handleBankAction(2000, 'Salário (Início)')} className="bg-slate-950 border border-green-900/40 p-3 rounded-xl text-[10px] font-black uppercase tracking-widest text-green-500 hover:bg-green-900/20 hover:border-green-500/50 transition-all">
+                            + SALÁRIO
+                          </button>
+                          <button onClick={() => handleBankAction(-2000, 'Imposto de Renda')} className="bg-slate-950 border border-orange-900/40 p-3 rounded-xl text-[10px] font-black uppercase tracking-widest text-orange-500 hover:bg-orange-900/20 hover:border-orange-500/50 transition-all">
+                            - IMPOSTO
+                          </button>
+                          <button onClick={() => handleBankAction(2000, 'Restituição IR')} className="bg-slate-950 border border-emerald-900/40 p-3 rounded-xl text-[10px] font-black uppercase tracking-widest text-emerald-400 hover:bg-emerald-900/20 hover:border-emerald-500/50 transition-all">
+                            + RESTITUIÇÃO
+                          </button>
+                        </div>
+                        
+                        {/* Linha 2: Manuais */}
+                        <div className="grid grid-cols-2 gap-3">
+                          <button onClick={() => { setBankActionType('RECEIVE'); setIsBankModalOpen(true); }} className="bg-blue-600/10 border border-blue-600/30 p-4 rounded-xl text-[11px] font-black uppercase tracking-widest text-blue-400 hover:bg-blue-600/20 hover:border-blue-500 transition-all flex items-center justify-center gap-2">
+                            <Plus className="w-4 h-4" /> RECEBER VALOR
+                          </button>
+                          <button onClick={() => { setBankActionType('PAY'); setIsBankModalOpen(true); }} className="bg-red-600/10 border border-red-600/30 p-4 rounded-xl text-[11px] font-black uppercase tracking-widest text-red-500 hover:bg-red-600/20 hover:border-red-500 transition-all flex items-center justify-center gap-2">
+                            <Trash2 className="w-4 h-4 rotate-45" /> PAGAR VALOR
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {gameState.players.filter(p => p.id !== myId).map(p => (
-                      <div key={p.id} className="bento-card flex justify-between items-center group bg-slate-900/40 border-slate-800/50 hover:border-blue-500/30 transition-all">
-                        <div className="flex items-center gap-3">
-                          <div className="w-12 h-12 rounded-2xl bg-slate-800 flex items-center justify-center text-2xl border border-slate-700">
-                            {getAvatarEmoji(p.avatar)}
-                          </div>
-                          <div>
-                            <p className="text-[10px] text-slate-500 font-black uppercase tracking-widest mb-1">{p.nickname}</p>
-                            <p className="text-xl font-black text-white tracking-tighter">R$ {p.saldo.toLocaleString()}</p>
-                          </div>
-                        </div>
-                        <button onClick={() => { setSelectedRecipientId(p.id); setIsTransferModalOpen(true); }} className="p-4 bg-slate-950 border border-slate-800 rounded-2xl group-hover:bg-blue-600 group-hover:border-blue-500 group-hover:shadow-[0_0_15px_rgba(37,99,235,0.4)] transition-all">
-                          <ArrowRightLeft className="w-5 h-5" />
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Painel de Ações do Banco */}
-                  <div className="bento-card bg-slate-900/60 border-slate-800/50 mt-2">
-                    <h3 className="text-[10px] text-blue-500 font-black uppercase tracking-widest mb-4 flex items-center gap-2">
-                      <Wallet className="w-4 h-4" /> Ações do Sistema (Banco)
+                  {/* Coluna Direita: Ranking de Jogadores */}
+                  <div className="space-y-4">
+                    <h3 className="text-[10px] text-slate-500 font-black uppercase tracking-[0.3em] flex items-center gap-2 px-2">
+                      <Users className="w-4 h-4" /> Ranking de Fortuna
                     </h3>
-                    <div className="space-y-3">
-                      {/* Linha 1: Automáticos */}
-                      <div className="grid grid-cols-3 gap-3">
-                        <button onClick={() => handleBankAction(2000, 'Salário (Início)')} className="bg-slate-950 border border-green-900/40 p-3 rounded-xl text-[10px] font-black uppercase tracking-widest text-green-500 hover:bg-green-900/20 hover:border-green-500/50 transition-all">
-                          + SALÁRIO
-                        </button>
-                        <button onClick={() => handleBankAction(-2000, 'Imposto de Renda')} className="bg-slate-950 border border-orange-900/40 p-3 rounded-xl text-[10px] font-black uppercase tracking-widest text-orange-500 hover:bg-orange-900/20 hover:border-orange-500/50 transition-all">
-                          - IMPOSTO
-                        </button>
-                        <button onClick={() => handleBankAction(2000, 'Restituição IR')} className="bg-slate-950 border border-emerald-900/40 p-3 rounded-xl text-[10px] font-black uppercase tracking-widest text-emerald-400 hover:bg-emerald-900/20 hover:border-emerald-500/50 transition-all">
-                          + RESTITUIÇÃO
-                        </button>
-                      </div>
-                      
-                      {/* Linha 2: Manuais */}
-                      <div className="grid grid-cols-2 gap-3">
-                        <button onClick={() => { setBankActionType('RECEIVE'); setIsBankModalOpen(true); }} className="bg-blue-600/10 border border-blue-600/30 p-4 rounded-xl text-[11px] font-black uppercase tracking-widest text-blue-400 hover:bg-blue-600/20 hover:border-blue-500 transition-all flex items-center justify-center gap-2">
-                          <Plus className="w-4 h-4" /> RECEBER VALOR
-                        </button>
-                        <button onClick={() => { setBankActionType('PAY'); setIsBankModalOpen(true); }} className="bg-red-600/10 border border-red-600/30 p-4 rounded-xl text-[11px] font-black uppercase tracking-widest text-red-500 hover:bg-red-600/20 hover:border-red-500 transition-all flex items-center justify-center gap-2">
-                          <Trash2 className="w-4 h-4 rotate-45" /> PAGAR VALOR
-                        </button>
-                      </div>
+                    <div className="space-y-2 max-h-[500px] overflow-y-auto pr-2 custom-scrollbar">
+                      {gameState.players
+                        .filter(p => p.id !== myId)
+                        .sort((a, b) => b.saldo - a.saldo)
+                        .map((p, index) => (
+                          <motion.div 
+                            key={p.id}
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: index * 0.1 }}
+                            className="bg-slate-900/40 border border-slate-800/50 p-4 rounded-2xl flex items-center justify-between group hover:border-blue-500/30 transition-all"
+                          >
+                            <div className="flex items-center gap-3">
+                              <div className="relative">
+                                <div className="w-10 h-10 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-center text-xl">
+                                  {getAvatarEmoji(p.avatar)}
+                                </div>
+                                {index === 0 && (
+                                  <div className="absolute -top-1 -right-1 bg-yellow-500 rounded-full p-0.5 border-2 border-slate-900">
+                                    <TrendingUp className="w-2 h-2 text-slate-950" />
+                                  </div>
+                                )}
+                              </div>
+                              <div>
+                                <p className="text-[9px] font-black text-slate-500 uppercase tracking-tighter">{p.nickname}</p>
+                                <p className="text-lg font-black text-white leading-none">R$ {p.saldo.toLocaleString()}</p>
+                              </div>
+                            </div>
+                            <button 
+                              onClick={() => { setSelectedRecipientId(p.id); setTransferAmount(''); setIsTransferModalOpen(true); }}
+                              className="w-10 h-10 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-center text-slate-500 hover:text-blue-400 hover:border-blue-500/50 transition-all shadow-sm"
+                            >
+                              <ArrowRightLeft className="w-4 h-4" />
+                            </button>
+                          </motion.div>
+                        ))}
+                      {gameState.players.length <= 1 && (
+                        <div className="text-center py-10 border-2 border-dashed border-slate-800/50 rounded-3xl">
+                          <p className="text-[10px] font-black text-slate-600 uppercase tracking-widest">Aguardando outros heróis...</p>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
