@@ -27,8 +27,15 @@ export default function App() {
   const [isCreateRoomModalOpen, setIsCreateRoomModalOpen] = useState(false);
   const [newRoomName, setNewRoomName] = useState('');
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
-  const { gameState, isConnected, error, transfer, adjustBalance } = useSocket(selectedRoomId || '');
+  const { gameState, isConnected, error, transfer, adjustBalance, fetchState } = useSocket(selectedRoomId || '');
+
+  const handleManualRefresh = async () => {
+    setIsRefreshing(true);
+    await fetchState();
+    setTimeout(() => setIsRefreshing(false), 800);
+  };
 
   useEffect(() => {
     fetchRooms();
@@ -88,23 +95,31 @@ export default function App() {
     if (savedId) {
       setMyId(savedId);
       setScreen('GAME');
-      await incrementPlayerCount(roomId);
+      // O incremento será feito pelo useEffect de monitoramento de presença
     } else {
       setScreen('GAME');
     }
   };
 
   const incrementPlayerCount = async (roomId: string) => {
-    const { data: partida } = await supabase.from('partidas').select('players_count').eq('id', roomId).single();
-    if (partida) {
-      await supabase.from('partidas').update({ players_count: (partida.players_count || 0) + 1 }).eq('id', roomId);
+    const { error } = await supabase.rpc('increment_players', { room_id: roomId });
+    if (error) {
+      // Fallback se o RPC não existir
+      const { data: partida } = await supabase.from('partidas').select('players_count').eq('id', roomId).single();
+      if (partida) {
+        await supabase.from('partidas').update({ players_count: (partida.players_count || 0) + 1 }).eq('id', roomId);
+      }
     }
   };
 
   const decrementPlayerCount = async (roomId: string) => {
-    const { data: partida } = await supabase.from('partidas').select('players_count').eq('id', roomId).single();
-    if (partida && partida.players_count && partida.players_count > 0) {
-      await supabase.from('partidas').update({ players_count: partida.players_count - 1 }).eq('id', roomId);
+    const { error } = await supabase.rpc('decrement_players', { room_id: roomId });
+    if (error) {
+      // Fallback se o RPC não existir
+      const { data: partida } = await supabase.from('partidas').select('players_count').eq('id', roomId).single();
+      if (partida && (partida.players_count || 0) > 0) {
+        await supabase.from('partidas').update({ players_count: (partida.players_count || 0) - 1 }).eq('id', roomId);
+      }
     }
   };
 
@@ -132,24 +147,31 @@ export default function App() {
       selectedRoomIdRef.current = roomId;
       setMyId(data.id);
       setScreen('GAME');
-      await incrementPlayerCount(roomId);
     } else {
       console.error('Erro ao criar jogador:', error);
     }
   };
 
+  const hasIncremented = useRef(false);
+
   useEffect(() => {
+    if (myId && selectedRoomId && screen === 'GAME' && !hasIncremented.current) {
+      incrementPlayerCount(selectedRoomId);
+      hasIncremented.current = true;
+    }
+
     const handleBeforeUnload = () => {
-      if (selectedRoomId && screen === 'GAME') {
-        // Usa beacon para garantir envio no fechamento da aba
-        navigator.sendBeacon(`${import.meta.env.VITE_SUPABASE_URL}/rest/v1/rpc/decrement_players_count`, JSON.stringify({ room_id: selectedRoomId }));
-        // Fallback frontend caso não haja RPC
+      if (selectedRoomId && screen === 'GAME' && hasIncremented.current) {
         decrementPlayerCount(selectedRoomId);
+        hasIncremented.current = false;
       }
     };
+    
     window.addEventListener('beforeunload', handleBeforeUnload);
-    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
-  }, [selectedRoomId, screen]);
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, [myId, selectedRoomId, screen]);
 
   const me = gameState.players.find(p => p.id === myId);
 
@@ -228,17 +250,30 @@ export default function App() {
                 )}
                 <button 
                   onClick={() => {
-                    if (selectedRoomId) decrementPlayerCount(selectedRoomId);
-                    setScreen('LOBBY');
-                    setSelectedRoomId(null);
-                    setMyId(null);
-                  }}
-                  className="p-3 md:px-5 md:py-3 bg-red-500/10 border border-red-500/30 rounded-xl hover:bg-red-500/20 hover:border-red-500 text-red-400 hover:text-red-300 transition-all flex items-center gap-2 shrink-0"
-                  title="Sair da Sala"
-                >
-                  <Home className="w-5 h-5" />
-                  <span className="hidden md:inline font-black tracking-widest uppercase text-xs">Sair</span>
-                </button>
+                      fetchState();
+                      const btn = document.getElementById('sync-btn');
+                      if (btn) btn.classList.add('animate-spin');
+                      setTimeout(() => btn?.classList.remove('animate-spin'), 1000);
+                    }}
+                    className="p-3 bg-blue-500/10 border border-blue-500/30 rounded-xl hover:bg-blue-500/20 text-blue-400 transition-all flex items-center justify-center"
+                    title="Sincronizar Dados"
+                  >
+                    <TrendingUp id="sync-btn" className="w-5 h-5" />
+                  </button>
+
+                  <button 
+                    onClick={() => {
+                      if (selectedRoomId) decrementPlayerCount(selectedRoomId);
+                      setScreen('LOBBY');
+                      setSelectedRoomId(null);
+                      setMyId(null);
+                    }}
+                    className="p-3 md:px-5 md:py-3 bg-red-500/10 border border-red-500/30 rounded-xl hover:bg-red-500/20 hover:border-red-500 text-red-400 hover:text-red-300 transition-all flex items-center gap-2 shrink-0"
+                    title="Sair da Sala"
+                  >
+                    <Home className="w-5 h-5" />
+                    <span className="hidden md:inline font-black tracking-widest uppercase text-xs">Sair</span>
+                  </button>
               </div>
             </header>
 
@@ -261,6 +296,7 @@ export default function App() {
                         onClick={() => {
                           setMyId(p.id);
                           localStorage.setItem('session_' + selectedRoomId, p.id);
+                          // O incremento agora é automático via useEffect assim que myId é setado
                         }} 
                         className="bg-slate-950 border border-slate-800 hover:border-blue-600 hover:bg-blue-600/10 p-5 rounded-2xl font-black transition-all flex justify-between items-center group"
                       >
@@ -300,7 +336,7 @@ export default function App() {
                       <div>
                         <p className="text-blue-400 font-black text-[10px] uppercase tracking-[0.3em] mb-1">Tesouro Disponível</p>
                         <h2 className="text-6xl font-black text-white tracking-tighter">
-                          R$ <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-blue-500">{me?.saldo.toLocaleString() || '0'}</span>
+                          R$ <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-blue-500">{me ? me.saldo.toLocaleString() : '---'}</span>
                         </h2>
                       </div>
                       <div className="bg-blue-600/20 p-4 rounded-2xl shadow-[0_0_20px_rgba(37,99,235,0.2)]">
