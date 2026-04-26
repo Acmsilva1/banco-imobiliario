@@ -368,26 +368,29 @@ export default function App() {
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {gameState.players.filter(p => p.id !== myId).map(p => (
-                      <div key={p.id} className="bento-card flex justify-between items-center group bg-slate-900/40 border-slate-800/50 hover:border-blue-500/30 transition-all">
+                    {gameState.players
+                      .filter(p => p.id !== myId)
+                      .sort((a, b) => b.saldo - a.saldo)
+                      .map(p => (
+                      <div key={p.id} className="bento-card flex justify-between items-center group bg-slate-900/40 border-slate-800/50 p-4 hover:border-blue-500/30 transition-all">
                         <div className="flex items-center gap-3">
-                          <div className="w-12 h-12 rounded-2xl bg-slate-800 flex items-center justify-center text-2xl border border-slate-700">
+                          <div className="w-10 h-10 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-center text-xl border border-slate-700">
                             {getAvatarEmoji(p.avatar)}
                           </div>
                           <div>
-                            <p className="text-[10px] text-slate-500 font-black uppercase tracking-widest mb-1">{p.nickname}</p>
-                            <p className="text-xl font-black text-white tracking-tighter">R$ {p.saldo.toLocaleString()}</p>
+                            <p className="text-[9px] text-slate-500 font-black uppercase tracking-widest mb-0.5">{p.nickname}</p>
+                            <p className="text-lg font-black text-white tracking-tighter leading-none">R$ {p.saldo.toLocaleString()}</p>
                           </div>
                         </div>
-                        <button onClick={() => { setSelectedRecipientId(p.id); setIsTransferModalOpen(true); }} className="p-4 bg-slate-950 border border-slate-800 rounded-2xl group-hover:bg-blue-600 group-hover:border-blue-500 group-hover:shadow-[0_0_15px_rgba(37,99,235,0.4)] transition-all">
-                          <ArrowRightLeft className="w-5 h-5" />
+                        <button onClick={() => { setSelectedRecipientId(p.id); setTransferAmount(''); setIsTransferModalOpen(true); }} className="p-3 bg-slate-950 border border-slate-800 rounded-2xl group-hover:bg-blue-600 group-hover:border-blue-500 transition-all">
+                          <ArrowRightLeft className="w-4 h-4" />
                         </button>
                       </div>
                     ))}
                   </div>
 
                   {/* Painel de Ações do Banco */}
-                  <div className="bento-card bg-slate-900/60 border-slate-800/50 mt-2">
+                  <div className="bento-card bg-slate-900/60 border-slate-800/50 mt-2 max-w-2xl">
                     <h3 className="text-[10px] text-blue-500 font-black uppercase tracking-widest mb-4 flex items-center gap-2">
                       <Wallet className="w-4 h-4" /> Ações do Sistema (Banco)
                     </h3>
