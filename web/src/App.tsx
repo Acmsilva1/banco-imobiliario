@@ -273,12 +273,12 @@ export default function App() {
 
                 <div className="relative">
                   {gameState.players.length > 0 && (
-                    <div className="absolute inset-0 flex items-center">
+                    <div className="absolute inset-0 flex items-center pointer-events-none">
                       <div className="w-full border-t border-slate-800"></div>
                     </div>
                   )}
                   {gameState.players.length > 0 && (
-                    <div className="relative flex justify-center mb-6">
+                    <div className="relative flex justify-center mb-6 pointer-events-none">
                       <span className="bg-[#020617] px-4 text-[10px] font-black uppercase tracking-widest text-slate-600">OU</span>
                     </div>
                   )}
