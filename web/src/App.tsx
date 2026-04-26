@@ -4,7 +4,7 @@ import { ServerSelection } from './features/lobby/components/ServerSelection';
 import { PlayerSetup } from './features/lobby/components/PlayerSetup';
 import { useSocket } from './features/bank/hooks/useSocket';
 import { supabase } from './core/supabase';
-import { Wallet, ArrowRightLeft, History, TrendingUp, AlertCircle, LogOut } from 'lucide-react';
+import { Wallet, ArrowRightLeft, History, TrendingUp, AlertCircle, LogOut, Home } from 'lucide-react';
 
 type Screen = 'LOBBY' | 'SETUP' | 'GAME';
 
@@ -108,7 +108,7 @@ export default function App() {
 
         {screen === 'SETUP' && (
           <motion.div key="setup" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-            <PlayerSetup onComplete={handleSetupComplete} />
+            <PlayerSetup onComplete={handleSetupComplete} onBack={() => setScreen('LOBBY')} />
           </motion.div>
         )}
 
@@ -144,9 +144,10 @@ export default function App() {
                 )}
                 <button 
                   onClick={() => setScreen('LOBBY')}
-                  className="p-3 bg-slate-900 border border-slate-800 rounded-xl hover:bg-red-500/10 hover:border-red-500/50 text-slate-500 hover:text-red-500 transition-all"
+                  className="p-3 bg-slate-900 border border-slate-800 rounded-xl hover:bg-blue-600/20 hover:border-blue-500 text-slate-500 hover:text-blue-400 transition-all"
+                  title="Voltar ao Lobby"
                 >
-                  <LogOut className="w-5 h-5" />
+                  <Home className="w-5 h-5" />
                 </button>
               </div>
             </header>

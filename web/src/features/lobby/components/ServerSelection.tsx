@@ -38,44 +38,52 @@ export const ServerSelection = ({ rooms, onCreateRoom, onJoinRoom }: ServerSelec
           <p className="text-slate-500 text-sm">Torne-se o líder da partida</p>
         </motion.button>
 
-        {rooms.map((room, i) => (
-          <motion.div
-            key={room.id}
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: i * 0.1 }}
-            whileHover={{ y: -5 }}
-            className="bento-card border-slate-800 bg-slate-900/80 p-6 flex flex-col justify-between group relative overflow-hidden"
-          >
-            <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-              <Globe className="w-20 h-20 text-blue-500" />
-            </div>
-            
-            <div>
-              <div className="flex justify-between items-start mb-4">
-                <div className="bg-blue-600/20 text-blue-400 text-[10px] font-black px-2 py-1 rounded uppercase tracking-wider">
-                  ONLINE
-                </div>
-                <div className="flex items-center gap-1 text-slate-500">
-                  <Users className="w-4 h-4" />
-                  <span className="text-xs font-bold">{room.players_count}/6</span>
-                </div>
-              </div>
-              <h3 className="text-2xl font-black text-white mb-1 group-hover:text-blue-400 transition-colors">
-                {room.name || `SALA #${room.id.slice(0,4)}`}
-              </h3>
-              <p className="text-slate-500 text-xs font-medium italic">Líder: {room.leader_name}</p>
-            </div>
-
-            <button 
-              onClick={() => onJoinRoom(room.id)}
-              className="mt-8 w-full py-4 rounded-xl bg-slate-800 group-hover:bg-blue-600 text-white font-black uppercase tracking-widest transition-all flex items-center justify-center gap-2"
+        {rooms.length === 0 ? (
+          <div className="col-span-1 md:col-span-2 lg:col-span-2 flex flex-col items-center justify-center p-10 border-2 border-dashed border-slate-800 rounded-3xl bg-slate-900/20">
+            <Globe className="w-12 h-12 text-slate-700 mb-4" />
+            <h3 className="text-xl font-bold text-slate-400 mb-2">Nenhum Servidor Ativo</h3>
+            <p className="text-slate-600 text-sm text-center">Seja o primeiro a criar uma sala e convide seus amigos para jogar.</p>
+          </div>
+        ) : (
+          rooms.map((room, i) => (
+            <motion.div
+              key={room.id}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: i * 0.1 }}
+              whileHover={{ y: -5 }}
+              className="bento-card border-slate-800 bg-slate-900/80 p-6 flex flex-col justify-between group relative overflow-hidden"
             >
-              <Zap className="w-4 h-4" />
-              ENTRAR NO SERVIDOR
-            </button>
-          </motion.div>
-        ))}
+              <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                <Globe className="w-20 h-20 text-blue-500" />
+              </div>
+              
+              <div>
+                <div className="flex justify-between items-start mb-4">
+                  <div className="bg-blue-600/20 text-blue-400 text-[10px] font-black px-2 py-1 rounded uppercase tracking-wider">
+                    ONLINE
+                  </div>
+                  <div className="flex items-center gap-1 text-slate-500">
+                    <Users className="w-4 h-4" />
+                    <span className="text-xs font-bold">{room.players_count || 0}/6</span>
+                  </div>
+                </div>
+                <h3 className="text-2xl font-black text-white mb-1 group-hover:text-blue-400 transition-colors">
+                  {room.nome || `SALA #${room.id.slice(0,4)}`}
+                </h3>
+                <p className="text-slate-500 text-xs font-medium italic">Líder: {room.lider_id ? 'Jogador' : 'Desconhecido'}</p>
+              </div>
+
+              <button 
+                onClick={() => onJoinRoom(room.id)}
+                className="mt-8 w-full py-4 rounded-xl bg-slate-800 group-hover:bg-blue-600 text-white font-black uppercase tracking-widest transition-all flex items-center justify-center gap-2"
+              >
+                <Zap className="w-4 h-4" />
+                ENTRAR NO SERVIDOR
+              </button>
+            </motion.div>
+          ))
+        )}
       </div>
     </div>
   );

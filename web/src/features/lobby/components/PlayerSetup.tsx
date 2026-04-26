@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { User, CheckCircle2 } from 'lucide-react';
+import { User, CheckCircle2, ArrowLeft } from 'lucide-react';
 
 const AVATARS = [
   { id: '1', emoji: '🦊', label: 'Raposa Astuta' },
@@ -13,9 +13,10 @@ const AVATARS = [
 
 interface PlayerSetupProps {
   onComplete: (nickname: string, avatarId: string) => void;
+  onBack: () => void;
 }
 
-export const PlayerSetup = ({ onComplete }: PlayerSetupProps) => {
+export const PlayerSetup = ({ onComplete, onBack }: PlayerSetupProps) => {
   const [nickname, setNickname] = useState('');
   const [selectedAvatar, setSelectedAvatar] = useState(AVATARS[0].id);
 
@@ -24,9 +25,16 @@ export const PlayerSetup = ({ onComplete }: PlayerSetupProps) => {
       <motion.div 
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="w-full max-w-lg bento-card border-blue-500/30 bg-slate-900/50 backdrop-blur-xl p-10"
+        className="w-full max-w-lg bento-card border-blue-500/30 bg-slate-900/50 backdrop-blur-xl p-10 relative"
       >
-        <div className="text-center mb-10">
+        <button 
+          onClick={onBack}
+          className="absolute top-6 left-6 p-2 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white transition-colors"
+        >
+          <ArrowLeft className="w-5 h-5" />
+        </button>
+
+        <div className="text-center mb-10 mt-4">
           <h2 className="text-3xl font-black text-white mb-2 uppercase tracking-tighter">
             Configure seu <span className="text-blue-500">Personagem</span>
           </h2>
