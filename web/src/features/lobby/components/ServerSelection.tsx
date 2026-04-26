@@ -74,7 +74,6 @@ export const ServerSelection = ({ rooms, myRooms, onCreateRoom, onJoinRoom, onDe
                     ONLINE
                   </div>
                   <div className="flex items-center gap-2">
-                    {myRooms.includes(room.id) && (
                       <button 
                         onClick={(e) => { e.stopPropagation(); onDeleteRoom(room.id); }}
                         className="text-slate-500 hover:text-red-500 transition-colors bg-slate-950 p-1.5 rounded-lg border border-slate-800 hover:border-red-500/50"
@@ -82,7 +81,7 @@ export const ServerSelection = ({ rooms, myRooms, onCreateRoom, onJoinRoom, onDe
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
-                    )}
+
                     <div className="flex items-center gap-1 text-slate-500 bg-slate-950 px-2 py-1 rounded-lg border border-slate-800">
                       <Users className="w-4 h-4" />
                       <span className="text-xs font-bold">{room.players_count || 0}/6</span>

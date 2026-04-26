@@ -11,7 +11,6 @@ type Screen = 'LOBBY' | 'SETUP' | 'GAME';
 export default function App() {
   const [screen, setScreen] = useState<Screen>('LOBBY');
   const [rooms, setRooms] = useState<any[]>([]);
-  const [myRooms, setMyRooms] = useState<string[]>(JSON.parse(localStorage.getItem('my_rooms') || '[]'));
   const [selectedRoomId, setSelectedRoomId] = useState<string | null>(null);
   const selectedRoomIdRef = useRef<string | null>(null);
   const [myId, setMyId] = useState<string | null>(null);
@@ -69,24 +68,17 @@ export default function App() {
   };
 
   const handleCreateRoom = () => {
-    setNewRoomName('');
     setIsCreateRoomModalOpen(true);
   };
 
   const confirmCreateRoom = async () => {
     if (!newRoomName.trim()) return;
-    const { data } = await supabase.from('partidas').insert({ 
+    await supabase.from('partidas').insert({ 
       nome: newRoomName.trim(), 
       codigo_sala: Math.random().toString(36).substring(7).toUpperCase() 
-    }).select().single();
+    });
+    setNewRoomName('');
     setIsCreateRoomModalOpen(false);
-    if (data) {
-      const newMyRooms = [...myRooms, data.id];
-      setMyRooms(newMyRooms);
-      localStorage.setItem('my_rooms', JSON.stringify(newMyRooms));
-      setSelectedRoomId(data.id);
-      setScreen('SETUP');
-    }
   };
 
   const handleDeleteRoom = (roomId: string) => {
@@ -96,11 +88,9 @@ export default function App() {
   const confirmDeleteRoom = async () => {
     if (!deleteConfirmId) return;
     await supabase.from('partidas').delete().eq('id', deleteConfirmId);
-    const updated = myRooms.filter(id => id !== deleteConfirmId);
-    setMyRooms(updated);
-    localStorage.setItem('my_rooms', JSON.stringify(updated));
     setDeleteConfirmId(null);
   };
+
 
   const handleAddProfile = async () => {
     if (!newProfileName.trim()) return;
@@ -120,14 +110,8 @@ export default function App() {
   const handleJoinRoom = async (roomId: string) => {
     setSelectedRoomId(roomId);
     selectedRoomIdRef.current = roomId;
-    const savedId = localStorage.getItem('session_' + roomId);
-    if (savedId) {
-      setMyId(savedId);
-      setScreen('GAME');
-      // O incremento será feito pelo useEffect de monitoramento de presença
-    } else {
-      setScreen('GAME');
-    }
+    setMyId(null); // Limpa ID anterior para forçar seleção de quem é você
+    setScreen('GAME');
   };
 
   const incrementPlayerCount = async (roomId: string) => {
@@ -153,13 +137,24 @@ export default function App() {
   };
 
   const handleSetupComplete = async (nickname: string, avatarId: string) => {
-    // Usa ref para garantir o valor atual mesmo após mudanças de estado assíncronas
     const roomId = selectedRoomIdRef.current || selectedRoomId;
-    if (!roomId) {
-      console.error('Nenhuma sala selecionada');
+    if (!roomId) return;
+    
+    // Tenta encontrar se esse jogador já existe na sala (Resgate de Sessão)
+    const { data: existingPlayer } = await supabase
+      .from('jogadores')
+      .select('id')
+      .eq('partida_id', roomId)
+      .eq('nickname', nickname)
+      .single();
+
+    if (existingPlayer) {
+      setMyId(existingPlayer.id);
+      setScreen('GAME');
       return;
     }
-    
+
+    // Se não existe, cria um novo
     const { data: partida } = await supabase.from('partidas').select('capital_inicial').eq('id', roomId).single();
     const capital = partida?.capital_inicial || 25000;
 
@@ -171,7 +166,6 @@ export default function App() {
     }).select().single();
     
     if (data) {
-      localStorage.setItem('session_' + roomId, data.id);
       setSelectedRoomId(roomId);
       selectedRoomIdRef.current = roomId;
       setMyId(data.id);
@@ -180,6 +174,7 @@ export default function App() {
       console.error('Erro ao criar jogador:', error);
     }
   };
+
 
   const hasIncremented = useRef(false);
 
@@ -233,7 +228,7 @@ export default function App() {
           <motion.div key="lobby" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
             <ServerSelection 
               rooms={rooms} 
-              myRooms={myRooms}
+              myRooms={[]} // Removido filtro de localStorage, lixeira aparece para todos
               onCreateRoom={handleCreateRoom} 
               onJoinRoom={handleJoinRoom} 
               onDeleteRoom={handleDeleteRoom}
@@ -329,7 +324,6 @@ export default function App() {
                         key={p.id} 
                         onClick={() => {
                           setMyId(p.id);
-                          localStorage.setItem('session_' + selectedRoomId, p.id);
                           // O incremento agora é automático via useEffect assim que myId é setado
                         }} 
                         className="bg-slate-950 border border-slate-800 hover:border-blue-600 hover:bg-blue-600/10 p-5 rounded-2xl font-black transition-all flex justify-between items-center group"
