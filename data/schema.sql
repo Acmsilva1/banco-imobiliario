@@ -36,6 +36,11 @@ CREATE TABLE transacoes (
     criada_em TIMESTAMPTZ DEFAULT NOW()
 );
 
+-- Ativar Realtime (Replicação) para o Frontend funcionar via WebSocket
+ALTER PUBLICATION supabase_realtime ADD TABLE partidas;
+ALTER PUBLICATION supabase_realtime ADD TABLE jogadores;
+ALTER PUBLICATION supabase_realtime ADD TABLE transacoes;
+
 -- Inserir dados de teste para o protótipo
 INSERT INTO partidas (id, codigo_sala, capital_inicial, status) 
 VALUES ('c06426d0-221c-4223-a6c1-03586b1d556d', 'SALA-PROTOTIPO', 25000, 'EM_CURSO');
