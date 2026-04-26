@@ -347,31 +347,32 @@ export default function App() {
                 </div>
               </div>
             ) : (
-              <main className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="md:col-span-2 grid gap-6">
-                  <div className="bento-card bg-gradient-to-br from-blue-600/20 via-slate-900 to-slate-900 border-blue-500/30 p-6 relative overflow-hidden group max-w-2xl">
-                    <div className="absolute -right-20 -top-20 w-64 h-64 bg-blue-600/10 rounded-full blur-3xl group-hover:bg-blue-600/20 transition-all duration-700" />
-                    
-                    <div className="relative z-10">
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <p className="text-[10px] text-blue-400 font-black uppercase tracking-[0.3em] mb-1">Tesouro Disponível</p>
-                          <h2 className="text-5xl font-black text-white tracking-tighter">
-                            R$ <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-blue-500">{me ? me.saldo.toLocaleString() : '---'}</span>
-                          </h2>
-                        </div>
-                        <div className="bg-blue-600/20 p-3 rounded-2xl shadow-[0_0_20px_rgba(37,99,235,0.2)]">
-                          <TrendingUp className="text-blue-400 w-6 h-6" />
-                        </div>
+              <main className="max-w-2xl mx-auto space-y-6 pb-20 px-4">
+                {/* 1. Seu Saldo Principal */}
+                <div className="bento-card bg-gradient-to-br from-blue-600/20 via-slate-900 to-slate-900 border-blue-500/30 p-6 relative overflow-hidden group">
+                  <div className="absolute -right-20 -top-20 w-64 h-64 bg-blue-600/10 rounded-full blur-3xl group-hover:bg-blue-600/20 transition-all duration-700" />
+                  
+                  <div className="relative z-10">
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <p className="text-[10px] text-blue-400 font-black uppercase tracking-[0.3em] mb-1">Tesouro Disponível</p>
+                        <h2 className="text-5xl font-black text-white tracking-tighter">
+                          R$ <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-blue-500">{me ? me.saldo.toLocaleString() : '---'}</span>
+                        </h2>
+                      </div>
+                      <div className="bg-blue-600/20 p-3 rounded-2xl shadow-[0_0_20px_rgba(37,99,235,0.2)]">
+                        <TrendingUp className="text-blue-400 w-6 h-6" />
                       </div>
                     </div>
                   </div>
+                </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    {gameState.players
-                      .filter(p => p.id !== myId)
-                      .sort((a, b) => b.saldo - a.saldo)
-                      .map(p => (
+                {/* 2. Outros Jogadores */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {gameState.players
+                    .filter(p => p.id !== myId)
+                    .sort((a, b) => b.saldo - a.saldo)
+                    .map(p => (
                       <div key={p.id} className="bento-card flex justify-between items-center group bg-slate-900/40 border-slate-800/50 p-4 hover:border-blue-500/30 transition-all">
                         <div className="flex items-center gap-3">
                           <div className="w-10 h-10 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-center text-xl border border-slate-700">
@@ -387,41 +388,41 @@ export default function App() {
                         </button>
                       </div>
                     ))}
-                  </div>
+                </div>
 
-                  {/* Painel de Ações do Banco */}
-                  <div className="bento-card bg-slate-900/60 border-slate-800/50 mt-2 max-w-2xl">
-                    <h3 className="text-[10px] text-blue-500 font-black uppercase tracking-widest mb-4 flex items-center gap-2">
-                      <Wallet className="w-4 h-4" /> Ações do Sistema (Banco)
-                    </h3>
-                    <div className="space-y-3">
-                      {/* Linha 1: Automáticos */}
-                      <div className="grid grid-cols-3 gap-3">
-                        <button onClick={() => handleBankAction(2000, 'Salário (Início)')} className="bg-slate-950 border border-green-900/40 p-3 rounded-xl text-[10px] font-black uppercase tracking-widest text-green-500 hover:bg-green-900/20 hover:border-green-500/50 transition-all">
-                          + SALÁRIO
-                        </button>
-                        <button onClick={() => handleBankAction(-2000, 'Imposto de Renda')} className="bg-slate-950 border border-orange-900/40 p-3 rounded-xl text-[10px] font-black uppercase tracking-widest text-orange-500 hover:bg-orange-900/20 hover:border-orange-500/50 transition-all">
-                          - IMPOSTO
-                        </button>
-                        <button onClick={() => handleBankAction(2000, 'Restituição IR')} className="bg-slate-950 border border-emerald-900/40 p-3 rounded-xl text-[10px] font-black uppercase tracking-widest text-emerald-400 hover:bg-emerald-900/20 hover:border-emerald-500/50 transition-all">
-                          + RESTITUIÇÃO
-                        </button>
-                      </div>
-                      
-                      {/* Linha 2: Manuais */}
-                      <div className="grid grid-cols-2 gap-3">
-                        <button onClick={() => { setBankActionType('RECEIVE'); setIsBankModalOpen(true); }} className="bg-blue-600/10 border border-blue-600/30 p-4 rounded-xl text-[11px] font-black uppercase tracking-widest text-blue-400 hover:bg-blue-600/20 hover:border-blue-500 transition-all flex items-center justify-center gap-2">
-                          <Plus className="w-4 h-4" /> RECEBER VALOR
-                        </button>
-                        <button onClick={() => { setBankActionType('PAY'); setIsBankModalOpen(true); }} className="bg-red-600/10 border border-red-600/30 p-4 rounded-xl text-[11px] font-black uppercase tracking-widest text-red-500 hover:bg-red-600/20 hover:border-red-500 transition-all flex items-center justify-center gap-2">
-                          <Trash2 className="w-4 h-4 rotate-45" /> PAGAR VALOR
-                        </button>
-                      </div>
+                {/* 3. Painel de Ações do Banco */}
+                <div className="bento-card bg-slate-900/60 border-slate-800/50">
+                  <h3 className="text-[10px] text-blue-500 font-black uppercase tracking-widest mb-4 flex items-center gap-2">
+                    <Wallet className="w-4 h-4" /> Ações do Sistema (Banco)
+                  </h3>
+                  <div className="space-y-3">
+                    {/* Linha 1: Automáticos */}
+                    <div className="grid grid-cols-3 gap-3">
+                      <button onClick={() => handleBankAction(2000, 'Salário (Início)')} className="bg-slate-950 border border-green-900/40 p-3 rounded-xl text-[10px] font-black uppercase tracking-widest text-green-500 hover:bg-green-900/20 hover:border-green-500/50 transition-all">
+                        + SALÁRIO
+                      </button>
+                      <button onClick={() => handleBankAction(-2000, 'Imposto de Renda')} className="bg-slate-950 border border-orange-900/40 p-3 rounded-xl text-[10px] font-black uppercase tracking-widest text-orange-500 hover:bg-orange-900/20 hover:border-orange-500/50 transition-all">
+                        - IMPOSTO
+                      </button>
+                      <button onClick={() => handleBankAction(2000, 'Restituição IR')} className="bg-slate-950 border border-emerald-900/40 p-3 rounded-xl text-[10px] font-black uppercase tracking-widest text-emerald-400 hover:bg-emerald-900/20 hover:border-emerald-500/50 transition-all">
+                        + RESTITUIÇÃO
+                      </button>
+                    </div>
+                    
+                    {/* Linha 2: Manuais */}
+                    <div className="grid grid-cols-2 gap-3">
+                      <button onClick={() => { setBankActionType('RECEIVE'); setIsBankModalOpen(true); }} className="bg-blue-600/10 border border-blue-600/30 p-4 rounded-xl text-[11px] font-black uppercase tracking-widest text-blue-400 hover:bg-blue-600/20 hover:border-blue-500 transition-all flex items-center justify-center gap-2">
+                        <Plus className="w-4 h-4" /> RECEBER VALOR
+                      </button>
+                      <button onClick={() => { setBankActionType('PAY'); setIsBankModalOpen(true); }} className="bg-red-600/10 border border-red-600/30 p-4 rounded-xl text-[11px] font-black uppercase tracking-widest text-red-500 hover:bg-red-600/20 hover:border-red-500 transition-all flex items-center justify-center gap-2">
+                        <Trash2 className="w-4 h-4 rotate-45" /> PAGAR VALOR
+                      </button>
                     </div>
                   </div>
                 </div>
 
-                <div className="bento-card bg-slate-900/40 border-slate-800/50 h-full flex flex-col relative overflow-hidden">
+                {/* 4. Registro de Ações */}
+                <div className="bento-card bg-slate-900/40 border-slate-800/50 flex flex-col relative overflow-hidden">
                   <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/5 rounded-full blur-3xl pointer-events-none" />
                   
                   <div className="flex items-center gap-2 mb-6 text-blue-500 relative z-10">
@@ -473,7 +474,6 @@ export default function App() {
           </motion.div>
         )}
       </AnimatePresence>
-
       <AnimatePresence>
         {isTransferModalOpen && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
