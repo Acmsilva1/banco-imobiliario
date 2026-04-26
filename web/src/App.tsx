@@ -180,26 +180,26 @@ export default function App() {
             animate={{ opacity: 1, scale: 1 }}
             className="p-6 md:p-10"
           >
-            <header className="max-w-6xl mx-auto mb-10 flex justify-between items-center">
-              <div>
-                <h1 className="text-3xl font-black tracking-tighter flex items-center gap-2">
-                  <span className="bg-blue-600 p-1.5 rounded-lg shadow-[0_0_15px_rgba(37,99,235,0.4)]"><Wallet className="w-6 h-6" /></span>
+            <header className="max-w-6xl mx-auto mb-10 flex flex-col md:flex-row gap-6 justify-between items-center bg-slate-900/40 p-4 md:p-6 rounded-3xl border border-slate-800/50">
+              <div className="flex flex-col items-center md:items-start text-center md:text-left">
+                <h1 className="text-2xl md:text-3xl font-black tracking-tighter flex items-center gap-2">
+                  <span className="bg-blue-600 p-1.5 md:p-2 rounded-xl shadow-[0_0_15px_rgba(37,99,235,0.4)]"><Wallet className="w-5 h-5 md:w-6 md:h-6" /></span>
                   BANCO <span className="text-blue-500 italic">DIGITAL</span>
                 </h1>
-                <p className="text-slate-500 text-[10px] font-black mt-1 uppercase tracking-[0.3em]">
+                <p className="text-slate-500 text-[10px] font-black mt-2 uppercase tracking-[0.3em]">
                   {isConnected ? '● CONEXÃO ESTÁVEL' : '○ RECONECTANDO...'}
                 </p>
               </div>
               
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-4 w-full md:w-auto justify-between md:justify-end">
                 {me && (
-                  <div className="bg-slate-900/80 border border-slate-800 px-4 py-2 rounded-2xl flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-2xl shadow-[0_0_10px_rgba(37,99,235,0.3)] border border-slate-700">
+                  <div className="bg-slate-900 border border-slate-800 px-3 md:px-4 py-2 rounded-2xl flex items-center gap-2 md:gap-3">
+                    <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-slate-800 flex items-center justify-center text-lg md:text-2xl shadow-[0_0_10px_rgba(37,99,235,0.3)] border border-slate-700">
                       {getAvatarEmoji(me.avatar)}
                     </div>
-                    <div>
-                      <p className="text-[10px] text-slate-500 font-black uppercase tracking-widest">HERÓI</p>
-                      <p className="text-sm font-bold text-blue-400">{me.nickname}</p>
+                    <div className="text-left">
+                      <p className="text-[9px] md:text-[10px] text-slate-500 font-black uppercase tracking-widest">HERÓI</p>
+                      <p className="text-xs md:text-sm font-bold text-blue-400">{me.nickname}</p>
                     </div>
                   </div>
                 )}
@@ -210,10 +210,11 @@ export default function App() {
                     setSelectedRoomId(null);
                     setMyId(null);
                   }}
-                  className="p-3 bg-slate-900 border border-slate-800 rounded-xl hover:bg-blue-600/20 hover:border-blue-500 text-slate-500 hover:text-blue-400 transition-all"
-                  title="Voltar ao Lobby"
+                  className="p-3 md:px-5 md:py-3 bg-red-500/10 border border-red-500/30 rounded-xl hover:bg-red-500/20 hover:border-red-500 text-red-400 hover:text-red-300 transition-all flex items-center gap-2 shrink-0"
+                  title="Sair da Sala"
                 >
                   <Home className="w-5 h-5" />
+                  <span className="hidden md:inline font-black tracking-widest uppercase text-xs">Sair</span>
                 </button>
               </div>
             </header>
