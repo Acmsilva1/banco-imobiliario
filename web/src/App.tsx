@@ -330,21 +330,47 @@ export default function App() {
                   </div>
                 </div>
 
-                <div className="bento-card bg-slate-950/50 border-slate-800/50 h-full flex flex-col">
-                  <div className="flex items-center gap-2 mb-6 text-blue-500">
+                <div className="bento-card bg-slate-900/40 border-slate-800/50 h-full flex flex-col relative overflow-hidden">
+                  <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/5 rounded-full blur-3xl pointer-events-none" />
+                  
+                  <div className="flex items-center gap-2 mb-6 text-blue-500 relative z-10">
                     <History className="w-5 h-5" />
-                    <h3 className="font-black uppercase text-[10px] tracking-[0.2em]">LOG DE TRANSAÇÕES</h3>
+                    <h3 className="font-black uppercase text-[10px] tracking-[0.2em]">Registro de Ações</h3>
                   </div>
-                  <div className="space-y-3 overflow-y-auto max-h-[500px] pr-2 custom-scrollbar">
-                    {gameState.logs.map((log, i) => (
-                      <div key={i} className="bg-slate-900/50 border-l-2 border-blue-600/50 p-4 rounded-r-xl">
-                        <div className="flex justify-between items-center mb-1">
-                          <span className="text-[10px] text-slate-600 font-mono">{new Date(log.criada_em).toLocaleTimeString()}</span>
-                          <div className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" />
-                        </div>
-                        <p className="text-xs text-slate-300 font-medium leading-relaxed uppercase tracking-tight">{log.mensagem}</p>
-                      </div>
-                    ))}
+                  
+                  <div className="flex-1 flex flex-col gap-3 overflow-y-auto pr-2 custom-scrollbar relative z-10" style={{ maxHeight: '500px' }}>
+                    <AnimatePresence initial={false}>
+                      {gameState.logs.map((log) => {
+                        const isCredit = log.mensagem.includes('(+');
+                        const isDebit = log.mensagem.includes('(-');
+                        const isTransfer = !isCredit && !isDebit;
+                        
+                        const colorStyle = isCredit 
+                          ? 'border-l-green-500/70 bg-gradient-to-r from-green-500/10 to-transparent text-green-300' 
+                          : isDebit 
+                            ? 'border-l-red-500/70 bg-gradient-to-r from-red-500/10 to-transparent text-red-300'
+                            : 'border-l-blue-500/70 bg-gradient-to-r from-blue-500/10 to-transparent text-blue-300';
+                            
+                        const dotColor = isCredit ? 'bg-green-400 shadow-[0_0_8px_rgba(74,222,128,0.8)]' : isDebit ? 'bg-red-400 shadow-[0_0_8px_rgba(248,113,113,0.8)]' : 'bg-blue-400 shadow-[0_0_8px_rgba(96,165,250,0.8)]';
+
+                        return (
+                          <motion.div 
+                            key={log.id} 
+                            layout
+                            initial={{ opacity: 0, x: 20, scale: 0.95 }}
+                            animate={{ opacity: 1, x: 0, scale: 1 }}
+                            transition={{ type: 'spring', stiffness: 200, damping: 20 }}
+                            className={`border-l-4 p-4 rounded-r-2xl border-y border-r border-y-slate-800/30 border-r-slate-800/30 backdrop-blur-sm shadow-sm ${colorStyle}`}
+                          >
+                            <div className="flex justify-between items-center mb-1.5">
+                              <span className="text-[9px] text-slate-500 font-black tracking-widest">{new Date(log.criada_em).toLocaleTimeString()}</span>
+                              <div className={`w-1.5 h-1.5 rounded-full animate-pulse ${dotColor}`} />
+                            </div>
+                            <p className="text-xs font-bold leading-relaxed tracking-tight">{log.mensagem}</p>
+                          </motion.div>
+                        );
+                      })}
+                    </AnimatePresence>
                   </div>
                 </div>
               </main>
