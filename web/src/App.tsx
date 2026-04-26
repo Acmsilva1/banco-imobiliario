@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ServerSelection } from './features/lobby/components/ServerSelection';
 import { PlayerSetup } from './features/lobby/components/PlayerSetup';
@@ -13,6 +13,7 @@ export default function App() {
   const [rooms, setRooms] = useState<any[]>([]);
   const [myRooms, setMyRooms] = useState<string[]>(JSON.parse(localStorage.getItem('my_rooms') || '[]'));
   const [selectedRoomId, setSelectedRoomId] = useState<string | null>(null);
+  const selectedRoomIdRef = useRef<string | null>(null);
   const [myId, setMyId] = useState<string | null>(null);
   const [isTransferModalOpen, setIsTransferModalOpen] = useState(false);
   const [transferAmount, setTransferAmount] = useState<string>('');
@@ -82,6 +83,7 @@ export default function App() {
 
   const handleJoinRoom = async (roomId: string) => {
     setSelectedRoomId(roomId);
+    selectedRoomIdRef.current = roomId;
     const savedId = localStorage.getItem('session_' + roomId);
     if (savedId) {
       setMyId(savedId);
@@ -107,23 +109,30 @@ export default function App() {
   };
 
   const handleSetupComplete = async (nickname: string, avatarId: string) => {
-    if (!selectedRoomId) return;
+    // Usa ref para garantir o valor atual mesmo após mudanças de estado assíncronas
+    const roomId = selectedRoomIdRef.current || selectedRoomId;
+    if (!roomId) {
+      console.error('Nenhuma sala selecionada');
+      return;
+    }
     
-    const { data: partida } = await supabase.from('partidas').select('capital_inicial').eq('id', selectedRoomId).single();
+    const { data: partida } = await supabase.from('partidas').select('capital_inicial').eq('id', roomId).single();
     const capital = partida?.capital_inicial || 25000;
 
     const { data, error } = await supabase.from('jogadores').insert({
-      partida_id: selectedRoomId,
+      partida_id: roomId,
       nickname,
       avatar: avatarId,
       saldo: capital
     }).select().single();
     
     if (data) {
-      localStorage.setItem('session_' + selectedRoomId, data.id);
+      localStorage.setItem('session_' + roomId, data.id);
+      setSelectedRoomId(roomId);
+      selectedRoomIdRef.current = roomId;
       setMyId(data.id);
       setScreen('GAME');
-      await incrementPlayerCount(selectedRoomId);
+      await incrementPlayerCount(roomId);
     } else {
       console.error('Erro ao criar jogador:', error);
     }
