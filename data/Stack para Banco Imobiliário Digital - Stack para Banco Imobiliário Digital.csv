@@ -1,0 +1,9 @@
+Categoria,Tecnologia,"O ""Porquê"" (Justificativa Técnica)"
+Frontend,React (Vite),"O Vite é o ""carro de corrida"" que o Webpack nunca conseguiu ser. O React garante que a UI seja reativa aos eventos do Socket sem você precisar de rezas para o DOM."
+Linguagem,TypeScript,"Para não deixar o sistema aceitar ""banana"" como valor monetário. Tipagem estrita é a única coisa que separa um desenvolvedor sênior de um estagiário com sono."
+Backend,Node.js + Fastify,Fastify é focado em baixo overhead e máxima velocidade. É o motor ideal para um microserviço que precisa processar transações em milissegundos.
+Comunicação,Socket.io,"Cria o ""túnel"" de comunicação persistente. É o que permite que o seu primo perca o dinheiro dele no celular dele e você veja o saldo dele sumindo no seu em tempo real."
+Estilização,Tailwind CSS,"Porque ninguém tem tempo de escrever CSS puro em 2026. Ele mantém o visual ""dark mode"" elegante que você já começou, sem criar um arquivo de 2km de extensão."
+DevOps/Infra,Docker,"Garante que o ambiente de ""Vila Velha"" seja o mesmo ambiente de ""Produção na Nuvem"". Containerizar é a lei."
+CI/CD,Azure DevOps Pipelines,"Já que você está migrando para lá, use o YAML Pipelines para automatizar o build da imagem Docker e o deploy. Profissionalismo puro."
+Persistência,Redis (Opcional),"Se quiser que a partida sobreviva a um restart do servidor, o Redis guarda o estado em memória com velocidade absurda."

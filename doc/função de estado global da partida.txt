@@ -1,0 +1,12 @@
+// src/services/BankService.ts
+
+public resetGame(): GameState {
+  // Antes de limpar, você poderia disparar uma função para salvar os logs em um BD ou arquivo
+  console.log("💾 Salvando logs para auditoria final...");
+  
+  this.state = {
+    players: [],
+    logs: [`[${new Date().toLocaleTimeString()}] --- PARTIDA ENCERRADA PELO ADMINISTRADOR ---`]
+  };
+  return this.state;
+}
