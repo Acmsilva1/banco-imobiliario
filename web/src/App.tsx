@@ -362,12 +362,6 @@ export default function App() {
                         <TrendingUp className="text-blue-400 w-8 h-8" />
                       </div>
                     </div>
-                    <div className="flex gap-4 relative z-10">
-                      <button onClick={() => setIsTransferModalOpen(true)} className="flex-1 btn-primary py-5 text-lg flex items-center justify-center gap-3">
-                        <ArrowRightLeft className="w-6 h-6" />
-                        TRANSFERIR CRÉDITOS
-                      </button>
-                    </div>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
