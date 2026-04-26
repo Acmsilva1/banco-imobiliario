@@ -66,14 +66,29 @@ export default function App() {
     }
   };
 
-  const handleJoinRoom = (roomId: string) => {
+  const handleJoinRoom = async (roomId: string) => {
     setSelectedRoomId(roomId);
     const savedId = localStorage.getItem('session_' + roomId);
     if (savedId) {
       setMyId(savedId);
       setScreen('GAME');
+      await incrementPlayerCount(roomId);
     } else {
       setScreen('SETUP');
+    }
+  };
+
+  const incrementPlayerCount = async (roomId: string) => {
+    const { data: partida } = await supabase.from('partidas').select('players_count').eq('id', roomId).single();
+    if (partida) {
+      await supabase.from('partidas').update({ players_count: (partida.players_count || 0) + 1 }).eq('id', roomId);
+    }
+  };
+
+  const decrementPlayerCount = async (roomId: string) => {
+    const { data: partida } = await supabase.from('partidas').select('players_count').eq('id', roomId).single();
+    if (partida && partida.players_count && partida.players_count > 0) {
+      await supabase.from('partidas').update({ players_count: partida.players_count - 1 }).eq('id', roomId);
     }
   };
 
@@ -94,10 +109,24 @@ export default function App() {
       localStorage.setItem('session_' + selectedRoomId, data.id);
       setMyId(data.id);
       setScreen('GAME');
+      await incrementPlayerCount(selectedRoomId);
     } else {
       console.error('Erro ao criar jogador:', error);
     }
   };
+
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      if (selectedRoomId && screen === 'GAME') {
+        // Usa beacon para garantir envio no fechamento da aba
+        navigator.sendBeacon(`${import.meta.env.VITE_SUPABASE_URL}/rest/v1/rpc/decrement_players_count`, JSON.stringify({ room_id: selectedRoomId }));
+        // Fallback frontend caso não haja RPC
+        decrementPlayerCount(selectedRoomId);
+      }
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [selectedRoomId, screen]);
 
   const me = gameState.players.find(p => p.id === myId);
 
@@ -176,6 +205,7 @@ export default function App() {
                 )}
                 <button 
                   onClick={() => {
+                    if (selectedRoomId) decrementPlayerCount(selectedRoomId);
                     setScreen('LOBBY');
                     setSelectedRoomId(null);
                     setMyId(null);

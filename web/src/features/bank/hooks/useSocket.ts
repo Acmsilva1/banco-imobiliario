@@ -1,48 +1,81 @@
-import { useEffect, useRef, useState } from 'react';
-import { io, Socket } from 'socket.io-client';
+import { useEffect, useState } from 'react';
+import { supabase } from '../../core/supabase';
 import type { GameState, TransferPayload } from '../bank.types';
 
-const SOCKET_URL = import.meta.env.VITE_API_URL || (window.location.hostname === 'localhost' ? 'http://localhost:3000' : window.location.origin);
-
 export const useSocket = (partidaId: string) => {
-  const socketRef = useRef<Socket | null>(null);
   const [gameState, setGameState] = useState<GameState>({ players: [], logs: [] });
   const [isConnected, setIsConnected] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
+  const fetchState = async () => {
     if (!partidaId) return;
-
-    const socket = io(SOCKET_URL);
-    socketRef.current = socket;
-
-    socket.on('connect', () => {
-      setIsConnected(true);
-      socket.emit('join_room', partidaId);
+    
+    const { data: players } = await supabase.from('jogadores').select('*').eq('partida_id', partidaId).order('nickname');
+    const { data: logs } = await supabase.from('transacoes').select('*').eq('partida_id', partidaId).order('criada_em', { ascending: false }).limit(50);
+    
+    setGameState({
+      players: players || [],
+      logs: logs || []
     });
+  };
 
-    socket.on('disconnect', () => setIsConnected(false));
+  useEffect(() => {
+    if (!partidaId) {
+      setIsConnected(false);
+      return;
+    }
 
-    socket.on('sync_state', (state: GameState) => {
-      setGameState(state);
-    });
+    fetchState();
+    setIsConnected(true);
 
-    socket.on('error_message', (msg: string) => {
-      setError(msg);
-      setTimeout(() => setError(null), 3000);
-    });
+    const subscription = supabase
+      .channel(`game_${partidaId}`)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'jogadores', filter: `partida_id=eq.${partidaId}` }, fetchState)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'transacoes', filter: `partida_id=eq.${partidaId}` }, fetchState)
+      .subscribe((status) => {
+        if (status === 'SUBSCRIBED') setIsConnected(true);
+        if (status === 'CLOSED' || status === 'CHANNEL_ERROR') setIsConnected(false);
+      });
 
     return () => {
-      socket.disconnect();
+      supabase.removeChannel(subscription);
+      setIsConnected(false);
     };
   }, [partidaId]);
 
-  const transfer = (payload: TransferPayload) => {
-    socketRef.current?.emit('exec_transfer', payload);
+  const transfer = async (payload: TransferPayload) => {
+    try {
+      const { data: fromPlayer } = await supabase.from('jogadores').select('saldo, nickname').eq('id', payload.fromId).single();
+      const { data: toPlayer } = await supabase.from('jogadores').select('saldo, nickname').eq('id', payload.toId).single();
+
+      if (!fromPlayer || !toPlayer) throw new Error('Jogadores não encontrados');
+      if (fromPlayer.saldo < payload.amount) throw new Error('Saldo insuficiente');
+
+      await supabase.from('jogadores').update({ saldo: fromPlayer.saldo - payload.amount }).eq('id', payload.fromId);
+      await supabase.from('jogadores').update({ saldo: toPlayer.saldo + payload.amount }).eq('id', payload.toId);
+
+      const mensagem = `${fromPlayer.nickname} ➔ ${toPlayer.nickname}: R$ ${payload.amount.toLocaleString()}`;
+      await supabase.from('transacoes').insert({ partida_id: payload.partidaId, mensagem });
+      
+    } catch (err: any) {
+      setError(err.message);
+      setTimeout(() => setError(null), 3000);
+    }
   };
 
-  const adjustBalance = (playerId: string, amount: number, label: string) => {
-    socketRef.current?.emit('adjust_balance', { playerId, amount, label, partidaId });
+  const adjustBalance = async (playerId: string, amount: number, label: string) => {
+    try {
+      const { data: player } = await supabase.from('jogadores').select('saldo, nickname').eq('id', playerId).single();
+      if (!player) throw new Error('Jogador não encontrado');
+
+      await supabase.from('jogadores').update({ saldo: player.saldo + amount }).eq('id', playerId);
+
+      const mensagem = `${label}: ${player.nickname} (${amount > 0 ? '+' : ''}${amount.toLocaleString()})`;
+      await supabase.from('transacoes').insert({ partida_id: partidaId, mensagem });
+    } catch (err: any) {
+      setError(err.message);
+      setTimeout(() => setError(null), 3000);
+    }
   };
 
   return { gameState, isConnected, error, transfer, adjustBalance };
