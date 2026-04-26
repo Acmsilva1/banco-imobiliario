@@ -388,7 +388,7 @@ export default function App() {
                     <h3 className="text-[10px] text-blue-500 font-black uppercase tracking-widest mb-4 flex items-center gap-2">
                       <Wallet className="w-4 h-4" /> Ações do Sistema (Banco)
                     </h3>
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
                       <button onClick={() => handleBankAction(2000, 'Salário (Início)')} className="bg-slate-950 border border-green-900/40 p-3 rounded-xl text-[10px] font-black uppercase tracking-widest text-green-500 hover:bg-green-900/20 hover:border-green-500/50 transition-all">
                         + SALÁRIO
                       </button>
@@ -397,6 +397,12 @@ export default function App() {
                       </button>
                       <button onClick={() => { setBankActionType('PAY'); setIsBankModalOpen(true); }} className="bg-slate-950 border border-red-900/40 p-3 rounded-xl text-[10px] font-black uppercase tracking-widest text-red-500 hover:bg-red-900/20 hover:border-red-500/50 transition-all">
                         - PAGAR
+                      </button>
+                      <button onClick={() => handleBankAction(-2000, 'Imposto de Renda')} className="bg-slate-950 border border-orange-900/40 p-3 rounded-xl text-[10px] font-black uppercase tracking-widest text-orange-500 hover:bg-orange-900/20 hover:border-orange-500/50 transition-all">
+                        - IMPOSTO
+                      </button>
+                      <button onClick={() => handleBankAction(2000, 'Restituição IR')} className="bg-slate-950 border border-emerald-900/40 p-3 rounded-xl text-[10px] font-black uppercase tracking-widest text-emerald-400 hover:bg-emerald-900/20 hover:border-emerald-500/50 transition-all">
+                        + RESTITUIÇÃO
                       </button>
                     </div>
                   </div>
