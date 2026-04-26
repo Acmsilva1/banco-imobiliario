@@ -2,8 +2,6 @@ import { useState } from 'react';
 import { useSocket } from './features/bank/hooks/useSocket';
 import { Wallet, ArrowRightLeft, History, Users, TrendingUp, AlertCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { clsx, type ClassValue } from 'clsx';
-import { twMerge } from 'tailwind-merge';
 
 
 export default function App() {
