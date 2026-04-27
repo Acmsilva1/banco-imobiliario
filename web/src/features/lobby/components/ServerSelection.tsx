@@ -41,12 +41,35 @@ export const ServerSelection = ({ rooms, onCreateRoom, onJoinRoom, onDeleteRoom,
       <div className="lobby-scene-bg" aria-hidden="true">
         <div className="lobby-spotlight" />
         <div className="lobby-grid-lines" />
-        <span className="lobby-float lobby-float-a">🏦</span>
-        <span className="lobby-float lobby-float-b">🪙</span>
-        <span className="lobby-float lobby-float-c">💳</span>
-        <span className="lobby-float lobby-float-d">🏙️</span>
-        <span className="lobby-float lobby-float-e">💸</span>
-        <span className="lobby-float lobby-float-f">🎲</span>
+        <div className="lobby-city-parallax">
+          <div className="lobby-city-glow" />
+          <div className="lobby-city-stars" />
+          <div className="lobby-ferris-wheel" />
+          <div className="lobby-skyline lobby-skyline-back">
+            <span className="tower t-1" />
+            <span className="tower t-2" />
+            <span className="tower t-3" />
+            <span className="tower t-4" />
+            <span className="tower t-5" />
+            <span className="tower t-6" />
+          </div>
+          <div className="lobby-skyline lobby-skyline-front">
+            <span className="tower t-7" />
+            <span className="tower t-8" />
+            <span className="tower t-9" />
+            <span className="tower t-10" />
+            <span className="tower t-11" />
+            <span className="tower t-12" />
+          </div>
+          <div className="lobby-avenue">
+            <span className="lobby-vehicle v-a">🚕</span>
+            <span className="lobby-vehicle v-b">🚗</span>
+            <span className="lobby-vehicle v-c">🚌</span>
+          </div>
+          <span className="lobby-air a-a">🚁</span>
+          <span className="lobby-air a-b">💸</span>
+          <span className="lobby-air a-c">🪙</span>
+        </div>
       </div>
 
       <motion.div
