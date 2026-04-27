@@ -260,8 +260,20 @@ export default function App() {
             key="game" 
             initial={{ opacity: 0, scale: 1.1 }} 
             animate={{ opacity: 1, scale: 1 }}
-            className="p-6 md:p-10"
+            className="p-6 md:p-10 relative overflow-hidden"
           >
+            <div className="game-money-bg" aria-hidden="true">
+              <span className="floating-note note-style-a" style={{ left: '4%', top: '10%', animationDelay: '0s', animationDuration: '12s' }}>💵</span>
+              <span className="floating-note note-style-b" style={{ left: '18%', top: '78%', animationDelay: '1.2s', animationDuration: '14s' }}>💴</span>
+              <span className="floating-note note-style-c" style={{ left: '33%', top: '22%', animationDelay: '2.6s', animationDuration: '13s' }}>💶</span>
+              <span className="floating-note note-style-a" style={{ left: '47%', top: '70%', animationDelay: '0.8s', animationDuration: '15s' }}>💵</span>
+              <span className="floating-note note-style-b" style={{ left: '62%', top: '16%', animationDelay: '3s', animationDuration: '12.5s' }}>💷</span>
+              <span className="floating-note note-style-c" style={{ left: '76%', top: '64%', animationDelay: '1.8s', animationDuration: '14.5s' }}>💵</span>
+              <span className="floating-note note-style-a" style={{ left: '88%', top: '30%', animationDelay: '2.2s', animationDuration: '13.5s' }}>💴</span>
+              <span className="floating-note note-style-b" style={{ left: '12%', top: '46%', animationDelay: '3.6s', animationDuration: '16s' }}>💶</span>
+              <span className="floating-note note-style-c" style={{ left: '56%', top: '44%', animationDelay: '4.1s', animationDuration: '12.8s' }}>💵</span>
+              <span className="floating-note note-style-a" style={{ left: '70%', top: '84%', animationDelay: '2.9s', animationDuration: '15.2s' }}>💷</span>
+            </div>
             <header className="max-w-6xl mx-auto mb-10 flex flex-col md:flex-row gap-6 justify-between items-center bg-slate-900/40 p-4 md:p-6 rounded-3xl border border-slate-800/50">
               <div className="flex flex-col items-center md:items-start text-center md:text-left">
                 <h1 className="text-2xl md:text-3xl font-black tracking-tighter flex items-center gap-2">
