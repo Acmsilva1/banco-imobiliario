@@ -94,9 +94,9 @@ export const ServerSelection = ({ rooms, onCreateRoom, onJoinRoom, onDeleteRoom,
             className={`col-span-1 flex flex-col items-center justify-center border-2 border-dashed border-white/20 p-10 md:col-span-2 lg:col-span-2 ${glassCard}`}
           >
             <Globe className="mb-4 h-12 w-12 text-slate-200 drop-shadow-[0_1px_3px_rgba(0,0,0,0.6)]" />
-            <h3 className="mb-2 text-xl font-bold text-white drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]">Nenhum Servidor Ativo</h3>
+            <h3 className="mb-2 text-xl font-bold text-white drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]">Sem salas até o momento</h3>
             <p className="text-center text-sm text-slate-100 drop-shadow-[0_1px_4px_rgba(0,0,0,0.85)]">
-              Seja o primeiro a criar uma sala e convide seus amigos para jogar.
+              Seja o primeiro a criar uma sala e convide os amigos para jogar.
             </p>
           </div>
         ) : (
@@ -151,7 +151,7 @@ export const ServerSelection = ({ rooms, onCreateRoom, onJoinRoom, onDeleteRoom,
                 className="mt-8 flex w-full items-center justify-center gap-2 rounded-xl border border-white/15 bg-blue-600/80 py-4 font-black uppercase tracking-widest text-white shadow-lg backdrop-blur-md transition-all hover:bg-blue-600"
               >
                 <Zap className="h-4 w-4" />
-                ENTRAR NO SERVIDOR
+                ENTRAR NA SALA
               </button>
             </motion.div>
           ))
