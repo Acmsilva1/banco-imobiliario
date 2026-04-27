@@ -5,6 +5,19 @@ import type { BaseProfile, Room } from '../lobby.types';
 
 const randomRoomCode = () => Math.random().toString(36).slice(2, 9).toUpperCase();
 
+/** Base remota sem migração `lider_nickname` → PostgREST devolve 400 / PGRST204 / 42703 */
+const isLiderNicknameUnavailable = (err: unknown): boolean => {
+  if (!err || typeof err !== 'object') return false;
+  const o = err as { code?: string; message?: string; details?: string; hint?: string };
+  const blob = [o.code, o.message, o.details, o.hint].filter(Boolean).join(' ').toLowerCase();
+  return (
+    o.code === '42703' ||
+    o.code === 'PGRST204' ||
+    blob.includes('lider_nickname') ||
+    (blob.includes('column') && blob.includes('does not exist'))
+  );
+};
+
 export const useLobbyData = () => {
   const [rooms, setRooms] = useState<Room[]>([]);
   const [baseProfiles, setBaseProfiles] = useState<BaseProfile[]>([]);
@@ -31,13 +44,26 @@ export const useLobbyData = () => {
 
   const fetchRooms = useCallback(async () => {
     try {
-      const { data, error: roomsError } = await supabase
+      const withLeader = await supabase
         .from('partidas')
         .select('id,nome,codigo_sala,status,capital_inicial,lider_nickname')
         .eq('status', 'LOBBY');
 
-      throwIfSupabaseError(roomsError, 'Falha ao carregar salas');
-      const roomsData = (data || []) as Omit<Room, 'players_count'>[];
+      const fallback =
+        withLeader.error && isLiderNicknameUnavailable(withLeader.error)
+          ? await supabase
+              .from('partidas')
+              .select('id,nome,codigo_sala,status,capital_inicial')
+              .eq('status', 'LOBBY')
+          : null;
+
+      const roomsRes = fallback ?? withLeader;
+      throwIfSupabaseError(roomsRes.error, 'Falha ao carregar salas');
+      const raw = roomsRes.data || [];
+      const roomsData = raw.map((row) => ({
+        ...(row as Omit<Room, 'players_count'>),
+        lider_nickname: (row as { lider_nickname?: string | null }).lider_nickname ?? null
+      }));
 
       const withCounts = await Promise.all(
         roomsData.map(async (room) => {
@@ -78,11 +104,19 @@ export const useLobbyData = () => {
     const leader = liderNickname.trim();
     if (!roomName || !leader) return;
 
-    const { error: createError } = await supabase.from('partidas').insert({
+    let { error: createError } = await supabase.from('partidas').insert({
       nome: roomName,
       codigo_sala: randomRoomCode(),
       lider_nickname: leader
     });
+
+    if (createError && isLiderNicknameUnavailable(createError)) {
+      ({ error: createError } = await supabase.from('partidas').insert({
+        nome: roomName,
+        codigo_sala: randomRoomCode()
+      }));
+    }
+
     throwIfSupabaseError(createError, 'Falha ao criar sala');
   };
 
