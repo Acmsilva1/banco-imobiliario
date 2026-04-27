@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { User, CheckCircle2, ArrowLeft } from 'lucide-react';
+import type { BaseProfile } from '../lobby.types';
 
 const AVATARS = [
   { id: '1', emoji: '🦊', label: 'Raposa Astuta' },
@@ -12,7 +13,7 @@ const AVATARS = [
 ];
 
 interface PlayerSetupProps {
-  baseProfiles: any[];
+  baseProfiles: BaseProfile[];
   onComplete: (nickname: string, avatarId: string) => void;
   onBack: () => void;
 }

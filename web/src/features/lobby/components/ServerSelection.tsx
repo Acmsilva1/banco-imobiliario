@@ -1,16 +1,16 @@
 import { motion } from 'framer-motion';
 import { Users, Plus, Globe, Zap, Trash2 } from 'lucide-react';
+import type { Room } from '../lobby.types';
 
 interface ServerSelectionProps {
-  rooms: any[];
-  myRooms: string[];
+  rooms: Room[];
   onCreateRoom: () => void;
   onJoinRoom: (roomId: string) => void;
   onDeleteRoom: (roomId: string) => void;
   onOpenFamilyManager: () => void;
 }
 
-export const ServerSelection = ({ rooms, myRooms, onCreateRoom, onJoinRoom, onDeleteRoom, onOpenFamilyManager }: ServerSelectionProps) => {
+export const ServerSelection = ({ rooms, onCreateRoom, onJoinRoom, onDeleteRoom, onOpenFamilyManager }: ServerSelectionProps) => {
   return (
     <div className="min-h-screen bg-[#020617] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-900/20 via-slate-950 to-slate-950 p-6 flex flex-col items-center justify-center">
       <motion.div 

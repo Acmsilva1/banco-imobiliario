@@ -10,7 +10,7 @@ export interface Player {
 
 export interface GameState {
   players: Player[];
-  logs: { id: string; mensagem: string; criada_em: string }[];
+  logs: TransactionLog[];
 }
 
 export interface TransferPayload {
@@ -18,4 +18,11 @@ export interface TransferPayload {
   toId: string;
   amount: number;
   partidaId: string;
+}
+
+export interface TransactionLog {
+  id: string;
+  partida_id: string;
+  mensagem: string;
+  criada_em: string;
 }
