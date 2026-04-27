@@ -1,5 +1,4 @@
-import { useRef } from 'react';
-import { motion, useReducedMotion } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { Users, Plus, Globe, Zap, Trash2 } from 'lucide-react';
 import type { Room } from '../lobby.types';
 
@@ -12,126 +11,8 @@ interface ServerSelectionProps {
 }
 
 export const ServerSelection = ({ rooms, onCreateRoom, onJoinRoom, onDeleteRoom, onOpenFamilyManager }: ServerSelectionProps) => {
-  const sceneRef = useRef<HTMLDivElement | null>(null);
-  const reduceMotion = useReducedMotion();
-
-  const updateSpotlight = (x: number, y: number) => {
-    const node = sceneRef.current;
-    if (!node) return;
-    const rect = node.getBoundingClientRect();
-    node.style.setProperty('--pointer-x', `${x - rect.left}px`);
-    node.style.setProperty('--pointer-y', `${y - rect.top}px`);
-  };
-
   return (
-    <div
-      ref={sceneRef}
-      onPointerMove={(event) => updateSpotlight(event.clientX, event.clientY)}
-      onTouchMove={(event) => {
-        const touch = event.touches[0];
-        if (touch) updateSpotlight(touch.clientX, touch.clientY);
-      }}
-      onPointerLeave={() => {
-        const node = sceneRef.current;
-        if (!node) return;
-        node.style.setProperty('--pointer-x', '50%');
-        node.style.setProperty('--pointer-y', '30%');
-      }}
-      className="lobby-scene min-h-screen p-4 md:p-6 flex flex-col items-center justify-center relative overflow-hidden"
-    >
-      <div className="lobby-scene-bg" aria-hidden="true">
-        <div className="lobby-spotlight" />
-        <div className="lobby-bank-scene">
-          <div className="lobby-city-glow" />
-          <motion.div
-            className="lobby-city-stars"
-            animate={reduceMotion ? undefined : { opacity: [0.55, 0.92, 0.55] }}
-            transition={reduceMotion ? undefined : { duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-          />
-          <div className="lobby-vault-ring" />
-          <motion.div
-            className="lobby-safe-dial"
-            animate={reduceMotion ? undefined : { rotate: 360 }}
-            transition={reduceMotion ? undefined : { duration: 18, repeat: Infinity, ease: 'linear' }}
-          />
-          <motion.div
-            className="lobby-cash-wave"
-            animate={reduceMotion ? undefined : { opacity: [0.45, 0.78, 0.45] }}
-            transition={reduceMotion ? undefined : { duration: 9, repeat: Infinity, ease: 'easeInOut' }}
-          />
-          <motion.div
-            className="lobby-city-layer lobby-city-layer-back"
-            animate={reduceMotion ? undefined : { x: [-10, 10, -10] }}
-            transition={reduceMotion ? undefined : { duration: 26, repeat: Infinity, ease: 'easeInOut' }}
-          >
-            <div className="lobby-building b-back b-1" />
-            <div className="lobby-building b-back b-2" />
-            <div className="lobby-building b-back b-3" />
-            <div className="lobby-building b-back b-4" />
-            <div className="lobby-building b-back b-5" />
-            <div className="lobby-building b-back b-6" />
-            <div className="lobby-building b-back b-7" />
-          </motion.div>
-          <motion.div
-            className="lobby-city-layer lobby-city-layer-front"
-            animate={reduceMotion ? undefined : { x: [10, -10, 10] }}
-            transition={reduceMotion ? undefined : { duration: 18, repeat: Infinity, ease: 'easeInOut' }}
-          >
-            <div className="lobby-building b-front b-8" />
-            <div className="lobby-building b-front b-9" />
-            <div className="lobby-building b-front b-10" />
-            <div className="lobby-building b-front b-11" />
-            <div className="lobby-building b-front b-12" />
-            <div className="lobby-building b-front b-13" />
-            <div className="lobby-building b-front b-14" />
-          </motion.div>
-          <div className="lobby-counter-strip">
-            <motion.span
-              className="lobby-float-motion f-1"
-              animate={reduceMotion ? undefined : { x: ['-12vw', '112vw'] }}
-              transition={reduceMotion ? undefined : { duration: 14, repeat: Infinity, ease: 'linear', repeatDelay: 1.2 }}
-            >
-              🏦
-            </motion.span>
-            <motion.span
-              className="lobby-float-motion f-2"
-              animate={reduceMotion ? undefined : { x: ['112vw', '-12vw'] }}
-              transition={reduceMotion ? undefined : { duration: 16, repeat: Infinity, ease: 'linear', repeatDelay: 0.8 }}
-            >
-              💳
-            </motion.span>
-            <motion.span
-              className="lobby-float-motion f-3"
-              animate={reduceMotion ? undefined : { x: ['-12vw', '112vw'] }}
-              transition={reduceMotion ? undefined : { duration: 12, repeat: Infinity, ease: 'linear', repeatDelay: 2.4 }}
-            >
-              💵
-            </motion.span>
-          </div>
-          <motion.span
-            className="lobby-float-motion f-4"
-            animate={reduceMotion ? undefined : { x: ['-8vw', '92vw'], y: [0, -6, 2, 0] }}
-            transition={reduceMotion ? undefined : { duration: 18, repeat: Infinity, ease: 'easeInOut' }}
-          >
-            💸
-          </motion.span>
-          <motion.span
-            className="lobby-float-motion f-5"
-            animate={reduceMotion ? undefined : { y: [0, -10, 0], rotate: [-6, 6, -6] }}
-            transition={reduceMotion ? undefined : { duration: 7, repeat: Infinity, ease: 'easeInOut' }}
-          >
-            🪙
-          </motion.span>
-          <motion.span
-            className="lobby-float-motion f-6"
-            animate={reduceMotion ? undefined : { x: ['92vw', '-8vw'], y: [0, 4, -2, 0] }}
-            transition={reduceMotion ? undefined : { duration: 20, repeat: Infinity, ease: 'easeInOut' }}
-          >
-            📈
-          </motion.span>
-        </div>
-      </div>
-
+    <div className="min-h-screen bg-[#020617] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-900/20 via-slate-950 to-slate-950 p-4 md:p-6 flex flex-col items-center justify-center relative overflow-hidden">
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
