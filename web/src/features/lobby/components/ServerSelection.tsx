@@ -5,9 +5,6 @@ import type { Room } from '../lobby.types';
 const glassPanel =
   'rounded-2xl border border-amber-900/30 bg-slate-950/[0.18] shadow-[0_0_40px_rgba(0,0,0,0.35)] backdrop-blur-md backdrop-saturate-125 ring-1 ring-amber-950/20';
 
-/** Arte com os dois banqueiros lado a lado — metade esquerda / metade direita em cada lateral */
-const BANKERS_FLANK_SRC = '/lobby-bankers-flank.png';
-
 interface ServerSelectionProps {
   rooms: Room[];
   onCreateRoom: () => void;
@@ -23,40 +20,10 @@ export const ServerSelection = ({ rooms, onCreateRoom, onJoinRoom, onDeleteRoom,
     <div className="relative flex min-h-screen flex-col items-center overflow-hidden px-4 py-8 md:px-6 md:py-10">
       <div className="absolute inset-0 bg-[#020617]" aria-hidden />
       <div
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat md:bg-[position:center_25%]"
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat md:bg-[position:center_22%]"
         style={{ backgroundImage: "url('/lobby-bg.png')" }}
         aria-hidden
       />
-
-      {/* Banqueiros: por cima da foto, por baixo dos scrims — mix-blend-screen “remove” o preto da arte */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute bottom-0 left-0 hidden h-[min(88vh,900px)] w-[clamp(64px,12vw,220px)] overflow-hidden lg:block xl:w-[clamp(80px,14vw,280px)]"
-      >
-        <div
-          className="absolute inset-0 mix-blend-screen contrast-[1.02] saturate-[1.05]"
-          style={{
-            backgroundImage: `url(${BANKERS_FLANK_SRC})`,
-            backgroundRepeat: 'no-repeat',
-            backgroundPosition: 'left bottom',
-            backgroundSize: '200% auto',
-          }}
-        />
-      </div>
-      <div
-        aria-hidden
-        className="pointer-events-none absolute bottom-0 right-0 hidden h-[min(88vh,900px)] w-[clamp(64px,12vw,220px)] overflow-hidden lg:block xl:w-[clamp(80px,14vw,280px)]"
-      >
-        <div
-          className="absolute inset-0 mix-blend-screen contrast-[1.02] saturate-[1.05]"
-          style={{
-            backgroundImage: `url(${BANKERS_FLANK_SRC})`,
-            backgroundRepeat: 'no-repeat',
-            backgroundPosition: 'right bottom',
-            backgroundSize: '200% auto',
-          }}
-        />
-      </div>
 
       <div
         className="pointer-events-none absolute inset-0 bg-gradient-to-b from-slate-950/50 via-slate-950/20 to-slate-950/70"
