@@ -9,7 +9,11 @@ const AVATARS = [
   { id: '3', emoji: '🤖', label: 'Bot Investidor' },
   { id: '4', emoji: '🐼', label: 'Panda Capital' },
   { id: '5', emoji: '🐙', label: 'Polvo Trader' },
-  { id: '6', emoji: '🚀', label: 'Foguete Alpha' },
+  { id: '6', emoji: '🐯', label: 'Tigre Estrategista' },
+  { id: '7', emoji: '🧙', label: 'Mago do Mercado' },
+  { id: '8', emoji: '👩‍🚀', label: 'Comandante Espacial' },
+  { id: '9', emoji: '🧑‍💼', label: 'Executivo Frio' },
+  { id: '10', emoji: '🕵️', label: 'Detetive de Trapaças' },
 ];
 
 interface PlayerSetupProps {
@@ -85,7 +89,7 @@ export const PlayerSetup = ({ baseProfiles, onComplete, onBack }: PlayerSetupPro
 
           <div>
             <label className="block text-[10px] font-black text-blue-400 uppercase tracking-[0.2em] mb-4">Selecione seu Avatar</label>
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
               {AVATARS.map((avatar) => (
                 <motion.button
                   key={avatar.id}

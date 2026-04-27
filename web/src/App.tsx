@@ -202,7 +202,16 @@ export default function App() {
   // Mapeamento de avatares para emoji
   const getAvatarEmoji = (id: string) => {
     const avatars: Record<string, string> = {
-      '1': '🦊', '2': '🦁', '3': '🤖', '4': '🐼', '5': '🐙', '6': '🚀'
+      '1': '🦊',
+      '2': '🦁',
+      '3': '🤖',
+      '4': '🐼',
+      '5': '🐙',
+      '6': '🐯',
+      '7': '🧙',
+      '8': '👩‍🚀',
+      '9': '🧑‍💼',
+      '10': '🕵️'
     };
     return avatars[id] || '👤';
   };
@@ -682,8 +691,8 @@ export default function App() {
                   </div>
                   <div>
                     <label className="block text-[10px] text-slate-600 font-bold uppercase mb-2">Avatar / Emoji</label>
-                    <div className="grid grid-cols-6 gap-2">
-                      {['1','2','3','4','5','6'].map(id => (
+                    <div className="grid grid-cols-5 gap-2">
+                      {['1','2','3','4','5','6','7','8','9','10'].map(id => (
                         <button 
                           key={id}
                           onClick={() => setSelectedAvatar(id)}
