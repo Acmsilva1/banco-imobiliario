@@ -12,6 +12,12 @@
 }
 
 @layer components {
+  .avatar-emoji {
+    display: inline-block;
+    animation: avatar-float 2.2s ease-in-out infinite;
+    will-change: transform;
+  }
+
   .bento-card {
     @apply bg-slate-900/50 border border-slate-800 rounded-2xl p-6 backdrop-blur-sm 
            transition-all duration-300 hover:border-blue-600/50 hover:shadow-[0_0_20px_rgba(37,99,235,0.1)];
@@ -29,5 +35,14 @@
   .input-field {
     @apply bg-slate-800/50 border border-slate-700 rounded-xl px-4 py-2 focus:border-blue-500 
            focus:ring-1 focus:ring-blue-500 outline-none transition-all;
+  }
+}
+
+@keyframes avatar-float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-3px);
   }
 }

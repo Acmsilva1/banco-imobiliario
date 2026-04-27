@@ -202,7 +202,7 @@ export default function App() {
   // Mapeamento de avatares para emoji
   const getAvatarEmoji = (id: string) => {
     const avatars: Record<string, string> = {
-      '1': '🦊', '2': '🐉', '3': '🤖', '4': '🦄', '5': '🐱', '6': '👑'
+      '1': '🦊', '2': '🦁', '3': '🤖', '4': '🐼', '5': '🐙', '6': '🚀'
     };
     return avatars[id] || '👤';
   };
@@ -228,7 +228,6 @@ export default function App() {
           <motion.div key="lobby" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
             <ServerSelection 
               rooms={rooms} 
-              myRooms={[]} // Removido filtro de localStorage, lixeira aparece para todos
               onCreateRoom={handleCreateRoom} 
               onJoinRoom={handleJoinRoom} 
               onDeleteRoom={handleDeleteRoom}
@@ -269,7 +268,7 @@ export default function App() {
                 {me && (
                   <div className="bg-slate-900 border border-slate-800 px-3 md:px-4 py-2 rounded-2xl flex items-center gap-2 md:gap-3">
                     <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-slate-800 flex items-center justify-center text-lg md:text-2xl shadow-[0_0_10px_rgba(37,99,235,0.3)] border border-slate-700">
-                      {getAvatarEmoji(me.avatar)}
+                      <span className="avatar-emoji">{getAvatarEmoji(me.avatar)}</span>
                     </div>
                     <div className="text-left">
                       <p className="text-[9px] md:text-[10px] text-slate-500 font-black uppercase tracking-widest">HERÓI</p>
@@ -326,7 +325,7 @@ export default function App() {
                       onClick={() => handleSetupComplete(profile.nickname, profile.avatar)} 
                       className="bg-slate-950 border border-slate-800 hover:bg-blue-600/10 p-6 rounded-3xl font-black transition-all flex flex-col items-center gap-3 group"
                     >
-                      <span className="text-4xl group-hover:scale-110 transition-transform">{getAvatarEmoji(profile.avatar)}</span>
+                      <span className="text-4xl group-hover:scale-110 transition-transform avatar-emoji">{getAvatarEmoji(profile.avatar)}</span>
                       <span className="uppercase text-xs tracking-widest text-slate-300 group-hover:text-blue-400">{profile.nickname}</span>
                     </motion.button>
                   ))}
@@ -376,7 +375,7 @@ export default function App() {
                       <div key={p.id} className="bento-card flex justify-between items-center group bg-slate-900/40 border-slate-800/50 p-4 hover:border-blue-500/30 transition-all">
                         <div className="flex items-center gap-3">
                           <div className="w-10 h-10 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-center text-xl border border-slate-700">
-                            {getAvatarEmoji(p.avatar)}
+                            <span className="avatar-emoji">{getAvatarEmoji(p.avatar)}</span>
                           </div>
                           <div>
                             <p className="text-[9px] text-slate-500 font-black uppercase tracking-widest mb-0.5">{p.nickname}</p>
@@ -690,7 +689,7 @@ export default function App() {
                           onClick={() => setSelectedAvatar(id)}
                           className={`text-xl p-2 rounded-lg border-2 transition-all ${selectedAvatar === id ? 'border-blue-600 bg-blue-600/20' : 'border-slate-800 bg-slate-900'}`}
                         >
-                          {getAvatarEmoji(id)}
+                          <span className="avatar-emoji">{getAvatarEmoji(id)}</span>
                         </button>
                       ))}
                     </div>
@@ -709,7 +708,7 @@ export default function App() {
                   {baseProfiles.map(profile => (
                     <div key={profile.id} className="flex items-center justify-between bg-slate-900/50 border border-slate-800 p-4 rounded-2xl group hover:border-blue-500/30 transition-all">
                       <div className="flex items-center gap-3">
-                        <span className="text-2xl">{getAvatarEmoji(profile.avatar)}</span>
+                        <span className="text-2xl avatar-emoji">{getAvatarEmoji(profile.avatar)}</span>
                         <span className="font-bold text-slate-200">{profile.nickname}</span>
                       </div>
                       <button 

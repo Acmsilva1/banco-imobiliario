@@ -5,6 +5,7 @@ export interface Room {
   status: 'LOBBY' | 'EM_CURSO' | 'FINALIZADA';
   capital_inicial: number;
   players_count: number;
+  lider_id?: string | null;
 }
 
 export interface BaseProfile {

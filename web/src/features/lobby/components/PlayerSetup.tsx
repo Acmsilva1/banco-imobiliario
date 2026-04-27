@@ -1,15 +1,15 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { User, CheckCircle2, ArrowLeft } from 'lucide-react';
 import type { BaseProfile } from '../lobby.types';
 
 const AVATARS = [
-  { id: '1', emoji: '🦊', label: 'Raposa Astuta' },
-  { id: '2', emoji: '🐉', label: 'Dragão Guardião' },
-  { id: '3', emoji: '🤖', label: 'Cyborg Bank' },
-  { id: '4', emoji: '🦄', label: 'Magic Capital' },
-  { id: '5', emoji: '🐱', label: 'Gato Mestre' },
-  { id: '6', emoji: '👑', label: 'Rei do Mercado' },
+  { id: '1', emoji: '🦊', label: 'Raposa Tatica' },
+  { id: '2', emoji: '🦁', label: 'Leao Magnata' },
+  { id: '3', emoji: '🤖', label: 'Bot Investidor' },
+  { id: '4', emoji: '🐼', label: 'Panda Capital' },
+  { id: '5', emoji: '🐙', label: 'Polvo Trader' },
+  { id: '6', emoji: '🚀', label: 'Foguete Alpha' },
 ];
 
 interface PlayerSetupProps {
@@ -17,6 +17,11 @@ interface PlayerSetupProps {
   onComplete: (nickname: string, avatarId: string) => void;
   onBack: () => void;
 }
+
+const getAvatarEmoji = (avatarId: string) => {
+  const avatar = AVATARS.find((item) => item.id === avatarId);
+  return avatar?.emoji || '👤';
+};
 
 export const PlayerSetup = ({ baseProfiles, onComplete, onBack }: PlayerSetupProps) => {
   const [nickname, setNickname] = useState('');
@@ -38,16 +43,15 @@ export const PlayerSetup = ({ baseProfiles, onComplete, onBack }: PlayerSetupPro
 
         <div className="text-center mb-10 mt-4">
           <h2 className="text-3xl font-black text-white mb-2 uppercase tracking-tighter">
-            Quem está <span className="text-blue-500">Jogando?</span>
+            Quem esta <span className="text-blue-500">Jogando?</span>
           </h2>
           <p className="text-slate-500 font-bold text-xs uppercase tracking-widest">Selecione seu perfil ou crie um novo</p>
         </div>
 
         <div className="space-y-8">
-          {/* Perfis Base (Família) */}
           {baseProfiles.length > 0 && (
             <div className="grid grid-cols-2 gap-4">
-              {baseProfiles.map(profile => (
+              {baseProfiles.map((profile) => (
                 <motion.button
                   key={profile.id}
                   whileHover={{ scale: 1.05, borderColor: '#2563eb' }}
@@ -55,14 +59,7 @@ export const PlayerSetup = ({ baseProfiles, onComplete, onBack }: PlayerSetupPro
                   onClick={() => onComplete(profile.nickname, profile.avatar)}
                   className="p-5 rounded-3xl bg-slate-950 border border-slate-800 hover:bg-blue-600/10 flex flex-col items-center gap-3 transition-all"
                 >
-                  <span className="text-4xl">
-                    {profile.avatar === '1' ? '🦊' : 
-                     profile.avatar === '2' ? '🐉' : 
-                     profile.avatar === '3' ? '🤖' : 
-                     profile.avatar === '4' ? '🦄' : 
-                     profile.avatar === '5' ? '🐱' : 
-                     profile.avatar === '6' ? '👑' : '👤'}
-                  </span>
+                  <span className="text-4xl avatar-emoji">{getAvatarEmoji(profile.avatar)}</span>
                   <span className="font-black text-slate-100 uppercase text-xs tracking-widest">{profile.nickname}</span>
                 </motion.button>
               ))}
@@ -74,7 +71,7 @@ export const PlayerSetup = ({ baseProfiles, onComplete, onBack }: PlayerSetupPro
             <span className="absolute bg-[#020617] px-4 text-[10px] font-black text-slate-700 uppercase tracking-widest">OU CRIE UM NOVO</span>
           </div>
           <div>
-            <label className="block text-[10px] font-black text-blue-400 uppercase tracking-[0.2em] mb-3">Nickname do Herói</label>
+            <label className="block text-[10px] font-black text-blue-400 uppercase tracking-[0.2em] mb-3">Nickname do Heroi</label>
             <div className="relative">
               <User className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 w-5 h-5" />
               <input 
@@ -101,7 +98,7 @@ export const PlayerSetup = ({ baseProfiles, onComplete, onBack }: PlayerSetupPro
                       : 'border-slate-800 bg-slate-950 hover:border-slate-600'
                   }`}
                 >
-                  <span className="text-4xl">{avatar.emoji}</span>
+                  <span className="text-4xl avatar-emoji">{avatar.emoji}</span>
                   <span className="text-[10px] font-bold text-slate-500 uppercase">{avatar.label}</span>
                   {selectedAvatar === avatar.id && (
                     <motion.div 
