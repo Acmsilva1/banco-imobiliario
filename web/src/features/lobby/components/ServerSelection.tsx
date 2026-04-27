@@ -3,7 +3,7 @@ import { Users, Plus, Globe, Zap, Trash2 } from 'lucide-react';
 import type { Room } from '../lobby.types';
 
 const glassCard =
-  'rounded-3xl border border-white/15 bg-slate-950/35 shadow-xl backdrop-blur-xl backdrop-saturate-150 ring-1 ring-white/5';
+  'rounded-3xl border border-white/12 bg-slate-950/60 shadow-xl backdrop-blur-2xl backdrop-saturate-125 ring-1 ring-white/[0.04]';
 
 interface ServerSelectionProps {
   rooms: Room[];
@@ -37,7 +37,7 @@ export const ServerSelection = ({ rooms, onCreateRoom, onJoinRoom, onDeleteRoom,
         animate={{ opacity: 1, y: 0 }}
         className="relative z-10 mb-10 w-full max-w-3xl text-center md:mb-12"
       >
-        <div className="mx-auto rounded-3xl border border-white/20 bg-slate-950/45 px-6 py-8 shadow-2xl backdrop-blur-2xl md:px-10 md:py-10">
+        <div className="mx-auto rounded-3xl border border-white/18 bg-slate-950/65 px-6 py-8 shadow-2xl backdrop-blur-[28px] md:px-10 md:py-10">
           <h1 className="mb-3 bg-gradient-to-r from-amber-100 via-white to-blue-200 bg-clip-text text-4xl font-black tracking-tighter text-transparent drop-shadow-sm md:mb-4 md:text-6xl">
             BANCO IMOBILIÁRIO
           </h1>
@@ -46,7 +46,7 @@ export const ServerSelection = ({ rooms, onCreateRoom, onJoinRoom, onDeleteRoom,
           </p>
           <button
             onClick={onOpenFamilyManager}
-            className="inline-flex items-center gap-2 rounded-2xl border border-white/15 bg-white/10 px-4 py-3 font-black uppercase tracking-widest text-blue-100 shadow-lg backdrop-blur-md transition-all hover:border-amber-400/40 hover:bg-white/15 hover:text-white md:px-6"
+            className="inline-flex items-center gap-2 rounded-2xl border border-white/14 bg-white/[0.18] px-4 py-3 font-black uppercase tracking-widest text-blue-100 shadow-lg backdrop-blur-lg transition-all hover:border-amber-400/40 hover:bg-white/22 hover:text-white md:px-6"
           >
             <Users className="h-4 w-4" />
             Criar ou modificar perfis
@@ -59,10 +59,10 @@ export const ServerSelection = ({ rooms, onCreateRoom, onJoinRoom, onDeleteRoom,
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
           onClick={onCreateRoom}
-          className={`group relative flex h-64 flex-col items-center justify-center gap-4 overflow-hidden border-2 border-dashed border-white/25 bg-white/5 transition-all ${glassCard}`}
+          className={`group relative flex h-64 flex-col items-center justify-center gap-4 overflow-hidden border-2 border-dashed border-white/22 transition-all ${glassCard}`}
         >
           <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
-          <div className="relative flex h-16 w-16 items-center justify-center rounded-full border border-white/10 bg-white/10 backdrop-blur-sm transition-all group-hover:border-blue-400/40 group-hover:bg-blue-600/40 group-hover:shadow-[0_0_24px_rgba(37,99,235,0.45)]">
+          <div className="relative flex h-16 w-16 items-center justify-center rounded-full border border-white/12 bg-white/[0.14] backdrop-blur-md transition-all group-hover:border-blue-400/40 group-hover:bg-blue-600/45 group-hover:shadow-[0_0_24px_rgba(37,99,235,0.45)]">
             <Plus className="h-8 w-8 text-blue-200 group-hover:text-white" />
           </div>
           <span className="relative text-xl font-bold text-slate-100 group-hover:text-white">CRIAR NOVA SALA</span>
@@ -87,7 +87,7 @@ export const ServerSelection = ({ rooms, onCreateRoom, onJoinRoom, onDeleteRoom,
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: i * 0.1 }}
               whileHover={{ y: -5 }}
-              className={`bento-card group relative flex flex-col justify-between overflow-hidden border-white/15 !bg-slate-950/40 !backdrop-blur-xl`}
+              className={`bento-card group relative flex flex-col justify-between overflow-hidden border-white/12 !bg-slate-950/60 !backdrop-blur-2xl !backdrop-saturate-125`}
             >
               <div className="pointer-events-none absolute right-0 top-0 p-4 opacity-10 transition-opacity group-hover:opacity-20">
                 <Globe className="h-20 w-20 text-blue-300" />
@@ -95,7 +95,7 @@ export const ServerSelection = ({ rooms, onCreateRoom, onJoinRoom, onDeleteRoom,
 
               <div className="relative z-10">
                 <div className="mb-4 flex items-start justify-between">
-                  <div className="rounded border border-emerald-400/30 bg-emerald-500/15 px-2 py-1 text-[10px] font-black uppercase tracking-wider text-emerald-200 backdrop-blur-sm">
+                  <div className="rounded border border-emerald-400/35 bg-emerald-950/45 px-2 py-1 text-[10px] font-black uppercase tracking-wider text-emerald-200 backdrop-blur-md">
                     ONLINE
                   </div>
                   <div className="flex items-center gap-2">
@@ -104,14 +104,14 @@ export const ServerSelection = ({ rooms, onCreateRoom, onJoinRoom, onDeleteRoom,
                         e.stopPropagation();
                         onDeleteRoom(room.id);
                       }}
-                      className="rounded-lg border border-white/10 bg-slate-950/50 p-1.5 text-slate-300 backdrop-blur-sm transition-colors hover:border-red-400/40 hover:text-red-300"
+                      className="rounded-lg border border-white/12 bg-slate-950/65 p-1.5 text-slate-300 backdrop-blur-md transition-colors hover:border-red-400/40 hover:text-red-300"
                       title="Deletar Sala"
                       type="button"
                     >
                       <Trash2 className="h-4 w-4" />
                     </button>
 
-                    <div className="flex items-center gap-1 rounded-lg border border-white/10 bg-slate-950/50 px-2 py-1 text-slate-200 backdrop-blur-sm">
+                    <div className="flex items-center gap-1 rounded-lg border border-white/12 bg-slate-950/65 px-2 py-1 text-slate-200 backdrop-blur-md">
                       <Users className="h-4 w-4" />
                       <span className="text-xs font-bold">{room.players_count || 0}/6</span>
                     </div>
@@ -126,7 +126,7 @@ export const ServerSelection = ({ rooms, onCreateRoom, onJoinRoom, onDeleteRoom,
               <button
                 onClick={() => onJoinRoom(room.id)}
                 type="button"
-                className="mt-8 flex w-full items-center justify-center gap-2 rounded-xl border border-white/10 bg-blue-600/80 py-4 font-black uppercase tracking-widest text-white shadow-lg backdrop-blur-sm transition-all hover:bg-blue-600"
+                className="mt-8 flex w-full items-center justify-center gap-2 rounded-xl border border-white/12 bg-blue-600/92 py-4 font-black uppercase tracking-widest text-white shadow-lg backdrop-blur-md transition-all hover:bg-blue-600"
               >
                 <Zap className="h-4 w-4" />
                 ENTRAR NO SERVIDOR
