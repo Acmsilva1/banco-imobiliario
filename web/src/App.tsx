@@ -331,7 +331,7 @@ export default function App() {
                       <span className="avatar-emoji">{getAvatarEmoji(me.avatar)}</span>
                     </div>
                     <div className="text-left">
-                      <p className="text-[9px] md:text-[10px] text-slate-500 font-black uppercase tracking-widest">HERÓI</p>
+                      <p className="text-[9px] md:text-[10px] text-slate-500 font-black uppercase tracking-widest">EMPRESÁRIO</p>
                       <p className="text-xs md:text-sm font-bold text-blue-400">{me.nickname}</p>
                     </div>
                   </div>
@@ -516,7 +516,7 @@ export default function App() {
                 <div>
                   <label className="block text-[10px] font-black text-blue-400 uppercase tracking-widest mb-2">Destinatário</label>
                   <select value={selectedRecipientId || ''} onChange={(e) => setSelectedRecipientId(e.target.value)} className="w-full bg-slate-950 border-2 border-slate-800 p-4 rounded-xl text-white font-bold outline-none focus:border-blue-600 transition-all">
-                    <option value="">Selecione um herói</option>
+                    <option value="">Selecione um empresário</option>
                     {gameState.players.filter(p => p.id !== myId).map(p => (
                       <option key={p.id} value={p.id}>{p.nickname}</option>
                     ))}
@@ -702,7 +702,7 @@ export default function App() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 relative z-10">
                 {/* Formulário Novo Perfil */}
                 <div className="space-y-6 bg-slate-950/50 p-6 rounded-3xl border border-slate-800">
-                  <h4 className="text-xs font-black text-blue-400 uppercase tracking-widest">Adicionar Novo Herói</h4>
+                  <h4 className="text-xs font-black text-blue-400 uppercase tracking-widest">Adicionar Novo Empresário</h4>
                   <div>
                     <label className="block text-[10px] text-slate-600 font-bold uppercase mb-2">Nickname</label>
                     <input 
@@ -753,7 +753,7 @@ export default function App() {
                     </div>
                   ))}
                   {baseProfiles.length === 0 && (
-                    <p className="text-center text-slate-600 text-xs py-10 italic">Nenhum herói cadastrado ainda.</p>
+                    <p className="text-center text-slate-600 text-xs py-10 italic">Nenhum empresário cadastrado ainda.</p>
                   )}
                 </div>
               </div>
