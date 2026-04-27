@@ -6,7 +6,7 @@ import { useSocket } from './features/bank/hooks/useSocket';
 import { supabase } from './core/supabase';
 import { getSupabaseErrorMessage, throwIfSupabaseError } from './core/supabase-safe';
 import { useLobbyData } from './features/lobby/hooks/useLobbyData';
-import { Wallet, ArrowRightLeft, History, TrendingUp, AlertCircle, Home, Trash2, Plus, Banknote } from 'lucide-react';
+import { Wallet, ArrowRightLeft, History, RefreshCw, AlertCircle, Home, Trash2, Plus, Banknote } from 'lucide-react';
 
 type Screen = 'LOBBY' | 'SETUP' | 'GAME';
 
@@ -220,6 +220,12 @@ export default function App() {
     return () => window.clearTimeout(timeout);
   }, [uiError]);
 
+  useEffect(() => {
+    if (screen === 'GAME' && !myId && selectedRoomId) {
+      setScreen('SETUP');
+    }
+  }, [screen, myId, selectedRoomId]);
+
   const effectiveError = uiError || lobbyError || error;
   const me = gameState.players.find(p => p.id === myId);
 
@@ -340,7 +346,7 @@ export default function App() {
                     className="p-3 bg-blue-500/10 border border-blue-500/30 rounded-xl hover:bg-blue-500/20 text-blue-400 transition-all flex items-center justify-center"
                     title="Sincronizar Dados"
                   >
-                    <TrendingUp id="sync-btn" className="w-5 h-5" />
+                    <RefreshCw id="sync-btn" className="w-5 h-5" />
                   </button>
 
                   <button 
@@ -366,29 +372,7 @@ export default function App() {
               </motion.div>
             )}
 
-            {!myId ? (
-              <div className="max-w-2xl mx-auto bento-card text-center py-10 bg-slate-900/50 border-blue-600/30">
-                <h2 className="text-3xl font-black mb-6 uppercase tracking-tighter">
-                  Configuração <span className="text-blue-500">incompleta</span>
-                </h2>
-                <p className="text-slate-400 text-sm mb-8">
-                  O jogo exige passar pela etapa de setup. Volte ao lobby e entre na sala novamente.
-                </p>
-                <div className="pt-6 border-t border-slate-800/50">
-                  <button
-                    onClick={() => {
-                      if (selectedRoomId) decrementPlayerCount(selectedRoomId);
-                      setMyId(null);
-                      setSelectedRoomId(null);
-                      setScreen('LOBBY');
-                    }}
-                    className="px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-black uppercase tracking-widest text-xs transition-all"
-                  >
-                    Voltar ao Lobby
-                  </button>
-                </div>
-              </div>
-            ) : (
+            {myId && (
               <main className="max-w-2xl mx-auto space-y-6 pb-20 px-4">
                 {/* 1. Seu Saldo Principal */}
                 <div className="bento-card bg-gradient-to-br from-blue-600/20 via-slate-900 to-slate-900 border-blue-500/30 p-6 relative overflow-hidden group">
@@ -397,7 +381,7 @@ export default function App() {
                   <div className="relative z-10">
                     <div className="flex justify-between items-start">
                       <div>
-                        <p className="text-[10px] text-blue-400 font-black uppercase tracking-[0.3em] mb-1">Tesouro Disponível</p>
+                        <p className="text-[10px] text-blue-400 font-black uppercase tracking-[0.3em] mb-1">Valor total</p>
                         <h2 className="text-5xl font-black text-white tracking-tighter balance-amount">
                           R$ <span className="relative inline-block text-transparent bg-clip-text bg-gradient-to-r from-white to-blue-500">
                             {me ? me.saldo.toLocaleString() : '---'}
@@ -441,7 +425,7 @@ export default function App() {
                 {/* 3. Painel de Ações do Banco */}
                 <div className="bento-card bg-slate-900/60 border-slate-800/50">
                   <h3 className="text-[10px] text-blue-500 font-black uppercase tracking-widest mb-4 flex items-center gap-2">
-                    <Wallet className="w-4 h-4" /> Ações do Sistema (Banco)
+                    <Wallet className="w-4 h-4" /> Banco
                   </h3>
                   <div className="space-y-3">
                     {/* Linha 1: Automáticos */}

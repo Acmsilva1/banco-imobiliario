@@ -22,14 +22,14 @@ export const ServerSelection = ({ rooms, onCreateRoom, onJoinRoom, onDeleteRoom,
           BANCO IMOBILIÁRIO
         </h1>
         <p className="text-blue-400 font-bold uppercase tracking-[0.3em] text-sm animate-pulse mb-6">
-          Seja bem-vindo ao servidor global
+          Seja bem vindo ao mundo imobiliário
         </p>
         <button 
           onClick={onOpenFamilyManager}
           className="inline-flex items-center gap-2 px-6 py-3 bg-slate-900/80 border border-slate-800 rounded-2xl text-blue-400 hover:text-white hover:border-blue-500/50 hover:bg-blue-600/10 transition-all font-black uppercase text-[10px] tracking-widest"
         >
           <Users className="w-4 h-4" />
-          Gerenciar Jogadores da Família
+          Criar ou modificar perfis
         </button>
       </motion.div>
 
