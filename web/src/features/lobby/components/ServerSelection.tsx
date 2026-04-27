@@ -139,9 +139,14 @@ export const ServerSelection = ({ rooms, onCreateRoom, onJoinRoom, onDeleteRoom,
                 {/* Mobile: bloco empilhado */}
                 <div className="flex flex-col gap-3 p-4 md:hidden">
                   <div className="flex items-start justify-between gap-2">
-                    <div>
+                    <div className="min-w-0">
                       <p className="text-[10px] font-black uppercase tracking-widest text-slate-500">Sala</p>
                       <p className="text-lg font-black text-white drop-shadow-md">{room.nome || `Sala #${room.id.slice(0, 4)}`}</p>
+                      <p className="mt-1 text-[10px] text-slate-500">
+                        <span className="font-bold uppercase tracking-wide text-slate-500">Código da sala</span>
+                        <span className="mx-1 text-slate-600">·</span>
+                        <span className="font-mono text-slate-300">{room.codigo_sala}</span>
+                      </p>
                     </div>
                     <span className="shrink-0 rounded border border-emerald-500/35 bg-emerald-950/30 px-2 py-0.5 text-[9px] font-black uppercase tracking-wider text-emerald-200">
                       Online
@@ -185,7 +190,11 @@ export const ServerSelection = ({ rooms, onCreateRoom, onJoinRoom, onDeleteRoom,
                     <p className="truncate text-base font-black text-white drop-shadow-md group-hover/row:text-blue-100">
                       {room.nome || `Sala #${room.id.slice(0, 4)}`}
                     </p>
-                    <p className="mt-0.5 truncate font-mono text-[10px] text-slate-500">{room.codigo_sala}</p>
+                    <p className="mt-1 truncate text-[10px] text-slate-500">
+                      <span className="font-bold uppercase tracking-wide text-slate-500">Código da sala</span>
+                      <span className="mx-1.5 text-slate-600">·</span>
+                      <span className="font-mono text-slate-400">{room.codigo_sala}</span>
+                    </p>
                   </div>
                   <div className="col-span-3 min-w-0">
                     <p className="truncate text-sm font-medium text-slate-200">{room.lider_nickname?.trim() || '—'}</p>
