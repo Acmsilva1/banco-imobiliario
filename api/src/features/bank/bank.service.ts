@@ -1,5 +1,6 @@
 import { supabase } from '../../core/supabase.js';
 import type { Player, TransferPayload } from './bank.types.js';
+import { computeAdjustedBalance, computeTransferBalances, reconcilePlayersCount } from './bank.rules.js';
 
 export class BankService {
   async getGameState(partidaId: string) {
@@ -34,16 +35,20 @@ export class BankService {
       .single();
 
     if (!fromPlayer || !toPlayer) throw new Error('Jogadores não encontrados');
-    if (fromPlayer.saldo < payload.amount) throw new Error('Saldo insuficiente');
+    const balances = computeTransferBalances({
+      fromBalance: fromPlayer.saldo,
+      toBalance: toPlayer.saldo,
+      amount: payload.amount
+    });
 
     await supabase
       .from('jogadores')
-      .update({ saldo: fromPlayer.saldo - payload.amount })
+      .update({ saldo: balances.fromBalance })
       .eq('id', payload.fromId);
 
     await supabase
       .from('jogadores')
-      .update({ saldo: toPlayer.saldo + payload.amount })
+      .update({ saldo: balances.toBalance })
       .eq('id', payload.toId);
 
     const mensagem = `${fromPlayer.nickname} ➔ ${toPlayer.nickname}: R$ ${payload.amount.toLocaleString()}`;
@@ -63,10 +68,8 @@ export class BankService {
 
     if (!player) throw new Error('Jogador não encontrado');
 
-    await supabase
-      .from('jogadores')
-      .update({ saldo: player.saldo + amount })
-      .eq('id', playerId);
+    const nextBalance = computeAdjustedBalance(player.saldo, amount);
+    await supabase.from('jogadores').update({ saldo: nextBalance }).eq('id', playerId);
 
     const mensagem = `${label}: ${player.nickname} (${amount > 0 ? '+' : ''}${amount})`;
     await supabase
@@ -78,15 +81,21 @@ export class BankService {
 
   async incrementPlayerCount(partidaId: string) {
     const { data: partida } = await supabase.from('partidas').select('players_count').eq('id', partidaId).single();
+    const { count } = await supabase.from('jogadores').select('*', { count: 'exact', head: true }).eq('partida_id', partidaId);
+
     if (partida) {
-      await supabase.from('partidas').update({ players_count: (partida.players_count || 0) + 1 }).eq('id', partidaId);
+      const nextCount = reconcilePlayersCount((partida.players_count || 0) + 1, count || 0);
+      await supabase.from('partidas').update({ players_count: nextCount }).eq('id', partidaId);
     }
   }
 
   async decrementPlayerCount(partidaId: string) {
     const { data: partida } = await supabase.from('partidas').select('players_count').eq('id', partidaId).single();
+    const { count } = await supabase.from('jogadores').select('*', { count: 'exact', head: true }).eq('partida_id', partidaId);
+
     if (partida && partida.players_count && partida.players_count > 0) {
-      await supabase.from('partidas').update({ players_count: partida.players_count - 1 }).eq('id', partidaId);
+      const nextCount = reconcilePlayersCount(partida.players_count - 1, count || 0);
+      await supabase.from('partidas').update({ players_count: nextCount }).eq('id', partidaId);
     }
   }
 }

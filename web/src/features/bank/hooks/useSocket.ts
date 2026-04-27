@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../../../core/supabase';
+import { throwIfSupabaseError } from '../../../core/supabase-safe';
 import type { GameState, TransferPayload } from '../bank.types';
 
 export const useSocket = (partidaId: string) => {
@@ -9,14 +10,30 @@ export const useSocket = (partidaId: string) => {
 
   const fetchState = async () => {
     if (!partidaId) return;
-    
-    const { data: players } = await supabase.from('jogadores').select('*').eq('partida_id', partidaId).order('nickname');
-    const { data: logs } = await supabase.from('transacoes').select('*').eq('partida_id', partidaId).order('criada_em', { ascending: false }).limit(50);
-    
-    setGameState({
-      players: players || [],
-      logs: logs || []
-    });
+
+    try {
+      const { data: players, error: playersError } = await supabase
+        .from('jogadores')
+        .select('*')
+        .eq('partida_id', partidaId)
+        .order('nickname');
+      throwIfSupabaseError(playersError, 'Falha ao carregar jogadores');
+
+      const { data: logs, error: logsError } = await supabase
+        .from('transacoes')
+        .select('*')
+        .eq('partida_id', partidaId)
+        .order('criada_em', { ascending: false })
+        .limit(50);
+      throwIfSupabaseError(logsError, 'Falha ao carregar transações');
+
+      setGameState({
+        players: players || [],
+        logs: logs || []
+      });
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Falha na sincronização inicial');
+    }
   };
 
   useEffect(() => {
@@ -30,8 +47,54 @@ export const useSocket = (partidaId: string) => {
 
     const subscription = supabase
       .channel(`game_${partidaId}`)
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'jogadores', filter: `partida_id=eq.${partidaId}` }, fetchState)
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'transacoes', filter: `partida_id=eq.${partidaId}` }, fetchState)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'jogadores', filter: `partida_id=eq.${partidaId}` }, (payload) => {
+        const row = (payload.eventType === 'DELETE' ? payload.old : payload.new) as { id?: string; partida_id?: string; nickname?: string } | null;
+        if (!row || row.partida_id !== partidaId || !row.id) return;
+
+        setGameState((prev) => {
+          if (payload.eventType === 'DELETE') {
+            return {
+              ...prev,
+              players: prev.players.filter((player) => player.id !== row.id)
+            };
+          }
+
+          const nextPlayer = payload.new as GameState['players'][number];
+          const exists = prev.players.some((player) => player.id === nextPlayer.id);
+          const players = exists
+            ? prev.players.map((player) => (player.id === nextPlayer.id ? nextPlayer : player))
+            : [...prev.players, nextPlayer];
+
+          return {
+            ...prev,
+            players: players.sort((a, b) => a.nickname.localeCompare(b.nickname))
+          };
+        });
+      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'transacoes', filter: `partida_id=eq.${partidaId}` }, (payload) => {
+        const row = (payload.eventType === 'DELETE' ? payload.old : payload.new) as { id?: string; partida_id?: string; criada_em?: string } | null;
+        if (!row || row.partida_id !== partidaId || !row.id) return;
+
+        setGameState((prev) => {
+          if (payload.eventType === 'DELETE') {
+            return {
+              ...prev,
+              logs: prev.logs.filter((log) => log.id !== row.id)
+            };
+          }
+
+          const nextLog = payload.new as GameState['logs'][number];
+          const withoutLog = prev.logs.filter((log) => log.id !== nextLog.id);
+          const logs = [nextLog, ...withoutLog]
+            .sort((a, b) => new Date(b.criada_em).getTime() - new Date(a.criada_em).getTime())
+            .slice(0, 50);
+
+          return {
+            ...prev,
+            logs
+          };
+        });
+      })
       .subscribe((status) => {
         if (status === 'SUBSCRIBED') setIsConnected(true);
         if (status === 'CLOSED' || status === 'CHANNEL_ERROR') setIsConnected(false);
@@ -63,26 +126,37 @@ export const useSocket = (partidaId: string) => {
         room_id: payload.partidaId
       });
 
-      if (error) throw error;
-      
-    } catch (err: any) {
+      throwIfSupabaseError(error, 'Falha ao transferir saldo');
+    } catch (err) {
       setGameState(originalState); // Rollback se der erro
-      setError(err.message);
+      setError(err instanceof Error ? err.message : 'Falha ao transferir saldo');
       setTimeout(() => setError(null), 3000);
     }
   };
 
   const adjustBalance = async (playerId: string, amount: number, label: string) => {
     try {
-      const { data: player } = await supabase.from('jogadores').select('saldo, nickname').eq('id', playerId).single();
+      const { data: player, error: playerError } = await supabase
+        .from('jogadores')
+        .select('saldo, nickname')
+        .eq('id', playerId)
+        .single();
+      throwIfSupabaseError(playerError, 'Falha ao carregar jogador');
       if (!player) throw new Error('Jogador não encontrado');
 
-      await supabase.from('jogadores').update({ saldo: player.saldo + amount }).eq('id', playerId);
+      const { error: updateError } = await supabase
+        .from('jogadores')
+        .update({ saldo: player.saldo + amount })
+        .eq('id', playerId);
+      throwIfSupabaseError(updateError, 'Falha ao atualizar saldo');
 
       const mensagem = `${label}: ${player.nickname} (${amount > 0 ? '+' : ''}${amount.toLocaleString()})`;
-      await supabase.from('transacoes').insert({ partida_id: partidaId, mensagem });
-    } catch (err: any) {
-      setError(err.message);
+      const { error: logError } = await supabase
+        .from('transacoes')
+        .insert({ partida_id: partidaId, mensagem });
+      throwIfSupabaseError(logError, 'Falha ao registrar transação');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Falha ao ajustar saldo');
       setTimeout(() => setError(null), 3000);
     }
   };

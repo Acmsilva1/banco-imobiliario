@@ -8,7 +8,8 @@
   "scripts": {
     "build:api": "npm run build -w api",
     "build:web": "npm run build -w web",
-    "build": "npm run build:api && npm run build:web"
+    "build": "npm run build:api && npm run build:web",
+    "doctor": "node -e \"const { execSync } = require('node:child_process'); const checks=[['node -v','Node'],['npm -v','NPM'],['npm ls --workspaces --depth=0','Workspaces']]; for (const [cmd,label] of checks) { console.log(`\\n## ${label}`); execSync(cmd,{stdio:'inherit'}); }\""
   },
   "devDependencies": {
     "typescript": "^5.3.3"

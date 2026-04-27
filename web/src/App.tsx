@@ -1,18 +1,18 @@
-import { useState, useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ServerSelection } from './features/lobby/components/ServerSelection';
 import { PlayerSetup } from './features/lobby/components/PlayerSetup';
 import { useSocket } from './features/bank/hooks/useSocket';
 import { supabase } from './core/supabase';
+import { getSupabaseErrorMessage, throwIfSupabaseError } from './core/supabase-safe';
+import { useLobbyData } from './features/lobby/hooks/useLobbyData';
 import { Wallet, ArrowRightLeft, History, TrendingUp, AlertCircle, Home, Trash2, Plus, Banknote } from 'lucide-react';
 
 type Screen = 'LOBBY' | 'SETUP' | 'GAME';
 
 export default function App() {
   const [screen, setScreen] = useState<Screen>('LOBBY');
-  const [rooms, setRooms] = useState<any[]>([]);
   const [selectedRoomId, setSelectedRoomId] = useState<string | null>(null);
-  const selectedRoomIdRef = useRef<string | null>(null);
   const [myId, setMyId] = useState<string | null>(null);
   const [isTransferModalOpen, setIsTransferModalOpen] = useState(false);
   const [transferAmount, setTransferAmount] = useState<string>('');
@@ -26,46 +26,25 @@ export default function App() {
   const [isCreateRoomModalOpen, setIsCreateRoomModalOpen] = useState(false);
   const [newRoomName, setNewRoomName] = useState('');
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
-  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [uiError, setUiError] = useState<string | null>(null);
 
   // Perfis da Família
-  const [baseProfiles, setBaseProfiles] = useState<any[]>([]);
   const [isFamilyModalOpen, setIsFamilyModalOpen] = useState(false);
   const [newProfileName, setNewProfileName] = useState('');
   const [selectedAvatar, setSelectedAvatar] = useState('1');
+  const hasIncremented = useRef(false);
+
+  const {
+    rooms,
+    baseProfiles,
+    error: lobbyError,
+    createRoom,
+    deleteRoom,
+    createBaseProfile,
+    deleteBaseProfile
+  } = useLobbyData();
 
   const { gameState, isConnected, error, transfer, adjustBalance, fetchState } = useSocket(selectedRoomId || '');
-
-  const handleManualRefresh = async () => {
-    setIsRefreshing(true);
-    await fetchState();
-    setTimeout(() => setIsRefreshing(false), 800);
-  };
-
-  useEffect(() => {
-    fetchRooms();
-    fetchBaseProfiles();
-    
-    const subscription = supabase
-      .channel('public:realtime')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'partidas' }, fetchRooms)
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'perfis_base' }, fetchBaseProfiles)
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(subscription);
-    };
-  }, []);
-
-  const fetchBaseProfiles = async () => {
-    const { data } = await supabase.from('perfis_base').select('*').order('nickname');
-    if (data) setBaseProfiles(data);
-  };
-
-  const fetchRooms = async () => {
-    const { data } = await supabase.from('partidas').select('*').eq('status', 'LOBBY');
-    if (data) setRooms(data);
-  };
 
   const handleCreateRoom = () => {
     setIsCreateRoomModalOpen(true);
@@ -73,12 +52,13 @@ export default function App() {
 
   const confirmCreateRoom = async () => {
     if (!newRoomName.trim()) return;
-    await supabase.from('partidas').insert({ 
-      nome: newRoomName.trim(), 
-      codigo_sala: Math.random().toString(36).substring(7).toUpperCase() 
-    });
-    setNewRoomName('');
-    setIsCreateRoomModalOpen(false);
+    try {
+      await createRoom(newRoomName);
+      setNewRoomName('');
+      setIsCreateRoomModalOpen(false);
+    } catch (err) {
+      setUiError(err instanceof Error ? err.message : 'Falha ao criar sala');
+    }
   };
 
   const handleDeleteRoom = (roomId: string) => {
@@ -87,31 +67,40 @@ export default function App() {
 
   const confirmDeleteRoom = async () => {
     if (!deleteConfirmId) return;
-    await supabase.from('partidas').delete().eq('id', deleteConfirmId);
-    setDeleteConfirmId(null);
+    try {
+      await deleteRoom(deleteConfirmId);
+      setDeleteConfirmId(null);
+    } catch (err) {
+      setUiError(err instanceof Error ? err.message : 'Falha ao remover sala');
+    }
   };
 
 
   const handleAddProfile = async () => {
     if (!newProfileName.trim()) return;
-    await supabase.from('perfis_base').insert({
-      nickname: newProfileName.trim(),
-      avatar: selectedAvatar
-    });
-    setNewProfileName('');
-    setIsFamilyModalOpen(false);
+    try {
+      await createBaseProfile(newProfileName, selectedAvatar);
+      setNewProfileName('');
+      setIsFamilyModalOpen(false);
+    } catch (err) {
+      setUiError(err instanceof Error ? err.message : 'Falha ao criar perfil');
+    }
   };
 
   const handleDeleteProfile = async (id: string) => {
-    await supabase.from('perfis_base').delete().eq('id', id);
+    try {
+      await deleteBaseProfile(id);
+    } catch (err) {
+      setUiError(err instanceof Error ? err.message : 'Falha ao remover perfil');
+    }
   };
 
 
   const handleJoinRoom = async (roomId: string) => {
     setSelectedRoomId(roomId);
-    selectedRoomIdRef.current = roomId;
     setMyId(null); // Limpa ID anterior para forçar seleção de quem é você
-    setScreen('GAME');
+    hasIncremented.current = false;
+    setScreen('SETUP');
   };
 
   const incrementPlayerCount = async (roomId: string) => {
@@ -137,46 +126,74 @@ export default function App() {
   };
 
   const handleSetupComplete = async (nickname: string, avatarId: string) => {
-    const roomId = selectedRoomIdRef.current || selectedRoomId;
+    const roomId = selectedRoomId;
     if (!roomId) return;
     
-    // Tenta encontrar se esse jogador já existe na sala (Resgate de Sessão)
-    const { data: existingPlayer } = await supabase
-      .from('jogadores')
-      .select('id')
-      .eq('partida_id', roomId)
-      .eq('nickname', nickname)
-      .single();
+    try {
+      // Tenta resgatar sessão pelo nickname
+      const { data: existingPlayer, error: existingPlayerError } = await supabase
+        .from('jogadores')
+        .select('id')
+        .eq('partida_id', roomId)
+        .eq('nickname', nickname)
+        .maybeSingle();
+      throwIfSupabaseError(existingPlayerError, 'Falha ao validar jogador existente');
 
-    if (existingPlayer) {
-      setMyId(existingPlayer.id);
-      setScreen('GAME');
-      return;
-    }
+      if (existingPlayer) {
+        setMyId(existingPlayer.id);
+        setScreen('GAME');
+        return;
+      }
 
-    // Se não existe, cria um novo
-    const { data: partida } = await supabase.from('partidas').select('capital_inicial').eq('id', roomId).single();
-    const capital = partida?.capital_inicial || 25000;
+      const { data: partida, error: partidaError } = await supabase
+        .from('partidas')
+        .select('capital_inicial')
+        .eq('id', roomId)
+        .single();
+      throwIfSupabaseError(partidaError, 'Falha ao carregar dados da sala');
+      const capital = partida?.capital_inicial || 25000;
 
-    const { data, error } = await supabase.from('jogadores').insert({
-      partida_id: roomId,
-      nickname,
-      avatar: avatarId,
-      saldo: capital
-    }).select().single();
-    
-    if (data) {
-      setSelectedRoomId(roomId);
-      selectedRoomIdRef.current = roomId;
+      const { data, error: createPlayerError } = await supabase
+        .from('jogadores')
+        .insert({
+          partida_id: roomId,
+          nickname,
+          avatar: avatarId,
+          saldo: capital
+        })
+        .select('id')
+        .single();
+
+      if (createPlayerError) {
+        // Em caso de corrida com UNIQUE(partida_id, nickname), tenta resgatar o jogador criado concorrente.
+        const isUniqueViolation = (createPlayerError as { code?: string }).code === '23505';
+        if (isUniqueViolation) {
+          const { data: rescuedPlayer, error: rescuedPlayerError } = await supabase
+            .from('jogadores')
+            .select('id')
+            .eq('partida_id', roomId)
+            .eq('nickname', nickname)
+            .single();
+          throwIfSupabaseError(rescuedPlayerError, 'Falha ao recuperar jogador existente');
+          if (rescuedPlayer) {
+            setMyId(rescuedPlayer.id);
+            setScreen('GAME');
+            return;
+          }
+        }
+        throw createPlayerError;
+      }
+
+      if (!data) {
+        throw new Error('Falha ao criar jogador');
+      }
+
       setMyId(data.id);
       setScreen('GAME');
-    } else {
-      console.error('Erro ao criar jogador:', error);
+    } catch (err) {
+      setUiError(getSupabaseErrorMessage(err as { message?: string }, 'Falha ao configurar jogador') || 'Falha ao configurar jogador');
     }
   };
-
-
-  const hasIncremented = useRef(false);
 
   useEffect(() => {
     if (myId && selectedRoomId && screen === 'GAME' && !hasIncremented.current) {
@@ -197,6 +214,13 @@ export default function App() {
     };
   }, [myId, selectedRoomId, screen]);
 
+  useEffect(() => {
+    if (!uiError) return;
+    const timeout = window.setTimeout(() => setUiError(null), 4000);
+    return () => window.clearTimeout(timeout);
+  }, [uiError]);
+
+  const effectiveError = uiError || lobbyError || error;
   const me = gameState.players.find(p => p.id === myId);
 
   // Mapeamento de avatares para emoji
@@ -250,7 +274,10 @@ export default function App() {
             <PlayerSetup 
               baseProfiles={baseProfiles}
               onComplete={handleSetupComplete} 
-              onBack={() => setScreen('LOBBY')} 
+              onBack={() => {
+                setSelectedRoomId(null);
+                setScreen('LOBBY');
+              }} 
             />
           </motion.div>
         )}
@@ -332,44 +359,33 @@ export default function App() {
               </div>
             </header>
 
-            {error && (
+            {effectiveError && (
               <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="max-w-6xl mx-auto mb-6 bg-red-500/10 border border-red-500/50 p-4 rounded-2xl flex items-center gap-3 text-red-400">
                 <AlertCircle className="w-5 h-5" />
-                <span className="font-bold uppercase text-xs tracking-widest">{error}</span>
+                <span className="font-bold uppercase text-xs tracking-widest">{effectiveError}</span>
               </motion.div>
             )}
 
             {!myId ? (
               <div className="max-w-2xl mx-auto bento-card text-center py-10 bg-slate-900/50 border-blue-600/30">
-                <h2 className="text-3xl font-black mb-8 uppercase tracking-tighter">Quem está <span className="text-blue-500">jogando?</span></h2>
-                
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-10">
-                  {baseProfiles.map(profile => (
-                    <motion.button 
-                      key={profile.id} 
-                      whileHover={{ scale: 1.05, borderColor: '#2563eb' }}
-                      whileTap={{ scale: 0.95 }}
-                      onClick={() => handleSetupComplete(profile.nickname, profile.avatar)} 
-                      className="bg-slate-950 border border-slate-800 hover:bg-blue-600/10 p-6 rounded-3xl font-black transition-all flex flex-col items-center gap-3 group"
-                    >
-                      <span className="text-4xl group-hover:scale-110 transition-transform avatar-emoji">{getAvatarEmoji(profile.avatar)}</span>
-                      <span className="uppercase text-xs tracking-widest text-slate-300 group-hover:text-blue-400">{profile.nickname}</span>
-                    </motion.button>
-                  ))}
-
-                  <button 
-                    onClick={() => setIsFamilyModalOpen(true)}
-                    className="border-2 border-dashed border-slate-800 hover:border-blue-500/50 hover:bg-blue-600/5 p-6 rounded-3xl flex flex-col items-center justify-center gap-2 transition-all group"
-                  >
-                    <div className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center group-hover:bg-blue-600 transition-colors">
-                      <Plus className="w-4 h-4 text-slate-500 group-hover:text-white" />
-                    </div>
-                    <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Novo Perfil</span>
-                  </button>
-                </div>
-
+                <h2 className="text-3xl font-black mb-6 uppercase tracking-tighter">
+                  Configuração <span className="text-blue-500">incompleta</span>
+                </h2>
+                <p className="text-slate-400 text-sm mb-8">
+                  O jogo exige passar pela etapa de setup. Volte ao lobby e entre na sala novamente.
+                </p>
                 <div className="pt-6 border-t border-slate-800/50">
-                  <p className="text-slate-600 text-[10px] font-bold uppercase tracking-[0.2em]">Selecione seu perfil para carregar seu saldo</p>
+                  <button
+                    onClick={() => {
+                      if (selectedRoomId) decrementPlayerCount(selectedRoomId);
+                      setMyId(null);
+                      setSelectedRoomId(null);
+                      setScreen('LOBBY');
+                    }}
+                    className="px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-black uppercase tracking-widest text-xs transition-all"
+                  >
+                    Voltar ao Lobby
+                  </button>
                 </div>
               </div>
             ) : (
