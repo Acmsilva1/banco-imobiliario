@@ -1,3 +1,4 @@
+import { useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Users, Plus, Globe, Zap, Trash2 } from 'lucide-react';
 import type { Room } from '../lobby.types';
@@ -11,29 +12,64 @@ interface ServerSelectionProps {
 }
 
 export const ServerSelection = ({ rooms, onCreateRoom, onJoinRoom, onDeleteRoom, onOpenFamilyManager }: ServerSelectionProps) => {
+  const sceneRef = useRef<HTMLDivElement | null>(null);
+
+  const updateSpotlight = (x: number, y: number) => {
+    const node = sceneRef.current;
+    if (!node) return;
+    const rect = node.getBoundingClientRect();
+    node.style.setProperty('--pointer-x', `${x - rect.left}px`);
+    node.style.setProperty('--pointer-y', `${y - rect.top}px`);
+  };
+
   return (
-    <div className="min-h-screen bg-[#020617] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-900/20 via-slate-950 to-slate-950 p-6 flex flex-col items-center justify-center">
-      <motion.div 
+    <div
+      ref={sceneRef}
+      onPointerMove={(event) => updateSpotlight(event.clientX, event.clientY)}
+      onTouchMove={(event) => {
+        const touch = event.touches[0];
+        if (touch) updateSpotlight(touch.clientX, touch.clientY);
+      }}
+      onPointerLeave={() => {
+        const node = sceneRef.current;
+        if (!node) return;
+        node.style.setProperty('--pointer-x', '50%');
+        node.style.setProperty('--pointer-y', '30%');
+      }}
+      className="lobby-scene min-h-screen p-4 md:p-6 flex flex-col items-center justify-center relative overflow-hidden"
+    >
+      <div className="lobby-scene-bg" aria-hidden="true">
+        <div className="lobby-spotlight" />
+        <div className="lobby-grid-lines" />
+        <span className="lobby-float lobby-float-a">🏦</span>
+        <span className="lobby-float lobby-float-b">🪙</span>
+        <span className="lobby-float lobby-float-c">💳</span>
+        <span className="lobby-float lobby-float-d">🏙️</span>
+        <span className="lobby-float lobby-float-e">💸</span>
+        <span className="lobby-float lobby-float-f">🎲</span>
+      </div>
+
+      <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="text-center mb-12"
+        className="text-center mb-10 md:mb-12 relative z-10"
       >
-        <h1 className="text-6xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-blue-600 to-purple-600 mb-4 filter drop-shadow-[0_0_15px_rgba(37,99,235,0.4)]">
+        <h1 className="text-4xl md:text-6xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-blue-600 to-purple-600 mb-3 md:mb-4 filter drop-shadow-[0_0_15px_rgba(37,99,235,0.4)]">
           BANCO IMOBILIÁRIO
         </h1>
-        <p className="text-blue-400 font-bold uppercase tracking-[0.3em] text-sm animate-pulse mb-6">
+        <p className="text-blue-300 font-bold uppercase tracking-[0.25em] text-[10px] md:text-sm animate-pulse mb-5 md:mb-6">
           Seja bem vindo ao mundo imobiliário
         </p>
-        <button 
+        <button
           onClick={onOpenFamilyManager}
-          className="inline-flex items-center gap-2 px-6 py-3 bg-slate-900/80 border border-slate-800 rounded-2xl text-blue-400 hover:text-white hover:border-blue-500/50 hover:bg-blue-600/10 transition-all font-black uppercase text-[10px] tracking-widest"
+          className="inline-flex items-center gap-2 px-4 md:px-6 py-3 bg-slate-900/80 border border-slate-800 rounded-2xl text-blue-400 hover:text-white hover:border-blue-500/50 hover:bg-blue-600/10 transition-all font-black uppercase text-[10px] tracking-widest"
         >
           <Users className="w-4 h-4" />
           Criar ou modificar perfis
         </button>
       </motion.div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-6xl">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 w-full max-w-6xl relative z-10">
         <motion.button 
           whileHover={{ scale: 1.02, borderColor: '#2563eb' }}
           whileTap={{ scale: 0.98 }}

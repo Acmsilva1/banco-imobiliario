@@ -136,6 +136,106 @@
     animation-name: coin-run-c;
   }
 
+  .lobby-scene {
+    --pointer-x: 50%;
+    --pointer-y: 30%;
+    background:
+      radial-gradient(90% 120% at 20% 0%, rgba(37, 99, 235, 0.18), transparent 55%),
+      radial-gradient(90% 120% at 85% 100%, rgba(147, 51, 234, 0.14), transparent 60%),
+      linear-gradient(165deg, #020617 0%, #020b1f 42%, #020617 100%);
+  }
+
+  .lobby-scene-bg {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 0;
+  }
+
+  .lobby-spotlight {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(
+        260px 260px at var(--pointer-x) var(--pointer-y),
+        rgba(96, 165, 250, 0.18),
+        rgba(30, 64, 175, 0.08) 40%,
+        transparent 72%
+      );
+    mix-blend-mode: screen;
+    transition: background-position 0.25s ease;
+  }
+
+  .lobby-grid-lines {
+    position: absolute;
+    inset: -30% -20%;
+    background-image:
+      linear-gradient(rgba(30, 64, 175, 0.12) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(30, 64, 175, 0.1) 1px, transparent 1px);
+    background-size: 28px 28px;
+    transform: perspective(600px) rotateX(62deg) translateY(26%);
+    opacity: 0.35;
+    animation: lobby-grid-drift 16s linear infinite;
+  }
+
+  .lobby-float {
+    position: absolute;
+    opacity: 0.24;
+    filter: drop-shadow(0 0 14px rgba(37, 99, 235, 0.25));
+    will-change: transform;
+    animation-iteration-count: infinite;
+    animation-timing-function: ease-in-out;
+  }
+
+  .lobby-float-a {
+    left: 5%;
+    top: 16%;
+    font-size: clamp(24px, 5vw, 44px);
+    animation-name: lobby-float-a;
+    animation-duration: 11s;
+  }
+
+  .lobby-float-b {
+    right: 8%;
+    top: 20%;
+    font-size: clamp(18px, 4vw, 34px);
+    animation-name: lobby-float-b;
+    animation-duration: 9.5s;
+  }
+
+  .lobby-float-c {
+    left: 12%;
+    bottom: 18%;
+    font-size: clamp(18px, 4vw, 34px);
+    animation-name: lobby-float-c;
+    animation-duration: 10.5s;
+  }
+
+  .lobby-float-d {
+    right: 10%;
+    bottom: 14%;
+    font-size: clamp(22px, 4.6vw, 38px);
+    animation-name: lobby-float-d;
+    animation-duration: 12.5s;
+  }
+
+  .lobby-float-e {
+    left: 46%;
+    top: 10%;
+    font-size: clamp(18px, 3.8vw, 28px);
+    animation-name: lobby-float-e;
+    animation-duration: 8.8s;
+  }
+
+  .lobby-float-f {
+    left: 52%;
+    bottom: 9%;
+    font-size: clamp(18px, 3.8vw, 28px);
+    animation-name: lobby-float-f;
+    animation-duration: 10.8s;
+  }
+
   .bento-card {
     @apply bg-slate-900/50 border border-slate-800 rounded-2xl p-6 backdrop-blur-sm 
            transition-all duration-300 hover:border-blue-600/50 hover:shadow-[0_0_20px_rgba(37,99,235,0.1)];
@@ -280,5 +380,58 @@
   }
   100% {
     transform: translateX(122vw) translateY(-5px) scale(1) rotate(450deg);
+  }
+}
+
+@keyframes lobby-grid-drift {
+  0% {
+    transform: perspective(600px) rotateX(62deg) translateY(26%) translateX(0);
+  }
+  100% {
+    transform: perspective(600px) rotateX(62deg) translateY(26%) translateX(-28px);
+  }
+}
+
+@keyframes lobby-float-a {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(-6deg); }
+  50% { transform: translate3d(12px, -10px, 0) rotate(5deg); }
+}
+
+@keyframes lobby-float-b {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(7deg); }
+  50% { transform: translate3d(-10px, 12px, 0) rotate(-4deg); }
+}
+
+@keyframes lobby-float-c {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(-4deg); }
+  50% { transform: translate3d(12px, 8px, 0) rotate(3deg); }
+}
+
+@keyframes lobby-float-d {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(5deg); }
+  50% { transform: translate3d(-10px, -8px, 0) rotate(-4deg); }
+}
+
+@keyframes lobby-float-e {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+  50% { transform: translate3d(6px, -6px, 0) rotate(6deg); }
+}
+
+@keyframes lobby-float-f {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
+  50% { transform: translate3d(-6px, 6px, 0) rotate(-8deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lobby-grid-lines,
+  .lobby-float,
+  .floating-note,
+  .moving-coin,
+  .avatar-emoji,
+  .balance-shimmer,
+  .money-note-a,
+  .money-note-b,
+  .money-note-c {
+    animation: none !important;
   }
 }
