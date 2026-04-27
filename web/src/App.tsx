@@ -25,6 +25,7 @@ export default function App() {
   // Modais custom
   const [isCreateRoomModalOpen, setIsCreateRoomModalOpen] = useState(false);
   const [newRoomName, setNewRoomName] = useState('');
+  const [createRoomLiderProfileId, setCreateRoomLiderProfileId] = useState<string | null>(null);
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   const [uiError, setUiError] = useState<string | null>(null);
 
@@ -47,13 +48,22 @@ export default function App() {
   const { gameState, isConnected, error, transfer, adjustBalance, fetchState } = useSocket(selectedRoomId || '');
 
   const handleCreateRoom = () => {
+    setCreateRoomLiderProfileId((id) => {
+      if (id && baseProfiles.some((p) => p.id === id)) return id;
+      return baseProfiles[0]?.id ?? null;
+    });
     setIsCreateRoomModalOpen(true);
   };
 
   const confirmCreateRoom = async () => {
     if (!newRoomName.trim()) return;
+    const lider = baseProfiles.find((p) => p.id === createRoomLiderProfileId);
+    if (!lider) {
+      setUiError('Crie um empresário em «Criar ou modificar perfis» antes de abrir uma sala.');
+      return;
+    }
     try {
-      await createRoom(newRoomName);
+      await createRoom(newRoomName, lider.nickname);
       setNewRoomName('');
       setIsCreateRoomModalOpen(false);
     } catch (err) {
@@ -219,6 +229,14 @@ export default function App() {
     const timeout = window.setTimeout(() => setUiError(null), 4000);
     return () => window.clearTimeout(timeout);
   }, [uiError]);
+
+  useEffect(() => {
+    if (!isCreateRoomModalOpen) return;
+    setCreateRoomLiderProfileId((id) => {
+      if (id && baseProfiles.some((p) => p.id === id)) return id;
+      return baseProfiles[0]?.id ?? null;
+    });
+  }, [isCreateRoomModalOpen, baseProfiles]);
 
   useEffect(() => {
     if (screen === 'GAME' && !myId && selectedRoomId) {
@@ -603,6 +621,28 @@ export default function App() {
                     className="w-full bg-slate-950/80 border-2 border-slate-700 focus:border-blue-500 p-4 rounded-2xl text-lg font-bold text-white placeholder:text-slate-600 outline-none transition-all"
                   />
                 </div>
+                <div>
+                  <label className="mb-3 block text-[10px] font-black uppercase tracking-widest text-amber-400/90">
+                    Empresário que cria a sala
+                  </label>
+                  {baseProfiles.length === 0 ? (
+                    <p className="rounded-2xl border border-amber-500/30 bg-amber-950/20 p-4 text-sm text-amber-100/90">
+                      Não há perfis guardados. Use «Criar ou modificar perfis» no lobby e volte aqui.
+                    </p>
+                  ) : (
+                    <select
+                      value={createRoomLiderProfileId ?? ''}
+                      onChange={(e) => setCreateRoomLiderProfileId(e.target.value || null)}
+                      className="w-full cursor-pointer rounded-2xl border-2 border-slate-700 bg-slate-950/80 p-4 text-lg font-bold text-white outline-none transition-all focus:border-blue-500"
+                    >
+                      {baseProfiles.map((p) => (
+                        <option key={p.id} value={p.id}>
+                          {p.nickname}
+                        </option>
+                      ))}
+                    </select>
+                  )}
+                </div>
                 <div className="flex gap-3">
                   <button
                     onClick={() => setIsCreateRoomModalOpen(false)}
@@ -612,7 +652,7 @@ export default function App() {
                   </button>
                   <button
                     onClick={confirmCreateRoom}
-                    disabled={!newRoomName.trim()}
+                    disabled={!newRoomName.trim() || !createRoomLiderProfileId}
                     className="flex-1 py-4 rounded-2xl bg-blue-600 hover:bg-blue-500 disabled:opacity-30 disabled:cursor-not-allowed text-white font-black uppercase tracking-widest transition-all text-sm shadow-[0_0_20px_rgba(37,99,235,0.4)]"
                   >
                     Criar Sala 🚀

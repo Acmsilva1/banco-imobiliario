@@ -9,7 +9,8 @@ CREATE TABLE IF NOT EXISTS partidas (
     criado_em TIMESTAMPTZ DEFAULT NOW(),
     capital_inicial INTEGER DEFAULT 25000,
     status TEXT DEFAULT 'LOBBY',
-    players_count INTEGER DEFAULT 0
+    players_count INTEGER DEFAULT 0,
+    lider_nickname TEXT
 );
 
 -- 2. Tabela de Jogadores
@@ -81,6 +82,9 @@ END $$;
 INSERT INTO partidas (id, codigo_sala, capital_inicial, status, nome)
 VALUES ('c06426d0-221c-4223-a6c1-03586b1d556d', 'SALA-PROTOTIPO', 25000, 'EM_CURSO', 'Sala Protótipo')
 ON CONFLICT (id) DO NOTHING;
+
+-- Bases já criadas antes desta coluna
+ALTER TABLE partidas ADD COLUMN IF NOT EXISTS lider_nickname TEXT;
 
 INSERT INTO jogadores (partida_id, nickname, saldo) 
 VALUES ('c06426d0-221c-4223-a6c1-03586b1d556d', 'André Silva', 25000),

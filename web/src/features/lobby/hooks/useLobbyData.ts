@@ -33,7 +33,7 @@ export const useLobbyData = () => {
     try {
       const { data, error: roomsError } = await supabase
         .from('partidas')
-        .select('id,nome,codigo_sala,status,capital_inicial')
+        .select('id,nome,codigo_sala,status,capital_inicial,lider_nickname')
         .eq('status', 'LOBBY');
 
       throwIfSupabaseError(roomsError, 'Falha ao carregar salas');
@@ -73,13 +73,15 @@ export const useLobbyData = () => {
     };
   }, [fetchBaseProfiles, fetchRooms]);
 
-  const createRoom = async (name: string) => {
+  const createRoom = async (name: string, liderNickname: string) => {
     const roomName = name.trim();
-    if (!roomName) return;
+    const leader = liderNickname.trim();
+    if (!roomName || !leader) return;
 
     const { error: createError } = await supabase.from('partidas').insert({
       nome: roomName,
-      codigo_sala: randomRoomCode()
+      codigo_sala: randomRoomCode(),
+      lider_nickname: leader
     });
     throwIfSupabaseError(createError, 'Falha ao criar sala');
   };

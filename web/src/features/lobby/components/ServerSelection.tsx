@@ -141,7 +141,7 @@ export const ServerSelection = ({ rooms, onCreateRoom, onJoinRoom, onDeleteRoom,
                   {room.nome || `SALA #${room.id.slice(0, 4)}`}
                 </h3>
                 <p className="text-xs font-medium italic text-slate-100 drop-shadow-[0_1px_4px_rgba(0,0,0,0.85)]">
-                  Líder: {room.lider_id ? 'Jogador' : 'Desconhecido'}
+                  Líder: {room.lider_nickname?.trim() || '—'}
                 </p>
               </div>
 
