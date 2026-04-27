@@ -4,7 +4,7 @@ import { ServerSelection } from './features/lobby/components/ServerSelection';
 import { PlayerSetup } from './features/lobby/components/PlayerSetup';
 import { useSocket } from './features/bank/hooks/useSocket';
 import { supabase } from './core/supabase';
-import { Wallet, ArrowRightLeft, History, TrendingUp, AlertCircle, Home, Trash2, Plus } from 'lucide-react';
+import { Wallet, ArrowRightLeft, History, TrendingUp, AlertCircle, Home, Trash2, Plus, Banknote } from 'lucide-react';
 
 type Screen = 'LOBBY' | 'SETUP' | 'GAME';
 
@@ -364,12 +364,18 @@ export default function App() {
                     <div className="flex justify-between items-start">
                       <div>
                         <p className="text-[10px] text-blue-400 font-black uppercase tracking-[0.3em] mb-1">Tesouro Disponível</p>
-                        <h2 className="text-5xl font-black text-white tracking-tighter">
-                          R$ <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-blue-500">{me ? me.saldo.toLocaleString() : '---'}</span>
+                        <h2 className="text-5xl font-black text-white tracking-tighter balance-amount">
+                          R$ <span className="relative inline-block text-transparent bg-clip-text bg-gradient-to-r from-white to-blue-500">
+                            {me ? me.saldo.toLocaleString() : '---'}
+                            <span className="balance-shimmer" />
+                          </span>
                         </h2>
                       </div>
-                      <div className="bg-blue-600/20 p-3 rounded-2xl shadow-[0_0_20px_rgba(37,99,235,0.2)]">
-                        <TrendingUp className="text-blue-400 w-6 h-6" />
+                      <div className="money-stack bg-blue-600/20 p-3 rounded-2xl shadow-[0_0_20px_rgba(37,99,235,0.2)]">
+                        <Banknote className="text-blue-300 w-6 h-6 relative z-10" />
+                        <span className="money-note money-note-a">R$</span>
+                        <span className="money-note money-note-b">R$</span>
+                        <span className="money-note money-note-c">R$</span>
                       </div>
                     </div>
                   </div>
