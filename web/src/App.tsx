@@ -273,6 +273,12 @@ export default function App() {
               <span className="floating-note note-style-b" style={{ left: '12%', top: '46%', animationDelay: '3.6s', animationDuration: '16s' }}>💶</span>
               <span className="floating-note note-style-c" style={{ left: '56%', top: '44%', animationDelay: '4.1s', animationDuration: '12.8s' }}>💵</span>
               <span className="floating-note note-style-a" style={{ left: '70%', top: '84%', animationDelay: '2.9s', animationDuration: '15.2s' }}>💷</span>
+
+              <span className="moving-coin coin-path-a" style={{ top: '18%', animationDelay: '0s', animationDuration: '11s' }}>🪙</span>
+              <span className="moving-coin coin-path-b" style={{ top: '32%', animationDelay: '1.7s', animationDuration: '13s' }}>🪙</span>
+              <span className="moving-coin coin-path-c" style={{ top: '52%', animationDelay: '0.9s', animationDuration: '12s' }}>🪙</span>
+              <span className="moving-coin coin-path-a" style={{ top: '68%', animationDelay: '2.6s', animationDuration: '14s' }}>🪙</span>
+              <span className="moving-coin coin-path-b" style={{ top: '82%', animationDelay: '3.2s', animationDuration: '10.5s' }}>🪙</span>
             </div>
             <header className="max-w-6xl mx-auto mb-10 flex flex-col md:flex-row gap-6 justify-between items-center bg-slate-900/40 p-4 md:p-6 rounded-3xl border border-slate-800/50">
               <div className="flex flex-col items-center md:items-start text-center md:text-left">

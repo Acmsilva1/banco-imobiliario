@@ -112,6 +112,30 @@
     animation-name: note-wander-c;
   }
 
+  .moving-coin {
+    position: absolute;
+    left: -10%;
+    font-size: clamp(18px, 2.2vw, 30px);
+    opacity: 0.26;
+    filter: drop-shadow(0 2px 8px rgba(250, 204, 21, 0.4));
+    will-change: transform;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+    z-index: 1;
+  }
+
+  .coin-path-a {
+    animation-name: coin-run-a;
+  }
+
+  .coin-path-b {
+    animation-name: coin-run-b;
+  }
+
+  .coin-path-c {
+    animation-name: coin-run-c;
+  }
+
   .bento-card {
     @apply bg-slate-900/50 border border-slate-800 rounded-2xl p-6 backdrop-blur-sm 
            transition-all duration-300 hover:border-blue-600/50 hover:shadow-[0_0_20px_rgba(37,99,235,0.1)];
@@ -211,5 +235,50 @@
   }
   75% {
     transform: translate3d(-8px, 12px, 0) rotate(-9deg);
+  }
+}
+
+@keyframes coin-run-a {
+  0% {
+    transform: translateX(-5vw) translateY(0) rotate(0deg);
+  }
+  25% {
+    transform: translateX(30vw) translateY(-10px) rotate(120deg);
+  }
+  50% {
+    transform: translateX(60vw) translateY(8px) rotate(240deg);
+  }
+  100% {
+    transform: translateX(120vw) translateY(-6px) rotate(420deg);
+  }
+}
+
+@keyframes coin-run-b {
+  0% {
+    transform: translateX(-8vw) translateY(0) rotate(0deg);
+  }
+  30% {
+    transform: translateX(35vw) translateY(9px) rotate(-140deg);
+  }
+  55% {
+    transform: translateX(70vw) translateY(-11px) rotate(-260deg);
+  }
+  100% {
+    transform: translateX(125vw) translateY(6px) rotate(-420deg);
+  }
+}
+
+@keyframes coin-run-c {
+  0% {
+    transform: translateX(-6vw) translateY(0) scale(0.95) rotate(0deg);
+  }
+  40% {
+    transform: translateX(48vw) translateY(-12px) scale(1.05) rotate(180deg);
+  }
+  75% {
+    transform: translateX(85vw) translateY(10px) scale(0.98) rotate(320deg);
+  }
+  100% {
+    transform: translateX(122vw) translateY(-5px) scale(1) rotate(450deg);
   }
 }
