@@ -27,6 +27,37 @@ export const ServerSelection = ({ rooms, onCreateRoom, onJoinRoom, onDeleteRoom,
         style={{ backgroundImage: "url('/lobby-bg.png')" }}
         aria-hidden
       />
+
+      {/* Banqueiros: por cima da foto, por baixo dos scrims — mix-blend-screen “remove” o preto da arte */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute bottom-0 left-0 hidden h-[min(88vh,900px)] w-[clamp(64px,12vw,220px)] overflow-hidden lg:block xl:w-[clamp(80px,14vw,280px)]"
+      >
+        <div
+          className="absolute inset-0 mix-blend-screen contrast-[1.02] saturate-[1.05]"
+          style={{
+            backgroundImage: `url(${BANKERS_FLANK_SRC})`,
+            backgroundRepeat: 'no-repeat',
+            backgroundPosition: 'left bottom',
+            backgroundSize: '200% auto',
+          }}
+        />
+      </div>
+      <div
+        aria-hidden
+        className="pointer-events-none absolute bottom-0 right-0 hidden h-[min(88vh,900px)] w-[clamp(64px,12vw,220px)] overflow-hidden lg:block xl:w-[clamp(80px,14vw,280px)]"
+      >
+        <div
+          className="absolute inset-0 mix-blend-screen contrast-[1.02] saturate-[1.05]"
+          style={{
+            backgroundImage: `url(${BANKERS_FLANK_SRC})`,
+            backgroundRepeat: 'no-repeat',
+            backgroundPosition: 'right bottom',
+            backgroundSize: '200% auto',
+          }}
+        />
+      </div>
+
       <div
         className="pointer-events-none absolute inset-0 bg-gradient-to-b from-slate-950/50 via-slate-950/20 to-slate-950/70"
         aria-hidden
@@ -35,40 +66,6 @@ export const ServerSelection = ({ rooms, onCreateRoom, onJoinRoom, onDeleteRoom,
         className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_120%_80%_at_50%_20%,transparent_0%,rgba(2,6,23,0.38)_72%)]"
         aria-hidden
       />
-
-      {/* Banqueiros decorativos — só em ecrãs largos; mesma imagem, crops opostos */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute bottom-0 left-0 z-[6] hidden h-[min(88vh,900px)] w-[clamp(64px,12vw,220px)] overflow-hidden lg:block xl:w-[clamp(80px,14vw,280px)]"
-      >
-        <div
-          className="absolute inset-0 opacity-[0.92]"
-          style={{
-            backgroundImage: `url(${BANKERS_FLANK_SRC})`,
-            backgroundRepeat: 'no-repeat',
-            backgroundPosition: 'left bottom',
-            backgroundSize: '200% auto',
-            filter: 'drop-shadow(6px 10px 28px rgba(0,0,0,0.5))',
-          }}
-        />
-        <div className="absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-slate-950/50 to-transparent" />
-      </div>
-      <div
-        aria-hidden
-        className="pointer-events-none absolute bottom-0 right-0 z-[6] hidden h-[min(88vh,900px)] w-[clamp(64px,12vw,220px)] overflow-hidden lg:block xl:w-[clamp(80px,14vw,280px)]"
-      >
-        <div
-          className="absolute inset-0 opacity-[0.92]"
-          style={{
-            backgroundImage: `url(${BANKERS_FLANK_SRC})`,
-            backgroundRepeat: 'no-repeat',
-            backgroundPosition: 'right bottom',
-            backgroundSize: '200% auto',
-            filter: 'drop-shadow(-6px 10px 28px rgba(0,0,0,0.5))',
-          }}
-        />
-        <div className="absolute inset-y-0 left-0 w-10 bg-gradient-to-r from-slate-950/50 to-transparent" />
-      </div>
 
       <motion.div
         initial={{ opacity: 0, y: -16 }}
