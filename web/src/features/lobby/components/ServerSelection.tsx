@@ -20,6 +20,12 @@ export const ServerSelection = ({ rooms, onCreateRoom, onJoinRoom, onDeleteRoom,
     <div className="relative flex min-h-dvh flex-col overflow-x-hidden md:min-h-screen">
       <div className="absolute inset-0 bg-[#020617]" aria-hidden />
 
+      {/* Mobile: céu azul suave no topo (evita “buraco” preto) */}
+      <div
+        className="pointer-events-none absolute inset-x-0 top-0 z-[2] h-[min(30dvh,200px)] bg-gradient-to-b from-sky-400/35 via-sky-900/20 to-transparent md:hidden"
+        aria-hidden
+      />
+
       {/* Desktop / tablet: fundo completo (comportamento anterior) */}
       <div
         className="absolute inset-0 hidden bg-cover bg-center bg-no-repeat md:block md:bg-[position:center_22%]"
@@ -42,7 +48,7 @@ export const ServerSelection = ({ rooms, onCreateRoom, onJoinRoom, onDeleteRoom,
       </div>
 
       <div
-        className="pointer-events-none absolute inset-0 z-[2] bg-gradient-to-b from-slate-950/60 via-slate-950/35 to-transparent md:from-slate-950/50 md:via-slate-950/20 md:to-slate-950/70"
+        className="pointer-events-none absolute inset-0 z-[2] bg-gradient-to-b from-transparent via-slate-950/40 to-transparent md:from-slate-950/50 md:via-slate-950/20 md:to-slate-950/70"
         aria-hidden
       />
       <div
@@ -50,7 +56,7 @@ export const ServerSelection = ({ rooms, onCreateRoom, onJoinRoom, onDeleteRoom,
         aria-hidden
       />
 
-      <div className="relative z-10 flex min-h-0 w-full flex-1 flex-col justify-center gap-3 overflow-y-auto overscroll-contain px-3 py-6 sm:gap-4 sm:px-4 md:mx-auto md:max-w-5xl md:flex-none md:justify-start md:gap-0 md:overflow-visible md:px-6 md:py-10">
+      <div className="relative z-10 flex min-h-0 w-full flex-1 flex-col justify-center gap-3 overflow-y-auto overscroll-contain px-3 pb-[min(50dvh,300px)] pt-6 sm:gap-4 sm:px-4 sm:pb-[min(46dvh,280px)] md:mx-auto md:max-w-5xl md:flex-none md:justify-start md:gap-0 md:overflow-visible md:px-6 md:py-10">
       <motion.div
         initial={{ opacity: 0, y: -16 }}
         animate={{ opacity: 1, y: 0 }}
