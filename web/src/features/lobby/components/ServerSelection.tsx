@@ -17,16 +17,17 @@ export const ServerSelection = ({ rooms, onCreateRoom, onJoinRoom, onDeleteRoom,
   const reduceMotion = useReducedMotion();
 
   return (
-    <div className="relative flex min-h-screen flex-col items-center overflow-hidden px-4 py-8 md:px-6 md:py-10">
+    <div className="relative flex min-h-dvh flex-col items-center overflow-x-hidden px-3 py-4 sm:px-4 sm:py-6 md:min-h-screen md:px-6 md:py-10">
       <div className="absolute inset-0 bg-[#020617]" aria-hidden />
+      {/* Mobile: ancora em baixo para mostrar personagens da arte; desktop mantém foco no tabuleiro */}
       <div
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat md:bg-[position:center_22%]"
+        className="absolute inset-0 bg-cover bg-no-repeat bg-bottom sm:bg-[position:center_65%] md:bg-center md:bg-[position:center_22%]"
         style={{ backgroundImage: "url('/lobby-bg.png')" }}
         aria-hidden
       />
 
       <div
-        className="pointer-events-none absolute inset-0 bg-gradient-to-b from-slate-950/50 via-slate-950/20 to-slate-950/70"
+        className="pointer-events-none absolute inset-0 bg-gradient-to-b from-slate-950/55 via-slate-950/25 to-slate-950/80 md:from-slate-950/50 md:via-slate-950/20 md:to-slate-950/70"
         aria-hidden
       />
       <div
@@ -37,18 +38,18 @@ export const ServerSelection = ({ rooms, onCreateRoom, onJoinRoom, onDeleteRoom,
       <motion.div
         initial={{ opacity: 0, y: -16 }}
         animate={{ opacity: 1, y: 0 }}
-        className="relative z-10 mb-6 w-full max-w-5xl text-center md:mb-8"
+        className="relative z-10 mb-4 w-full max-w-5xl text-center md:mb-8"
       >
-        <div className="mx-auto rounded-3xl border border-white/10 bg-slate-950/[0.18] px-5 py-6 shadow-xl backdrop-blur-md md:px-8 md:py-8">
-          <h1 className="mb-2 bg-gradient-to-r from-amber-100 via-white to-blue-200 bg-clip-text text-3xl font-black tracking-tighter text-transparent drop-shadow-[0_2px_12px_rgba(0,0,0,0.75)] md:text-5xl">
+        <div className="mx-auto rounded-2xl border border-white/10 bg-slate-950/[0.22] px-4 py-4 shadow-xl backdrop-blur-md sm:rounded-3xl sm:px-5 sm:py-5 md:px-8 md:py-8">
+          <h1 className="mb-1.5 bg-gradient-to-r from-amber-100 via-white to-blue-200 bg-clip-text text-2xl font-black tracking-tighter text-transparent drop-shadow-[0_2px_12px_rgba(0,0,0,0.75)] sm:text-3xl md:mb-2 md:text-5xl">
             BANCO IMOBILIÁRIO
           </h1>
-          <p className="mb-4 text-[10px] font-bold uppercase tracking-[0.25em] text-slate-100 drop-shadow-[0_1px_3px_rgba(0,0,0,0.85)] md:mb-5 md:text-sm">
+          <p className="mb-3 text-[9px] font-bold uppercase tracking-[0.2em] text-slate-100 drop-shadow-[0_1px_3px_rgba(0,0,0,0.85)] sm:text-[10px] sm:tracking-[0.25em] md:mb-5 md:text-sm">
             Seja bem vindo ao mundo imobiliário
           </p>
           <button
             onClick={onOpenFamilyManager}
-            className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/[0.06] px-4 py-2.5 font-black uppercase tracking-widest text-blue-100 shadow-md backdrop-blur-sm transition-all hover:border-amber-400/35 hover:bg-white/12 hover:text-white md:px-6 md:py-3"
+            className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.06] px-3 py-2 text-[10px] font-black uppercase tracking-widest text-blue-100 shadow-md backdrop-blur-sm transition-all hover:border-amber-400/35 hover:bg-white/12 hover:text-white sm:rounded-2xl sm:px-4 sm:py-2.5 sm:text-xs md:px-6 md:py-3"
           >
             <Users className="h-4 w-4" />
             Criar ou modificar perfis
@@ -65,16 +66,16 @@ export const ServerSelection = ({ rooms, onCreateRoom, onJoinRoom, onDeleteRoom,
       >
         <div className="h-1 bg-gradient-to-r from-amber-900 via-amber-500/90 to-amber-900" aria-hidden />
 
-        <div className="flex flex-col gap-3 border-b border-white/10 bg-black/25 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
-          <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-lg border border-amber-600/40 bg-amber-950/40 shadow-inner">
-              <Globe className="h-5 w-5 text-amber-300" />
+        <div className="flex flex-col gap-2.5 border-b border-white/10 bg-black/25 px-3 py-3 sm:flex-row sm:items-center sm:justify-between sm:gap-3 sm:px-4 sm:py-4 md:px-6">
+          <div className="flex min-w-0 items-center gap-2 sm:gap-3">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-amber-600/40 bg-amber-950/40 shadow-inner sm:h-11 sm:w-11">
+              <Globe className="h-4 w-4 text-amber-300 sm:h-5 sm:w-5" />
             </div>
-            <div>
-              <h2 className="text-xs font-black uppercase tracking-[0.2em] text-amber-100/95 drop-shadow-sm md:text-sm">
+            <div className="min-w-0">
+              <h2 className="text-[10px] font-black uppercase tracking-[0.18em] text-amber-100/95 drop-shadow-sm sm:text-xs md:text-sm md:tracking-[0.2em]">
                 Canais de partida
               </h2>
-              <p className="text-[10px] text-slate-400 md:text-xs">Escolha uma sala na lista abaixo</p>
+              <p className="text-[9px] text-slate-400 sm:text-[10px] md:text-xs">Escolha uma sala na lista abaixo</p>
             </div>
             <span className="ml-auto rounded border border-amber-700/50 bg-black/40 px-2.5 py-1 font-mono text-xs tabular-nums text-amber-200 sm:ml-0">
               {rooms.length}
@@ -84,10 +85,10 @@ export const ServerSelection = ({ rooms, onCreateRoom, onJoinRoom, onDeleteRoom,
           <button
             type="button"
             onClick={onCreateRoom}
-            className="group flex shrink-0 items-center justify-center gap-2 rounded-xl border border-blue-500/40 bg-blue-950/40 px-4 py-2.5 font-black uppercase tracking-widest text-blue-100 shadow-md backdrop-blur-sm transition-all hover:border-blue-400/60 hover:bg-blue-900/50 hover:text-white md:px-5"
+            className="group flex w-full shrink-0 items-center justify-center gap-2 rounded-xl border border-blue-500/40 bg-blue-950/40 px-3 py-2 text-[10px] font-black uppercase tracking-widest text-blue-100 shadow-md backdrop-blur-sm transition-all hover:border-blue-400/60 hover:bg-blue-900/50 hover:text-white sm:w-auto sm:px-4 sm:py-2.5 sm:text-[11px] md:px-5"
           >
             <motion.span
-              className="flex h-9 w-9 items-center justify-center rounded-lg border border-blue-400/35 bg-blue-600/30"
+              className="flex h-8 w-8 items-center justify-center rounded-lg border border-blue-400/35 bg-blue-600/30 sm:h-9 sm:w-9"
               animate={
                 reduceMotion
                   ? { scale: 1, boxShadow: '0 0 12px rgba(59, 130, 246, 0.35)' }
@@ -128,7 +129,7 @@ export const ServerSelection = ({ rooms, onCreateRoom, onJoinRoom, onDeleteRoom,
             </p>
           </div>
         ) : (
-          <ul className="max-h-[min(52vh,520px)] divide-y divide-white/[0.06] overflow-y-auto overscroll-contain">
+          <ul className="max-h-[min(38dvh,320px)] divide-y divide-white/[0.06] overflow-y-auto overscroll-contain sm:max-h-[min(44vh,400px)] md:max-h-[min(52vh,520px)]">
             {rooms.map((room, i) => (
               <motion.li
                 key={room.id}
@@ -138,12 +139,12 @@ export const ServerSelection = ({ rooms, onCreateRoom, onJoinRoom, onDeleteRoom,
                 className="group/row bg-transparent transition-colors hover:bg-white/[0.04]"
               >
                 {/* Mobile: bloco empilhado */}
-                <div className="flex flex-col gap-3 p-4 md:hidden">
+                <div className="flex flex-col gap-2.5 p-3 sm:gap-3 sm:p-4 md:hidden">
                   <div className="flex items-start justify-between gap-2">
                     <div className="min-w-0">
-                      <p className="text-[10px] font-black uppercase tracking-widest text-slate-500">Sala</p>
-                      <p className="text-lg font-black text-white drop-shadow-md">{room.nome || `Sala #${room.id.slice(0, 4)}`}</p>
-                      <p className="mt-1 text-[10px] text-slate-500">
+                      <p className="text-[9px] font-black uppercase tracking-widest text-slate-500">Sala</p>
+                      <p className="text-base font-black leading-tight text-white drop-shadow-md sm:text-lg">{room.nome || `Sala #${room.id.slice(0, 4)}`}</p>
+                      <p className="mt-0.5 text-[9px] text-slate-500 sm:mt-1 sm:text-[10px]">
                         <span className="font-bold uppercase tracking-wide text-slate-500">Código da sala</span>
                         <span className="mx-1 text-slate-600">·</span>
                         <span className="font-mono text-slate-300">{room.codigo_sala}</span>
@@ -153,14 +154,14 @@ export const ServerSelection = ({ rooms, onCreateRoom, onJoinRoom, onDeleteRoom,
                       Online
                     </span>
                   </div>
-                  <div className="grid grid-cols-2 gap-2 text-sm">
-                    <div>
-                      <p className="text-[9px] font-black uppercase text-slate-500">Líder</p>
+                  <div className="grid grid-cols-2 gap-2 text-xs sm:text-sm">
+                    <div className="min-w-0">
+                      <p className="text-[8px] font-black uppercase text-slate-500 sm:text-[9px]">Líder</p>
                       <p className="truncate font-medium text-slate-200">{room.lider_nickname?.trim() || '—'}</p>
                     </div>
                     <div>
-                      <p className="text-[9px] font-black uppercase text-slate-500">Jogadores</p>
-                      <p className="font-mono text-amber-200/90">
+                      <p className="text-[8px] font-black uppercase text-slate-500 sm:text-[9px]">Jogadores</p>
+                      <p className="font-mono text-sm text-amber-200/90 tabular-nums sm:text-base">
                         {room.players_count || 0}/6
                       </p>
                     </div>
@@ -169,7 +170,7 @@ export const ServerSelection = ({ rooms, onCreateRoom, onJoinRoom, onDeleteRoom,
                     <button
                       type="button"
                       onClick={() => onDeleteRoom(room.id)}
-                      className="rounded-lg border border-white/10 bg-slate-950/40 p-3 text-slate-400 transition-colors hover:border-red-500/40 hover:text-red-300"
+                      className="rounded-lg border border-white/10 bg-slate-950/40 p-2.5 text-slate-400 transition-colors hover:border-red-500/40 hover:text-red-300 sm:p-3"
                       title="Remover sala"
                     >
                       <Trash2 className="h-4 w-4" />
@@ -177,7 +178,7 @@ export const ServerSelection = ({ rooms, onCreateRoom, onJoinRoom, onDeleteRoom,
                     <button
                       type="button"
                       onClick={() => onJoinRoom(room.id)}
-                      className="flex flex-1 items-center justify-center gap-2 rounded-lg border border-blue-500/40 bg-blue-600/70 py-3 font-black uppercase tracking-widest text-white shadow-md transition-all hover:bg-blue-600"
+                      className="flex flex-1 items-center justify-center gap-2 rounded-lg border border-blue-500/40 bg-blue-600/70 py-2.5 text-[10px] font-black uppercase tracking-wider text-white shadow-md transition-all hover:bg-blue-600 sm:py-3 sm:text-[11px] sm:tracking-widest"
                     >
                       <Zap className="h-4 w-4" />
                       Entrar

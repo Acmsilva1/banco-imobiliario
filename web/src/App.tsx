@@ -279,7 +279,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#020617] text-slate-100 overflow-x-hidden">
+    <div className="min-h-dvh overflow-x-hidden bg-[#020617] text-slate-100 md:min-h-screen">
       <AnimatePresence mode="wait">
         {screen === 'LOBBY' && (
           <motion.div key="lobby" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
@@ -311,7 +311,7 @@ export default function App() {
             key="game" 
             initial={{ opacity: 0, scale: 1.1 }} 
             animate={{ opacity: 1, scale: 1 }}
-            className="p-6 md:p-10 relative overflow-hidden"
+            className="relative min-h-dvh overflow-hidden p-4 sm:p-6 md:min-h-0 md:p-10"
           >
             <div className="game-money-bg" aria-hidden="true">
               <span className="floating-note note-style-a" style={{ left: '4%', top: '10%', animationDelay: '0s', animationDuration: '12s' }}>💵</span>
@@ -331,10 +331,10 @@ export default function App() {
               <span className="moving-coin coin-path-a" style={{ top: '68%', animationDelay: '2.6s', animationDuration: '14s' }}>🪙</span>
               <span className="moving-coin coin-path-b" style={{ top: '82%', animationDelay: '3.2s', animationDuration: '10.5s' }}>🪙</span>
             </div>
-            <header className="max-w-6xl mx-auto mb-10 flex flex-col md:flex-row gap-6 justify-between items-center bg-slate-900/40 p-4 md:p-6 rounded-3xl border border-slate-800/50">
+            <header className="relative z-10 mx-auto mb-6 flex max-w-6xl flex-col items-center justify-between gap-4 rounded-2xl border border-slate-800/50 bg-slate-900/40 p-3 sm:mb-8 sm:gap-5 sm:rounded-3xl sm:p-4 md:mb-10 md:flex-row md:gap-6 md:p-6">
               <div className="flex flex-col items-center md:items-start text-center md:text-left">
-                <h1 className="text-2xl md:text-3xl font-black tracking-tighter flex items-center gap-2">
-                  <span className="bg-blue-600 p-1.5 md:p-2 rounded-xl shadow-[0_0_15px_rgba(37,99,235,0.4)]"><Wallet className="w-5 h-5 md:w-6 md:h-6" /></span>
+                <h1 className="flex items-center gap-2 text-xl font-black tracking-tighter sm:text-2xl md:text-3xl">
+                  <span className="rounded-xl bg-blue-600 p-1.5 shadow-[0_0_15px_rgba(37,99,235,0.4)] md:p-2"><Wallet className="h-5 w-5 md:h-6 md:w-6" /></span>
                   BANCO <span className="text-blue-500 italic">DIGITAL</span>
                 </h1>
                 <p className="text-slate-500 text-[10px] font-black mt-2 uppercase tracking-[0.3em]">
@@ -391,24 +391,24 @@ export default function App() {
             )}
 
             {myId && (
-              <main className="max-w-2xl mx-auto space-y-6 pb-20 px-4">
+              <main className="relative z-10 mx-auto max-w-2xl space-y-4 px-0 pb-16 sm:space-y-5 sm:px-1 sm:pb-20 md:space-y-6">
                 {/* 1. Seu Saldo Principal */}
-                <div className="bento-card bg-gradient-to-br from-blue-600/20 via-slate-900 to-slate-900 border-blue-500/30 p-6 relative overflow-hidden group">
+                <div className="bento-card group relative overflow-hidden border-blue-500/30 bg-gradient-to-br from-blue-600/20 via-slate-900 to-slate-900 p-4 sm:p-5 md:p-6">
                   <div className="absolute -right-20 -top-20 w-64 h-64 bg-blue-600/10 rounded-full blur-3xl group-hover:bg-blue-600/20 transition-all duration-700" />
                   
                   <div className="relative z-10">
                     <div className="flex justify-between items-start">
                       <div>
                         <p className="text-[10px] text-blue-400 font-black uppercase tracking-[0.3em] mb-1">Valor total</p>
-                        <h2 className="text-5xl font-black text-white tracking-tighter balance-amount">
+                        <h2 className="balance-amount text-3xl font-black tracking-tighter text-white sm:text-4xl md:text-5xl">
                           R$ <span className="relative inline-block text-transparent bg-clip-text bg-gradient-to-r from-white to-blue-500">
                             {me ? me.saldo.toLocaleString() : '---'}
                             <span className="balance-shimmer" />
                           </span>
                         </h2>
                       </div>
-                      <div className="money-stack bg-blue-600/20 p-3 rounded-2xl shadow-[0_0_20px_rgba(37,99,235,0.2)]">
-                        <Banknote className="text-blue-300 w-6 h-6 relative z-10" />
+                      <div className="money-stack shrink-0 rounded-xl bg-blue-600/20 p-2 shadow-[0_0_20px_rgba(37,99,235,0.2)] sm:rounded-2xl sm:p-3">
+                        <Banknote className="relative z-10 h-5 w-5 text-blue-300 sm:h-6 sm:w-6" />
                         <span className="money-note money-note-a">R$</span>
                         <span className="money-note money-note-b">R$</span>
                         <span className="money-note money-note-c">R$</span>
@@ -418,54 +418,54 @@ export default function App() {
                 </div>
 
                 {/* 2. Outros Jogadores */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
                   {gameState.players
                     .filter(p => p.id !== myId)
                     .sort((a, b) => b.saldo - a.saldo)
                     .map(p => (
-                      <div key={p.id} className="bento-card flex justify-between items-center group bg-slate-900/40 border-slate-800/50 p-4 hover:border-blue-500/30 transition-all">
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-center text-xl border border-slate-700">
+                      <div key={p.id} className="bento-card group flex items-center justify-between border-slate-800/50 bg-slate-900/40 p-3 transition-all hover:border-blue-500/30 sm:p-4">
+                        <div className="flex min-w-0 items-center gap-2 sm:gap-3">
+                          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-slate-700 bg-slate-950 text-lg sm:h-10 sm:w-10 sm:rounded-xl sm:text-xl">
                             <span className="avatar-emoji">{getAvatarEmoji(p.avatar)}</span>
                           </div>
-                          <div>
-                            <p className="text-[9px] text-slate-500 font-black uppercase tracking-widest mb-0.5">{p.nickname}</p>
-                            <p className="text-lg font-black text-white tracking-tighter leading-none">R$ {p.saldo.toLocaleString()}</p>
+                          <div className="min-w-0">
+                            <p className="mb-0.5 truncate text-[8px] font-black uppercase tracking-widest text-slate-500 sm:text-[9px]">{p.nickname}</p>
+                            <p className="text-base font-black leading-none tracking-tighter text-white sm:text-lg">R$ {p.saldo.toLocaleString()}</p>
                           </div>
                         </div>
-                        <button onClick={() => { setSelectedRecipientId(p.id); setTransferAmount(''); setIsTransferModalOpen(true); }} className="p-3 bg-slate-950 border border-slate-800 rounded-2xl group-hover:bg-blue-600 group-hover:border-blue-500 transition-all">
-                          <ArrowRightLeft className="w-4 h-4" />
+                        <button onClick={() => { setSelectedRecipientId(p.id); setTransferAmount(''); setIsTransferModalOpen(true); }} className="shrink-0 rounded-xl border border-slate-800 bg-slate-950 p-2.5 transition-all group-hover:border-blue-500 group-hover:bg-blue-600 sm:rounded-2xl sm:p-3">
+                          <ArrowRightLeft className="h-4 w-4" />
                         </button>
                       </div>
                     ))}
                 </div>
 
                 {/* 3. Painel de Ações do Banco */}
-                <div className="bento-card bg-slate-900/60 border-slate-800/50">
-                  <h3 className="text-[10px] text-blue-500 font-black uppercase tracking-widest mb-4 flex items-center gap-2">
-                    <Wallet className="w-4 h-4" /> Banco
+                <div className="bento-card border-slate-800/50 bg-slate-900/60">
+                  <h3 className="mb-3 flex items-center gap-2 text-[9px] font-black uppercase tracking-widest text-blue-500 sm:mb-4 sm:text-[10px]">
+                    <Wallet className="h-3.5 w-3.5 sm:h-4 sm:w-4" /> Banco
                   </h3>
-                  <div className="space-y-3">
+                  <div className="space-y-2.5 sm:space-y-3">
                     {/* Linha 1: Automáticos */}
-                    <div className="grid grid-cols-3 gap-3">
-                      <button onClick={() => handleBankAction(2000, 'Salário (Início)')} className="bg-slate-950 border border-green-900/40 p-3 rounded-xl text-[10px] font-black uppercase tracking-widest text-green-500 hover:bg-green-900/20 hover:border-green-500/50 transition-all">
+                    <div className="grid grid-cols-3 gap-2 sm:gap-3">
+                      <button onClick={() => handleBankAction(2000, 'Salário (Início)')} className="rounded-lg border border-green-900/40 bg-slate-950 p-2 text-[8px] font-black uppercase leading-tight tracking-wide text-green-500 transition-all hover:border-green-500/50 hover:bg-green-900/20 sm:rounded-xl sm:p-3 sm:text-[10px] sm:tracking-widest">
                         + SALÁRIO
                       </button>
-                      <button onClick={() => handleBankAction(-2000, 'Imposto de Renda')} className="bg-slate-950 border border-orange-900/40 p-3 rounded-xl text-[10px] font-black uppercase tracking-widest text-orange-500 hover:bg-orange-900/20 hover:border-orange-500/50 transition-all">
+                      <button onClick={() => handleBankAction(-2000, 'Imposto de Renda')} className="rounded-lg border border-orange-900/40 bg-slate-950 p-2 text-[8px] font-black uppercase leading-tight tracking-wide text-orange-500 transition-all hover:border-orange-500/50 hover:bg-orange-900/20 sm:rounded-xl sm:p-3 sm:text-[10px] sm:tracking-widest">
                         - IMPOSTO
                       </button>
-                      <button onClick={() => handleBankAction(2000, 'Restituição IR')} className="bg-slate-950 border border-emerald-900/40 p-3 rounded-xl text-[10px] font-black uppercase tracking-widest text-emerald-400 hover:bg-emerald-900/20 hover:border-emerald-500/50 transition-all">
+                      <button onClick={() => handleBankAction(2000, 'Restituição IR')} className="rounded-lg border border-emerald-900/40 bg-slate-950 p-2 text-[8px] font-black uppercase leading-tight tracking-wide text-emerald-400 transition-all hover:border-emerald-500/50 hover:bg-emerald-900/20 sm:rounded-xl sm:p-3 sm:text-[10px] sm:tracking-widest">
                         + RESTITUIÇÃO
                       </button>
                     </div>
                     
                     {/* Linha 2: Manuais */}
-                    <div className="grid grid-cols-2 gap-3">
-                      <button onClick={() => { setBankActionType('RECEIVE'); setIsBankModalOpen(true); }} className="bg-blue-600/10 border border-blue-600/30 p-4 rounded-xl text-[11px] font-black uppercase tracking-widest text-blue-400 hover:bg-blue-600/20 hover:border-blue-500 transition-all flex items-center justify-center gap-2">
-                        <Plus className="w-4 h-4" /> RECEBER VALOR
+                    <div className="grid grid-cols-2 gap-2 sm:gap-3">
+                      <button onClick={() => { setBankActionType('RECEIVE'); setIsBankModalOpen(true); }} className="flex items-center justify-center gap-1.5 rounded-lg border border-blue-600/30 bg-blue-600/10 p-3 text-[8px] font-black uppercase leading-tight tracking-wide text-blue-400 transition-all hover:border-blue-500 hover:bg-blue-600/20 sm:gap-2 sm:rounded-xl sm:p-4 sm:text-[11px] sm:tracking-widest">
+                        <Plus className="h-3.5 w-3.5 shrink-0 sm:h-4 sm:w-4" /> RECEBER VALOR
                       </button>
-                      <button onClick={() => { setBankActionType('PAY'); setIsBankModalOpen(true); }} className="bg-red-600/10 border border-red-600/30 p-4 rounded-xl text-[11px] font-black uppercase tracking-widest text-red-500 hover:bg-red-600/20 hover:border-red-500 transition-all flex items-center justify-center gap-2">
-                        <Trash2 className="w-4 h-4 rotate-45" /> PAGAR VALOR
+                      <button onClick={() => { setBankActionType('PAY'); setIsBankModalOpen(true); }} className="flex items-center justify-center gap-1.5 rounded-lg border border-red-600/30 bg-red-600/10 p-3 text-[8px] font-black uppercase leading-tight tracking-wide text-red-500 transition-all hover:border-red-500 hover:bg-red-600/20 sm:gap-2 sm:rounded-xl sm:p-4 sm:text-[11px] sm:tracking-widest">
+                        <Trash2 className="h-3.5 w-3.5 shrink-0 rotate-45 sm:h-4 sm:w-4" /> PAGAR VALOR
                       </button>
                     </div>
                   </div>
@@ -480,7 +480,7 @@ export default function App() {
                     <h3 className="font-black uppercase text-[10px] tracking-[0.2em]">Registro de Ações</h3>
                   </div>
                   
-                  <div className="flex-1 flex flex-col gap-3 overflow-y-auto pr-2 custom-scrollbar relative z-10" style={{ maxHeight: '500px' }}>
+                  <div className="custom-scrollbar relative z-10 flex max-h-[min(42dvh,360px)] flex-1 flex-col gap-2 overflow-y-auto pr-2 sm:max-h-[min(48vh,420px)] sm:gap-3 md:max-h-[500px]">
                     <AnimatePresence initial={false}>
                       {gameState.logs.map((log) => {
                         const isMySentTransfer = me && log.mensagem.startsWith(me.nickname + ' ➔');
@@ -506,7 +506,7 @@ export default function App() {
                             initial={{ opacity: 0, x: 20, scale: 0.95 }}
                             animate={{ opacity: 1, x: 0, scale: 1 }}
                             transition={{ type: 'spring', stiffness: 200, damping: 20 }}
-                            className={`border-l-4 p-4 rounded-r-2xl border-y border-r border-y-slate-800/30 border-r-slate-800/30 backdrop-blur-sm shadow-sm ${colorStyle}`}
+                            className={`border-l-4 rounded-r-xl border-y border-r border-y-slate-800/30 border-r-slate-800/30 p-3 backdrop-blur-sm shadow-sm sm:rounded-r-2xl sm:p-4 ${colorStyle}`}
                           >
                             <div className="flex justify-between items-center mb-1.5">
                               <span className="text-[9px] text-slate-500 font-black tracking-widest">{new Date(log.criada_em).toLocaleTimeString()}</span>
@@ -725,7 +725,7 @@ export default function App() {
             />
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }}
-              className="relative w-full max-w-2xl bento-card bg-slate-900 border-blue-500/30 p-8 overflow-hidden"
+              className="bento-card relative max-h-[90dvh] w-full max-w-2xl overflow-y-auto border-blue-500/30 bg-slate-900 p-4 sm:p-6 md:p-8"
             >
               <div className="absolute -right-20 -top-20 w-64 h-64 bg-blue-600/10 rounded-full blur-3xl" />
               

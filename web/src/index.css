@@ -136,9 +136,22 @@
     animation-name: coin-run-c;
   }
 
+  /* Ecrãs estreitos: notas/moedas um pouco mais visíveis (efeito jogo) */
+  @media (max-width: 639px) {
+    .floating-note {
+      font-size: clamp(16px, 4.5vw, 22px);
+      opacity: 0.28;
+    }
+
+    .moving-coin {
+      font-size: clamp(16px, 5vw, 24px);
+      opacity: 0.34;
+    }
+  }
+
   .bento-card {
-    @apply bg-slate-900/50 border border-slate-800 rounded-2xl p-6 backdrop-blur-sm 
-           transition-all duration-300 hover:border-blue-600/50 hover:shadow-[0_0_20px_rgba(37,99,235,0.1)];
+    @apply rounded-2xl border border-slate-800 bg-slate-900/50 p-4 backdrop-blur-sm transition-all duration-300 
+           hover:border-blue-600/50 hover:shadow-[0_0_20px_rgba(37,99,235,0.1)] sm:p-5 md:p-6;
   }
 
   .glass-panel {

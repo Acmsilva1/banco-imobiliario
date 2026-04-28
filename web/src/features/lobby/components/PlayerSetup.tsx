@@ -26,46 +26,46 @@ const getAvatarEmoji = (avatarId: string) => {
 
 export const PlayerSetup = ({ baseProfiles, onComplete, onBack }: PlayerSetupProps) => {
   return (
-    <div className="min-h-screen bg-[#020617] flex items-center justify-center p-6">
+    <div className="flex min-h-dvh items-center justify-center bg-[#020617] p-3 sm:p-6 md:min-h-screen">
       <motion.div 
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="w-full max-w-lg bento-card border-blue-500/30 bg-slate-900/50 backdrop-blur-xl p-10 relative"
+        className="bento-card relative w-full max-w-lg border-blue-500/30 bg-slate-900/50 p-5 backdrop-blur-xl sm:p-8 md:p-10"
       >
         <button 
           onClick={onBack}
-          className="absolute top-6 left-6 p-2 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white transition-colors"
+          className="absolute left-4 top-4 rounded-full bg-slate-800 p-2 text-slate-400 transition-colors hover:bg-slate-700 hover:text-white sm:left-6 sm:top-6"
         >
-          <ArrowLeft className="w-5 h-5" />
+          <ArrowLeft className="h-5 w-5" />
         </button>
 
-        <div className="text-center mb-10 mt-4">
-          <h2 className="text-3xl font-black text-white mb-2 uppercase tracking-tighter">
+        <div className="mb-8 mt-10 text-center sm:mb-10 sm:mt-4">
+          <h2 className="mb-1.5 text-2xl font-black uppercase tracking-tighter text-white sm:mb-2 sm:text-3xl">
             Quem esta <span className="text-blue-500">Jogando?</span>
           </h2>
-          <p className="text-slate-500 font-bold text-xs uppercase tracking-widest">Selecione um perfil já cadastrado</p>
+          <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500 sm:text-xs">Selecione um perfil já cadastrado</p>
         </div>
 
-        <div className="space-y-8">
+        <div className="space-y-6 sm:space-y-8">
           {baseProfiles.length > 0 ? (
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-2.5 sm:gap-4">
               {baseProfiles.map((profile) => (
                 <motion.button
                   key={profile.id}
-                  whileHover={{ scale: 1.05, borderColor: '#2563eb' }}
-                  whileTap={{ scale: 0.95 }}
+                  whileHover={{ scale: 1.03, borderColor: '#2563eb' }}
+                  whileTap={{ scale: 0.97 }}
                   onClick={() => onComplete(profile.nickname, profile.avatar)}
-                  className="p-5 rounded-3xl bg-slate-950 border border-slate-800 hover:bg-blue-600/10 flex flex-col items-center gap-3 transition-all"
+                  className="flex flex-col items-center gap-2 rounded-2xl border border-slate-800 bg-slate-950 p-3 transition-all hover:bg-blue-600/10 sm:gap-3 sm:rounded-3xl sm:p-5"
                 >
-                  <span className="text-4xl avatar-emoji">{getAvatarEmoji(profile.avatar)}</span>
-                  <span className="font-black text-slate-100 uppercase text-xs tracking-widest">{profile.nickname}</span>
+                  <span className="text-3xl avatar-emoji sm:text-4xl">{getAvatarEmoji(profile.avatar)}</span>
+                  <span className="max-w-full truncate text-center text-[10px] font-black uppercase tracking-wider text-slate-100 sm:text-xs sm:tracking-widest">{profile.nickname}</span>
                 </motion.button>
               ))}
             </div>
           ) : (
-            <div className="text-center py-8 border border-dashed border-slate-700 rounded-2xl bg-slate-950/40">
-              <p className="text-slate-400 font-bold text-sm mb-2">Nenhum perfil cadastrado.</p>
-              <p className="text-slate-600 text-xs uppercase tracking-widest">
+            <div className="rounded-2xl border border-dashed border-slate-700 bg-slate-950/40 py-6 text-center sm:py-8">
+              <p className="mb-2 text-sm font-bold text-slate-400">Nenhum perfil cadastrado.</p>
+              <p className="text-[10px] uppercase tracking-widest text-slate-600 sm:text-xs">
                 Volte ao lobby e use "Criar ou modificar perfis".
               </p>
             </div>
