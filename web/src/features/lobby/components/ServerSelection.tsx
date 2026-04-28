@@ -206,11 +206,11 @@ export const ServerSelection = ({ rooms, onCreateRoom, onJoinRoom, onDeleteRoom,
         </div>
 
         {/* Cabeçalho de colunas — desktop */}
-        <div className="hidden border-b border-white/5 bg-slate-950/40 px-4 py-2 text-[9px] font-black uppercase tracking-wider text-slate-500 md:grid md:grid-cols-12 md:gap-2 md:px-4 lg:px-5">
+        <div className="hidden border-b border-white/5 bg-slate-950/40 px-4 py-2 text-[9px] font-black uppercase tracking-wider text-slate-500 md:grid md:grid-cols-12 md:gap-x-3 md:gap-y-0 md:px-4 lg:px-5">
           <div className="col-span-4">Sala</div>
-          <div className="col-span-3">Líder (empresário)</div>
+          <div className="col-span-2 min-w-0 truncate lg:col-span-2">Líder (empresário)</div>
           <div className="col-span-2 text-center">Jogadores</div>
-          <div className="col-span-1 text-center">Estado</div>
+          <div className="col-span-2 text-center">Estado</div>
           <div className="col-span-2 text-right">Ação</div>
         </div>
 
@@ -255,7 +255,7 @@ export const ServerSelection = ({ rooms, onCreateRoom, onJoinRoom, onDeleteRoom,
               </ul>
             </div>
 
-            <ul className="hidden max-h-[min(40vh,380px)] divide-y divide-white/[0.06] overflow-y-auto overscroll-contain lg:max-h-[min(44vh,420px)] md:block">
+            <ul className="custom-scrollbar hidden max-h-[calc(5*3.5rem)] divide-y divide-white/[0.06] overflow-y-auto overscroll-contain md:block lg:max-h-[calc(5*3.85rem)]">
             {rooms.map((room, i) => (
               <motion.li
                 key={room.id}
@@ -265,7 +265,7 @@ export const ServerSelection = ({ rooms, onCreateRoom, onJoinRoom, onDeleteRoom,
                 className="group/row bg-transparent transition-colors hover:bg-white/[0.04]"
               >
                 {/* Desktop: linha tipo MMO */}
-                <div className="hidden items-center gap-2 px-4 py-2.5 md:grid md:grid-cols-12 lg:gap-3 lg:px-5 lg:py-3">
+                <div className="hidden items-center gap-x-3 gap-y-1 px-4 py-2.5 md:grid md:grid-cols-12 lg:px-5 lg:py-3">
                   <div className="col-span-4 min-w-0">
                     <p className="truncate text-sm font-black text-white drop-shadow-md group-hover/row:text-blue-100 lg:text-base">
                       {room.nome || `Sala #${room.id.slice(0, 4)}`}
@@ -276,24 +276,24 @@ export const ServerSelection = ({ rooms, onCreateRoom, onJoinRoom, onDeleteRoom,
                       <span className="font-mono text-slate-400">{room.codigo_sala}</span>
                     </p>
                   </div>
-                  <div className="col-span-3 min-w-0">
+                  <div className="col-span-2 min-w-0">
                     <p className="truncate text-xs font-medium text-slate-200 lg:text-sm">{room.lider_nickname?.trim() || '—'}</p>
                   </div>
-                  <div className="col-span-2 text-center">
+                  <div className="col-span-2 flex justify-center">
                     <span className="inline-block rounded border border-amber-800/50 bg-black/35 px-2 py-0.5 font-mono text-xs tabular-nums text-amber-200 lg:px-3 lg:py-1 lg:text-sm">
                       {room.players_count || 0}/6
                     </span>
                   </div>
-                  <div className="col-span-1 flex justify-center">
-                    <span className="rounded border border-emerald-500/35 bg-emerald-950/25 px-1.5 py-0.5 text-[8px] font-black uppercase tracking-wider text-emerald-200 lg:px-2 lg:py-1 lg:text-[9px]">
+                  <div className="col-span-2 flex min-w-0 justify-center px-1">
+                    <span className="shrink-0 whitespace-nowrap rounded border border-emerald-500/35 bg-emerald-950/25 px-2 py-0.5 text-[8px] font-black uppercase tracking-wider text-emerald-200 lg:px-2.5 lg:py-1 lg:text-[9px]">
                       Online
                     </span>
                   </div>
-                  <div className="col-span-2 flex items-center justify-end gap-1.5 lg:gap-2">
+                  <div className="col-span-2 flex min-w-0 shrink-0 items-center justify-end gap-2">
                     <button
                       type="button"
                       onClick={() => onDeleteRoom(room.id)}
-                      className="rounded-lg border border-white/10 bg-slate-950/30 p-1.5 text-slate-400 transition-colors hover:border-red-500/40 hover:text-red-300 lg:p-2"
+                      className="shrink-0 rounded-lg border border-white/10 bg-slate-950/30 p-1.5 text-slate-400 transition-colors hover:border-red-500/40 hover:text-red-300 lg:p-2"
                       title="Remover sala"
                     >
                       <Trash2 className="h-3.5 w-3.5 lg:h-4 lg:w-4" />
@@ -301,9 +301,9 @@ export const ServerSelection = ({ rooms, onCreateRoom, onJoinRoom, onDeleteRoom,
                     <button
                       type="button"
                       onClick={() => onJoinRoom(room.id)}
-                      className="flex min-w-[96px] items-center justify-center gap-1 rounded-lg border border-blue-400/40 bg-blue-600/75 px-2.5 py-1.5 text-[10px] font-black uppercase tracking-widest text-white shadow-md transition-all hover:border-blue-300/60 hover:bg-blue-600 lg:min-w-[120px] lg:gap-1.5 lg:px-4 lg:py-2 lg:text-xs"
+                      className="flex min-w-0 shrink-0 items-center justify-center gap-1 rounded-lg border border-blue-400/40 bg-blue-600/75 px-2.5 py-1.5 text-[10px] font-black uppercase tracking-widest text-white shadow-md transition-all hover:border-blue-300/60 hover:bg-blue-600 lg:min-w-[108px] lg:gap-1.5 lg:px-3.5 lg:py-2 lg:text-xs"
                     >
-                      <Zap className="h-3 w-3 lg:h-3.5 lg:w-3.5" />
+                      <Zap className="h-3 w-3 shrink-0 lg:h-3.5 lg:w-3.5" />
                       Entrar
                     </button>
                   </div>
