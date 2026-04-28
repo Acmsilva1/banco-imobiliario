@@ -25,17 +25,6 @@
     scroll-snap-stop: always;
   }
 
-  /* Lobby: Ken Burns subtil no papel de parede (GPU: só transform) */
-  .lobby-bg-kenburns-desktop {
-    will-change: transform;
-    animation: lobby-kb-desktop 42s ease-in-out infinite alternate;
-  }
-
-  .lobby-bg-kenburns-mobile {
-    will-change: transform;
-    animation: lobby-kb-mobile 36s ease-in-out infinite alternate;
-  }
-
   .avatar-emoji {
     display: inline-block;
     animation: avatar-float 2.2s ease-in-out infinite;
@@ -333,26 +322,6 @@
   }
 }
 
-/* Zoom + pan lentos na arte inteira (desktop: origem no foco do tabuleiro) */
-@keyframes lobby-kb-desktop {
-  0% {
-    transform: scale(1) translate3d(0, 0, 0);
-  }
-  100% {
-    transform: scale(1.06) translate3d(-1.1%, -0.35%, 0);
-  }
-}
-
-/* Faixa mobile: ancora em baixo, pulso muito leve */
-@keyframes lobby-kb-mobile {
-  0% {
-    transform: translate3d(calc(-50% - 6px), 0, 0) scale(1.02);
-  }
-  100% {
-    transform: translate3d(calc(-50% + 8px), 0, 0) scale(1.065);
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
   .floating-note,
   .moving-coin,
@@ -360,14 +329,7 @@
   .balance-shimmer,
   .money-note-a,
   .money-note-b,
-  .money-note-c,
-  .lobby-bg-kenburns-desktop,
-  .lobby-bg-kenburns-mobile {
+  .money-note-c {
     animation: none !important;
-  }
-
-  .lobby-bg-kenburns-desktop,
-  .lobby-bg-kenburns-mobile {
-    will-change: auto;
   }
 }
