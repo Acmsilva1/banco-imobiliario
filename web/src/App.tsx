@@ -6,7 +6,7 @@ import { useSocket } from './features/bank/hooks/useSocket';
 import { supabase } from './core/supabase';
 import { getSupabaseErrorMessage, throwIfSupabaseError } from './core/supabase-safe';
 import { useLobbyData } from './features/lobby/hooks/useLobbyData';
-import { Wallet, ArrowRightLeft, History, RefreshCw, AlertCircle, Home, Trash2, Plus, Banknote } from 'lucide-react';
+import { Wallet, ArrowRightLeft, History, RefreshCw, AlertCircle, X, Trash2, Plus, Banknote } from 'lucide-react';
 
 type Screen = 'LOBBY' | 'SETUP' | 'GAME';
 
@@ -377,7 +377,7 @@ export default function App() {
                     className="flex shrink-0 items-center gap-2 rounded-xl border border-red-500/30 bg-red-500/10 p-3 text-red-400 transition-all hover:border-red-500 hover:bg-red-500/20 hover:text-red-300 md:px-4 md:py-2.5 lg:px-5 lg:py-3"
                     title="Sair da Sala"
                   >
-                    <Home className="w-5 h-5" />
+                    <X className="h-5 w-5 shrink-0" strokeWidth={2.5} aria-hidden />
                     <span className="hidden md:inline font-black tracking-widest uppercase text-xs">Sair</span>
                   </button>
               </div>
@@ -737,8 +737,8 @@ export default function App() {
                   </h3>
                   <p className="mt-1 text-[9px] font-bold uppercase tracking-widest text-slate-500 sm:text-[10px]">Perfis salvos para acesso rápido</p>
                 </div>
-                <button type="button" onClick={() => setIsFamilyModalOpen(false)} className="shrink-0 text-slate-500 hover:text-white transition-colors" aria-label="Fechar">
-                  <AlertCircle className="h-6 w-6 rotate-45" />
+                <button type="button" onClick={() => setIsFamilyModalOpen(false)} className="shrink-0 rounded-lg p-1 text-slate-500 transition-colors hover:bg-white/10 hover:text-white" aria-label="Fechar">
+                  <X className="h-6 w-6" strokeWidth={2.25} aria-hidden />
                 </button>
               </div>
 
