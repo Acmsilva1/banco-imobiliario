@@ -100,23 +100,23 @@ export const ServerSelection = ({ rooms, onCreateRoom, onJoinRoom, onDeleteRoom,
         aria-hidden
       />
 
-      {/* Desktop / tablet: fundo completo (comportamento anterior) */}
+      {/* Desktop / tablet: leve ~104% largura para cortar menos nas laterais dos personagens */}
       <div
-        className="absolute inset-0 hidden bg-cover bg-center bg-no-repeat md:block md:bg-[position:center_22%]"
+        className="absolute inset-0 hidden bg-[length:104%_auto] bg-[position:center_22%] bg-no-repeat md:block"
         style={{ backgroundImage: "url('/lobby-bg.png')" }}
         aria-hidden
       />
 
-      {/* Mobile: faixa inferior só com a arte — personagens visíveis em baixo, sem “puxar” o UI para o topo */}
+      {/* Mobile: faixa inferior — imagem um pouco mais larga que o ecrã, centrada, para não cortar tanto nas bordas */}
       <div
-        className="pointer-events-none absolute inset-x-0 bottom-0 z-[1] h-[min(42dvh,320px)] max-h-[45%] min-h-[140px] md:hidden"
+        className="pointer-events-none absolute inset-x-0 bottom-0 z-[1] h-[min(42dvh,320px)] max-h-[45%] min-h-[140px] overflow-hidden md:hidden"
         aria-hidden
       >
         <img
           src="/lobby-bg.png"
           alt=""
           draggable={false}
-          className="h-full w-full object-cover object-bottom opacity-[0.88]"
+          className="absolute bottom-0 left-1/2 h-full w-[108%] max-w-none -translate-x-1/2 object-cover object-bottom opacity-[0.88]"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-slate-950/25 via-slate-950/10 to-slate-950/65" />
       </div>
