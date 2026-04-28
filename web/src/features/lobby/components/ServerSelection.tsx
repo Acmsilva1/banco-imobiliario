@@ -122,32 +122,32 @@ export const ServerSelection = ({ rooms, onCreateRoom, onJoinRoom, onDeleteRoom,
       </div>
 
       <div
-        className="pointer-events-none absolute inset-0 z-[2] bg-gradient-to-b from-transparent via-slate-950/40 to-transparent md:from-slate-950/50 md:via-slate-950/20 md:to-slate-950/70"
+        className="pointer-events-none absolute inset-0 z-[2] bg-gradient-to-b from-transparent via-slate-950/40 to-transparent md:from-slate-950/35 md:via-slate-950/12 md:to-slate-950/50"
         aria-hidden
       />
       <div
-        className="pointer-events-none absolute inset-0 z-[2] hidden bg-[radial-gradient(ellipse_120%_80%_at_50%_20%,transparent_0%,rgba(2,6,23,0.38)_72%)] md:block"
+        className="pointer-events-none absolute inset-0 z-[2] hidden bg-[radial-gradient(ellipse_120%_80%_at_50%_22%,transparent_0%,rgba(2,6,23,0.22)_72%)] md:block"
         aria-hidden
       />
 
-      <div className="relative z-10 flex min-h-0 w-full flex-1 flex-col justify-center gap-3 overflow-y-auto overscroll-contain px-3 pb-[min(50dvh,300px)] pt-6 sm:gap-4 sm:px-4 sm:pb-[min(46dvh,280px)] md:mx-auto md:max-w-5xl md:flex-none md:justify-start md:gap-0 md:overflow-visible md:px-6 md:py-10">
+      <div className="relative z-10 flex min-h-0 w-full flex-1 flex-col justify-center gap-3 overflow-y-auto overscroll-contain px-3 pb-[min(50dvh,300px)] pt-6 sm:gap-4 sm:px-4 sm:pb-[min(46dvh,280px)] md:mx-auto md:max-w-3xl md:flex-none md:justify-start md:gap-0 md:overflow-visible md:px-5 md:py-6 lg:max-w-4xl lg:px-6 lg:py-8">
       <motion.div
         initial={{ opacity: 0, y: -16 }}
         animate={{ opacity: 1, y: 0 }}
-        className="mb-4 w-full text-center md:mb-8"
+        className="mb-4 w-full text-center md:mb-5"
       >
-        <div className="mx-auto rounded-2xl border border-white/10 bg-slate-950/[0.22] px-4 py-4 shadow-xl backdrop-blur-md sm:rounded-3xl sm:px-5 sm:py-5 md:px-8 md:py-8">
-          <h1 className="mb-1.5 bg-gradient-to-r from-amber-100 via-white to-blue-200 bg-clip-text text-2xl font-black tracking-tighter text-transparent drop-shadow-[0_2px_12px_rgba(0,0,0,0.75)] sm:text-3xl md:mb-2 md:text-5xl">
+        <div className="mx-auto rounded-2xl border border-white/10 bg-slate-950/[0.22] px-4 py-4 shadow-xl backdrop-blur-md sm:rounded-3xl sm:px-5 sm:py-5 md:px-5 md:py-5 lg:px-6 lg:py-6">
+          <h1 className="mb-1.5 bg-gradient-to-r from-amber-100 via-white to-blue-200 bg-clip-text text-2xl font-black tracking-tighter text-transparent drop-shadow-[0_2px_12px_rgba(0,0,0,0.75)] sm:text-3xl md:mb-1.5 md:text-3xl lg:text-4xl">
             BANCO IMOBILIÁRIO
           </h1>
-          <p className="mb-3 text-[9px] font-bold uppercase tracking-[0.2em] text-slate-100 drop-shadow-[0_1px_3px_rgba(0,0,0,0.85)] sm:text-[10px] sm:tracking-[0.25em] md:mb-5 md:text-sm">
+          <p className="mb-3 text-[9px] font-bold uppercase tracking-[0.2em] text-slate-100 drop-shadow-[0_1px_3px_rgba(0,0,0,0.85)] sm:text-[10px] sm:tracking-[0.25em] md:mb-3 md:text-xs">
             Seja bem vindo ao mundo imobiliário
           </p>
           <button
             onClick={onOpenFamilyManager}
-            className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.06] px-3 py-2 text-[10px] font-black uppercase tracking-widest text-blue-100 shadow-md backdrop-blur-sm transition-all hover:border-amber-400/35 hover:bg-white/12 hover:text-white sm:rounded-2xl sm:px-4 sm:py-2.5 sm:text-xs md:px-6 md:py-3"
+            className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.06] px-3 py-2 text-[10px] font-black uppercase tracking-widest text-blue-100 shadow-md backdrop-blur-sm transition-all hover:border-amber-400/35 hover:bg-white/12 hover:text-white sm:rounded-2xl sm:px-4 sm:py-2.5 sm:text-xs md:px-4 md:py-2"
           >
-            <Users className="h-4 w-4" />
+            <Users className="h-4 w-4 md:h-3.5 md:w-3.5" />
             Criar ou modificar perfis
           </button>
         </div>
@@ -162,16 +162,16 @@ export const ServerSelection = ({ rooms, onCreateRoom, onJoinRoom, onDeleteRoom,
       >
         <div className="h-1 bg-gradient-to-r from-amber-900 via-amber-500/90 to-amber-900" aria-hidden />
 
-        <div className="flex flex-col gap-2.5 border-b border-white/10 bg-black/25 px-3 py-3 sm:flex-row sm:items-center sm:justify-between sm:gap-3 sm:px-4 sm:py-4 md:px-6">
+        <div className="flex flex-col gap-2.5 border-b border-white/10 bg-black/25 px-3 py-3 sm:flex-row sm:items-center sm:justify-between sm:gap-3 sm:px-4 sm:py-4 md:px-4 md:py-3 lg:px-5">
           <div className="flex min-w-0 items-center gap-2 sm:gap-3">
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-amber-600/40 bg-amber-950/40 shadow-inner sm:h-11 sm:w-11">
-              <Globe className="h-4 w-4 text-amber-300 sm:h-5 sm:w-5" />
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-amber-600/40 bg-amber-950/40 shadow-inner sm:h-11 sm:w-11 md:h-9 md:w-9 lg:h-10 lg:w-10">
+              <Globe className="h-4 w-4 text-amber-300 sm:h-5 sm:w-5 md:h-4 md:w-4" />
             </div>
             <div className="min-w-0">
-              <h2 className="text-[10px] font-black uppercase tracking-[0.18em] text-amber-100/95 drop-shadow-sm sm:text-xs md:text-sm md:tracking-[0.2em]">
+              <h2 className="text-[10px] font-black uppercase tracking-[0.18em] text-amber-100/95 drop-shadow-sm sm:text-xs md:text-[11px] md:tracking-[0.18em] lg:text-xs">
                 Canais de partida
               </h2>
-              <p className="text-[9px] text-slate-400 sm:text-[10px] md:text-xs">Escolha uma sala na lista abaixo</p>
+              <p className="text-[9px] text-slate-400 sm:text-[10px] md:text-[10px]">Escolha uma sala na lista abaixo</p>
             </div>
             <span className="ml-auto rounded border border-amber-700/50 bg-black/40 px-2.5 py-1 font-mono text-xs tabular-nums text-amber-200 sm:ml-0">
               {rooms.length}
@@ -181,10 +181,10 @@ export const ServerSelection = ({ rooms, onCreateRoom, onJoinRoom, onDeleteRoom,
           <button
             type="button"
             onClick={onCreateRoom}
-            className="group flex w-full shrink-0 items-center justify-center gap-2 rounded-xl border border-blue-500/40 bg-blue-950/40 px-3 py-2 text-[10px] font-black uppercase tracking-widest text-blue-100 shadow-md backdrop-blur-sm transition-all hover:border-blue-400/60 hover:bg-blue-900/50 hover:text-white sm:w-auto sm:px-4 sm:py-2.5 sm:text-[11px] md:px-5"
+            className="group flex w-full shrink-0 items-center justify-center gap-2 rounded-xl border border-blue-500/40 bg-blue-950/40 px-3 py-2 text-[10px] font-black uppercase tracking-widest text-blue-100 shadow-md backdrop-blur-sm transition-all hover:border-blue-400/60 hover:bg-blue-900/50 hover:text-white sm:w-auto sm:px-4 sm:py-2.5 sm:text-[11px] md:px-3 md:py-2"
           >
             <motion.span
-              className="flex h-8 w-8 items-center justify-center rounded-lg border border-blue-400/35 bg-blue-600/30 sm:h-9 sm:w-9"
+              className="flex h-8 w-8 items-center justify-center rounded-lg border border-blue-400/35 bg-blue-600/30 sm:h-9 sm:w-9 md:h-8 md:w-8"
               animate={
                 reduceMotion
                   ? { scale: 1, boxShadow: '0 0 12px rgba(59, 130, 246, 0.35)' }
@@ -206,7 +206,7 @@ export const ServerSelection = ({ rooms, onCreateRoom, onJoinRoom, onDeleteRoom,
         </div>
 
         {/* Cabeçalho de colunas — desktop */}
-        <div className="hidden border-b border-white/5 bg-slate-950/40 px-6 py-2.5 text-[10px] font-black uppercase tracking-wider text-slate-500 md:grid md:grid-cols-12 md:gap-3 md:px-6">
+        <div className="hidden border-b border-white/5 bg-slate-950/40 px-4 py-2 text-[9px] font-black uppercase tracking-wider text-slate-500 md:grid md:grid-cols-12 md:gap-2 md:px-4 lg:px-5">
           <div className="col-span-4">Sala</div>
           <div className="col-span-3">Líder (empresário)</div>
           <div className="col-span-2 text-center">Jogadores</div>
@@ -255,7 +255,7 @@ export const ServerSelection = ({ rooms, onCreateRoom, onJoinRoom, onDeleteRoom,
               </ul>
             </div>
 
-            <ul className="hidden max-h-[min(52vh,520px)] divide-y divide-white/[0.06] overflow-y-auto overscroll-contain md:block">
+            <ul className="hidden max-h-[min(40vh,380px)] divide-y divide-white/[0.06] overflow-y-auto overscroll-contain lg:max-h-[min(44vh,420px)] md:block">
             {rooms.map((room, i) => (
               <motion.li
                 key={room.id}
@@ -265,45 +265,45 @@ export const ServerSelection = ({ rooms, onCreateRoom, onJoinRoom, onDeleteRoom,
                 className="group/row bg-transparent transition-colors hover:bg-white/[0.04]"
               >
                 {/* Desktop: linha tipo MMO */}
-                <div className="hidden items-center gap-3 px-6 py-3.5 md:grid md:grid-cols-12">
+                <div className="hidden items-center gap-2 px-4 py-2.5 md:grid md:grid-cols-12 lg:gap-3 lg:px-5 lg:py-3">
                   <div className="col-span-4 min-w-0">
-                    <p className="truncate text-base font-black text-white drop-shadow-md group-hover/row:text-blue-100">
+                    <p className="truncate text-sm font-black text-white drop-shadow-md group-hover/row:text-blue-100 lg:text-base">
                       {room.nome || `Sala #${room.id.slice(0, 4)}`}
                     </p>
-                    <p className="mt-1 truncate text-[10px] text-slate-500">
+                    <p className="mt-0.5 truncate text-[9px] text-slate-500 lg:mt-1 lg:text-[10px]">
                       <span className="font-bold uppercase tracking-wide text-slate-500">Código da sala</span>
                       <span className="mx-1.5 text-slate-600">·</span>
                       <span className="font-mono text-slate-400">{room.codigo_sala}</span>
                     </p>
                   </div>
                   <div className="col-span-3 min-w-0">
-                    <p className="truncate text-sm font-medium text-slate-200">{room.lider_nickname?.trim() || '—'}</p>
+                    <p className="truncate text-xs font-medium text-slate-200 lg:text-sm">{room.lider_nickname?.trim() || '—'}</p>
                   </div>
                   <div className="col-span-2 text-center">
-                    <span className="inline-block rounded border border-amber-800/50 bg-black/35 px-3 py-1 font-mono text-sm tabular-nums text-amber-200">
+                    <span className="inline-block rounded border border-amber-800/50 bg-black/35 px-2 py-0.5 font-mono text-xs tabular-nums text-amber-200 lg:px-3 lg:py-1 lg:text-sm">
                       {room.players_count || 0}/6
                     </span>
                   </div>
                   <div className="col-span-1 flex justify-center">
-                    <span className="rounded border border-emerald-500/35 bg-emerald-950/25 px-2 py-1 text-[9px] font-black uppercase tracking-wider text-emerald-200">
+                    <span className="rounded border border-emerald-500/35 bg-emerald-950/25 px-1.5 py-0.5 text-[8px] font-black uppercase tracking-wider text-emerald-200 lg:px-2 lg:py-1 lg:text-[9px]">
                       Online
                     </span>
                   </div>
-                  <div className="col-span-2 flex items-center justify-end gap-2">
+                  <div className="col-span-2 flex items-center justify-end gap-1.5 lg:gap-2">
                     <button
                       type="button"
                       onClick={() => onDeleteRoom(room.id)}
-                      className="rounded-lg border border-white/10 bg-slate-950/30 p-2 text-slate-400 transition-colors hover:border-red-500/40 hover:text-red-300"
+                      className="rounded-lg border border-white/10 bg-slate-950/30 p-1.5 text-slate-400 transition-colors hover:border-red-500/40 hover:text-red-300 lg:p-2"
                       title="Remover sala"
                     >
-                      <Trash2 className="h-4 w-4" />
+                      <Trash2 className="h-3.5 w-3.5 lg:h-4 lg:w-4" />
                     </button>
                     <button
                       type="button"
                       onClick={() => onJoinRoom(room.id)}
-                      className="flex min-w-[120px] items-center justify-center gap-1.5 rounded-lg border border-blue-400/40 bg-blue-600/75 px-4 py-2 text-xs font-black uppercase tracking-widest text-white shadow-md transition-all hover:border-blue-300/60 hover:bg-blue-600"
+                      className="flex min-w-[96px] items-center justify-center gap-1 rounded-lg border border-blue-400/40 bg-blue-600/75 px-2.5 py-1.5 text-[10px] font-black uppercase tracking-widest text-white shadow-md transition-all hover:border-blue-300/60 hover:bg-blue-600 lg:min-w-[120px] lg:gap-1.5 lg:px-4 lg:py-2 lg:text-xs"
                     >
-                      <Zap className="h-3.5 w-3.5" />
+                      <Zap className="h-3 w-3 lg:h-3.5 lg:w-3.5" />
                       Entrar
                     </button>
                   </div>
@@ -314,7 +314,7 @@ export const ServerSelection = ({ rooms, onCreateRoom, onJoinRoom, onDeleteRoom,
           </>
         )}
 
-        <div className="border-t border-white/5 bg-black/20 px-4 py-2 text-center text-[10px] text-slate-500 md:text-left md:px-6">
+        <div className="border-t border-white/5 bg-black/20 px-4 py-1.5 text-center text-[9px] text-slate-500 md:text-left md:px-4 lg:px-5 lg:text-[10px]">
           Partidas em lobby · máximo 6 empresários por sala
         </div>
       </motion.div>

@@ -311,7 +311,7 @@ export default function App() {
             key="game" 
             initial={{ opacity: 0, scale: 1.1 }} 
             animate={{ opacity: 1, scale: 1 }}
-            className="relative min-h-dvh overflow-hidden p-4 sm:p-6 md:min-h-0 md:p-10"
+            className="relative min-h-dvh overflow-hidden p-4 sm:p-6 md:min-h-0 md:p-6 lg:p-8"
           >
             <div className="game-money-bg" aria-hidden="true">
               <span className="floating-note note-style-a" style={{ left: '4%', top: '10%', animationDelay: '0s', animationDuration: '12s' }}>💵</span>
@@ -331,10 +331,10 @@ export default function App() {
               <span className="moving-coin coin-path-a" style={{ top: '68%', animationDelay: '2.6s', animationDuration: '14s' }}>🪙</span>
               <span className="moving-coin coin-path-b" style={{ top: '82%', animationDelay: '3.2s', animationDuration: '10.5s' }}>🪙</span>
             </div>
-            <header className="relative z-10 mx-auto mb-6 flex max-w-6xl flex-col items-center justify-between gap-4 rounded-2xl border border-slate-800/50 bg-slate-900/40 p-3 sm:mb-8 sm:gap-5 sm:rounded-3xl sm:p-4 md:mb-10 md:flex-row md:gap-6 md:p-6">
+            <header className="relative z-10 mx-auto mb-6 flex max-w-4xl flex-col items-center justify-between gap-4 rounded-2xl border border-slate-800/50 bg-slate-900/40 p-3 sm:mb-8 sm:gap-5 sm:rounded-3xl sm:p-4 md:mb-6 md:flex-row md:gap-4 md:p-4 lg:mb-8 lg:max-w-5xl lg:gap-5 lg:p-5">
               <div className="flex flex-col items-center md:items-start text-center md:text-left">
-                <h1 className="flex items-center gap-2 text-xl font-black tracking-tighter sm:text-2xl md:text-3xl">
-                  <span className="rounded-xl bg-blue-600 p-1.5 shadow-[0_0_15px_rgba(37,99,235,0.4)] md:p-2"><Wallet className="h-5 w-5 md:h-6 md:w-6" /></span>
+                <h1 className="flex items-center gap-2 text-xl font-black tracking-tighter sm:text-2xl md:text-2xl lg:text-3xl">
+                  <span className="rounded-xl bg-blue-600 p-1.5 shadow-[0_0_15px_rgba(37,99,235,0.4)] md:p-1.5 lg:p-2"><Wallet className="h-5 w-5 md:h-5 md:w-5 lg:h-6 lg:w-6" /></span>
                   BANCO <span className="text-blue-500 italic">DIGITAL</span>
                 </h1>
                 <p className="text-slate-500 text-[10px] font-black mt-2 uppercase tracking-[0.3em]">
@@ -344,13 +344,13 @@ export default function App() {
               
               <div className="flex items-center gap-4 w-full md:w-auto justify-between md:justify-end">
                 {me && (
-                  <div className="bg-slate-900 border border-slate-800 px-3 md:px-4 py-2 rounded-2xl flex items-center gap-2 md:gap-3">
-                    <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-slate-800 flex items-center justify-center text-lg md:text-2xl shadow-[0_0_10px_rgba(37,99,235,0.3)] border border-slate-700">
+                  <div className="flex items-center gap-2 rounded-2xl border border-slate-800 bg-slate-900 px-3 py-2 md:gap-2 md:px-3 lg:gap-3 lg:px-4">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full border border-slate-700 bg-slate-800 text-lg shadow-[0_0_10px_rgba(37,99,235,0.3)] md:h-9 md:w-9 md:text-xl lg:h-10 lg:w-10 lg:text-2xl">
                       <span className="avatar-emoji">{getAvatarEmoji(me.avatar)}</span>
                     </div>
                     <div className="text-left">
                       <p className="text-[9px] md:text-[10px] text-slate-500 font-black uppercase tracking-widest">EMPRESÁRIO</p>
-                      <p className="text-xs md:text-sm font-bold text-blue-400">{me.nickname}</p>
+                      <p className="text-xs font-bold text-blue-400 md:text-[11px] lg:text-sm">{me.nickname}</p>
                     </div>
                   </div>
                 )}
@@ -374,7 +374,7 @@ export default function App() {
                       setSelectedRoomId(null);
                       setMyId(null);
                     }}
-                    className="p-3 md:px-5 md:py-3 bg-red-500/10 border border-red-500/30 rounded-xl hover:bg-red-500/20 hover:border-red-500 text-red-400 hover:text-red-300 transition-all flex items-center gap-2 shrink-0"
+                    className="flex shrink-0 items-center gap-2 rounded-xl border border-red-500/30 bg-red-500/10 p-3 text-red-400 transition-all hover:border-red-500 hover:bg-red-500/20 hover:text-red-300 md:px-4 md:py-2.5 lg:px-5 lg:py-3"
                     title="Sair da Sala"
                   >
                     <Home className="w-5 h-5" />
@@ -384,23 +384,23 @@ export default function App() {
             </header>
 
             {effectiveError && (
-              <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="max-w-6xl mx-auto mb-6 bg-red-500/10 border border-red-500/50 p-4 rounded-2xl flex items-center gap-3 text-red-400">
+              <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="mx-auto mb-4 flex max-w-4xl items-center gap-3 rounded-2xl border border-red-500/50 bg-red-500/10 p-3 text-red-400 lg:max-w-5xl lg:p-4">
                 <AlertCircle className="w-5 h-5" />
                 <span className="font-bold uppercase text-xs tracking-widest">{effectiveError}</span>
               </motion.div>
             )}
 
             {myId && (
-              <main className="relative z-10 mx-auto max-w-2xl space-y-4 px-0 pb-16 sm:space-y-5 sm:px-1 sm:pb-20 md:space-y-6">
+              <main className="relative z-10 mx-auto max-w-2xl space-y-4 px-0 pb-16 sm:space-y-5 sm:px-1 sm:pb-20 md:max-w-xl md:space-y-4 lg:max-w-2xl lg:space-y-5">
                 {/* 1. Seu Saldo Principal */}
-                <div className="bento-card group relative overflow-hidden border-blue-500/30 bg-gradient-to-br from-blue-600/20 via-slate-900 to-slate-900 p-4 sm:p-5 md:p-6">
-                  <div className="absolute -right-20 -top-20 w-64 h-64 bg-blue-600/10 rounded-full blur-3xl group-hover:bg-blue-600/20 transition-all duration-700" />
+                <div className="bento-card group relative overflow-hidden border-blue-500/30 bg-gradient-to-br from-blue-600/20 via-slate-900 to-slate-900 p-4 sm:p-5 md:p-4 lg:p-5">
+                  <div className="absolute -right-16 -top-16 h-48 w-48 rounded-full bg-blue-600/10 blur-3xl transition-all duration-700 group-hover:bg-blue-600/20 md:h-56 md:w-56 lg:-right-20 lg:-top-20 lg:h-64 lg:w-64" />
                   
                   <div className="relative z-10">
                     <div className="flex justify-between items-start">
                       <div>
                         <p className="text-[10px] text-blue-400 font-black uppercase tracking-[0.3em] mb-1">Valor total</p>
-                        <h2 className="balance-amount text-3xl font-black tracking-tighter text-white sm:text-4xl md:text-5xl">
+                        <h2 className="balance-amount text-3xl font-black tracking-tighter text-white sm:text-4xl md:text-3xl lg:text-4xl xl:text-5xl">
                           R$ <span className="relative inline-block text-transparent bg-clip-text bg-gradient-to-r from-white to-blue-500">
                             {me ? me.saldo.toLocaleString() : '---'}
                             <span className="balance-shimmer" />
@@ -475,12 +475,12 @@ export default function App() {
                 <div className="bento-card bg-slate-900/40 border-slate-800/50 flex flex-col relative overflow-hidden">
                   <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/5 rounded-full blur-3xl pointer-events-none" />
                   
-                  <div className="flex items-center gap-2 mb-6 text-blue-500 relative z-10">
-                    <History className="w-5 h-5" />
-                    <h3 className="font-black uppercase text-[10px] tracking-[0.2em]">Registro de Ações</h3>
+                  <div className="relative z-10 mb-4 flex items-center gap-2 text-blue-500 md:mb-5">
+                    <History className="h-5 w-5 md:h-4 md:w-4 lg:h-5 lg:w-5" />
+                    <h3 className="text-[10px] font-black uppercase tracking-[0.2em] md:text-[9px] lg:text-[10px]">Registro de Ações</h3>
                   </div>
                   
-                  <div className="custom-scrollbar relative z-10 flex max-h-[min(42dvh,360px)] flex-1 flex-col gap-2 overflow-y-auto pr-2 sm:max-h-[min(48vh,420px)] sm:gap-3 md:max-h-[500px]">
+                  <div className="custom-scrollbar relative z-10 flex max-h-[min(42dvh,360px)] flex-1 flex-col gap-2 overflow-y-auto pr-2 sm:max-h-[min(48vh,420px)] sm:gap-3 md:max-h-[min(38vh,320px)] lg:max-h-[420px]">
                     <AnimatePresence initial={false}>
                       {gameState.logs.map((log) => {
                         const isMySentTransfer = me && log.mensagem.startsWith(me.nickname + ' ➔');

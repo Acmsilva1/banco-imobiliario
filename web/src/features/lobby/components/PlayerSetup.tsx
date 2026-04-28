@@ -30,7 +30,7 @@ export const PlayerSetup = ({ baseProfiles, onComplete, onBack }: PlayerSetupPro
       <motion.div 
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="bento-card relative w-full max-w-lg border-blue-500/30 bg-slate-900/50 p-5 backdrop-blur-xl sm:p-8 md:p-10"
+        className="bento-card relative w-full max-w-lg border-blue-500/30 bg-slate-900/50 p-5 backdrop-blur-xl sm:p-8 md:max-w-md md:p-7 lg:max-w-lg lg:p-10"
       >
         <button 
           onClick={onBack}

@@ -162,9 +162,22 @@
     }
   }
 
+  /* Desktop: decoração do jogo um pouco mais discreta para o fundo respirar */
+  @media (min-width: 768px) {
+    .floating-note {
+      font-size: clamp(14px, 1.4vw, 20px);
+      opacity: 0.14;
+    }
+
+    .moving-coin {
+      font-size: clamp(14px, 1.5vw, 22px);
+      opacity: 0.2;
+    }
+  }
+
   .bento-card {
     @apply rounded-2xl border border-slate-800 bg-slate-900/50 p-4 backdrop-blur-sm transition-all duration-300 
-           hover:border-blue-600/50 hover:shadow-[0_0_20px_rgba(37,99,235,0.1)] sm:p-5 md:p-6;
+           hover:border-blue-600/50 hover:shadow-[0_0_20px_rgba(37,99,235,0.1)] sm:p-5 md:p-4 lg:p-5;
   }
 
   .glass-panel {
