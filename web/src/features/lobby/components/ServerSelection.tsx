@@ -17,28 +17,44 @@ export const ServerSelection = ({ rooms, onCreateRoom, onJoinRoom, onDeleteRoom,
   const reduceMotion = useReducedMotion();
 
   return (
-    <div className="relative flex min-h-dvh flex-col items-center overflow-x-hidden px-3 py-4 sm:px-4 sm:py-6 md:min-h-screen md:px-6 md:py-10">
+    <div className="relative flex min-h-dvh flex-col overflow-x-hidden md:min-h-screen">
       <div className="absolute inset-0 bg-[#020617]" aria-hidden />
-      {/* Mobile: ancora em baixo para mostrar personagens da arte; desktop mantém foco no tabuleiro */}
+
+      {/* Desktop / tablet: fundo completo (comportamento anterior) */}
       <div
-        className="absolute inset-0 bg-cover bg-no-repeat bg-bottom sm:bg-[position:center_65%] md:bg-center md:bg-[position:center_22%]"
+        className="absolute inset-0 hidden bg-cover bg-center bg-no-repeat md:block md:bg-[position:center_22%]"
         style={{ backgroundImage: "url('/lobby-bg.png')" }}
         aria-hidden
       />
 
+      {/* Mobile: faixa inferior só com a arte — personagens visíveis em baixo, sem “puxar” o UI para o topo */}
       <div
-        className="pointer-events-none absolute inset-0 bg-gradient-to-b from-slate-950/55 via-slate-950/25 to-slate-950/80 md:from-slate-950/50 md:via-slate-950/20 md:to-slate-950/70"
+        className="pointer-events-none absolute inset-x-0 bottom-0 z-[1] h-[min(42dvh,320px)] max-h-[45%] min-h-[140px] md:hidden"
+        aria-hidden
+      >
+        <img
+          src="/lobby-bg.png"
+          alt=""
+          draggable={false}
+          className="h-full w-full object-cover object-bottom opacity-[0.88]"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-950/25 via-slate-950/10 to-slate-950/65" />
+      </div>
+
+      <div
+        className="pointer-events-none absolute inset-0 z-[2] bg-gradient-to-b from-slate-950/60 via-slate-950/35 to-transparent md:from-slate-950/50 md:via-slate-950/20 md:to-slate-950/70"
         aria-hidden
       />
       <div
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_120%_80%_at_50%_20%,transparent_0%,rgba(2,6,23,0.38)_72%)]"
+        className="pointer-events-none absolute inset-0 z-[2] hidden bg-[radial-gradient(ellipse_120%_80%_at_50%_20%,transparent_0%,rgba(2,6,23,0.38)_72%)] md:block"
         aria-hidden
       />
 
+      <div className="relative z-10 flex min-h-0 w-full flex-1 flex-col justify-center gap-3 overflow-y-auto overscroll-contain px-3 py-6 sm:gap-4 sm:px-4 md:mx-auto md:max-w-5xl md:flex-none md:justify-start md:gap-0 md:overflow-visible md:px-6 md:py-10">
       <motion.div
         initial={{ opacity: 0, y: -16 }}
         animate={{ opacity: 1, y: 0 }}
-        className="relative z-10 mb-4 w-full max-w-5xl text-center md:mb-8"
+        className="mb-4 w-full text-center md:mb-8"
       >
         <div className="mx-auto rounded-2xl border border-white/10 bg-slate-950/[0.22] px-4 py-4 shadow-xl backdrop-blur-md sm:rounded-3xl sm:px-5 sm:py-5 md:px-8 md:py-8">
           <h1 className="mb-1.5 bg-gradient-to-r from-amber-100 via-white to-blue-200 bg-clip-text text-2xl font-black tracking-tighter text-transparent drop-shadow-[0_2px_12px_rgba(0,0,0,0.75)] sm:text-3xl md:mb-2 md:text-5xl">
@@ -62,7 +78,7 @@ export const ServerSelection = ({ rooms, onCreateRoom, onJoinRoom, onDeleteRoom,
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.05 }}
-        className={`relative z-10 w-full max-w-5xl overflow-hidden ${glassPanel}`}
+        className={`w-full overflow-hidden ${glassPanel}`}
       >
         <div className="h-1 bg-gradient-to-r from-amber-900 via-amber-500/90 to-amber-900" aria-hidden />
 
@@ -239,6 +255,7 @@ export const ServerSelection = ({ rooms, onCreateRoom, onJoinRoom, onDeleteRoom,
           Partidas em lobby · máximo 6 empresários por sala
         </div>
       </motion.div>
+      </div>
     </div>
   );
 };
