@@ -717,7 +717,7 @@ export default function App() {
       {/* Modal: Gerenciar Família */}
       <AnimatePresence>
         {isFamilyModalOpen && (
-          <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
+          <div className="fixed inset-0 z-[60] flex w-full max-w-[100dvw] items-center justify-center overflow-x-hidden overflow-y-auto overscroll-contain p-3 sm:p-4">
             <motion.div
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
               onClick={() => setIsFamilyModalOpen(false)}
@@ -725,23 +725,26 @@ export default function App() {
             />
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }}
-              className="bento-card relative max-h-[90dvh] w-full max-w-2xl overflow-y-auto border-blue-500/30 bg-slate-900 p-4 sm:p-6 md:p-8"
+              className="bento-card relative max-h-[90dvh] w-full min-w-0 max-w-2xl overflow-x-hidden overflow-y-auto overscroll-contain rounded-2xl border-blue-500/30 bg-slate-900 p-4 sm:p-6 md:p-8"
+              onClick={(e) => e.stopPropagation()}
             >
-              <div className="absolute -right-20 -top-20 w-64 h-64 bg-blue-600/10 rounded-full blur-3xl" />
+              <div className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-blue-600/10 blur-3xl md:-right-20 md:-top-20 md:h-64 md:w-64" />
               
-              <div className="flex justify-between items-center mb-8 relative z-10">
-                <div>
-                  <h3 className="text-2xl font-black text-white uppercase tracking-tighter">Jogadores da <span className="text-blue-500">Família</span></h3>
-                  <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest mt-1">Perfis salvos para acesso rápido</p>
+              <div className="relative z-10 mb-6 flex min-w-0 items-start justify-between gap-3 sm:mb-8">
+                <div className="min-w-0 flex-1 pr-1">
+                  <h3 className="text-lg font-black uppercase leading-tight tracking-tighter text-white sm:text-xl md:text-2xl">
+                    Jogadores da <span className="text-blue-500">Família</span>
+                  </h3>
+                  <p className="mt-1 text-[9px] font-bold uppercase tracking-widest text-slate-500 sm:text-[10px]">Perfis salvos para acesso rápido</p>
                 </div>
-                <button onClick={() => setIsFamilyModalOpen(false)} className="text-slate-500 hover:text-white transition-colors">
-                  <AlertCircle className="w-6 h-6 rotate-45" />
+                <button type="button" onClick={() => setIsFamilyModalOpen(false)} className="shrink-0 text-slate-500 hover:text-white transition-colors" aria-label="Fechar">
+                  <AlertCircle className="h-6 w-6 rotate-45" />
                 </button>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 relative z-10">
+              <div className="relative z-10 grid min-w-0 grid-cols-1 gap-6 md:grid-cols-2 md:gap-8">
                 {/* Formulário Novo Perfil */}
-                <div className="space-y-6 bg-slate-950/50 p-6 rounded-3xl border border-slate-800">
+                <div className="min-w-0 space-y-5 rounded-2xl border border-slate-800 bg-slate-950/50 p-4 sm:space-y-6 sm:rounded-3xl sm:p-6">
                   <h4 className="text-xs font-black text-blue-400 uppercase tracking-widest">Adicionar Novo Empresário</h4>
                   <div>
                     <label className="block text-[10px] text-slate-600 font-bold uppercase mb-2">Nickname</label>
@@ -755,12 +758,13 @@ export default function App() {
                   </div>
                   <div>
                     <label className="block text-[10px] text-slate-600 font-bold uppercase mb-2">Avatar / Emoji</label>
-                    <div className="grid grid-cols-5 gap-2">
+                    <div className="grid min-w-0 grid-cols-5 gap-1.5 sm:gap-2">
                       {['1','2','3','4','5','6','7','8','9','10'].map(id => (
                         <button 
                           key={id}
+                          type="button"
                           onClick={() => setSelectedAvatar(id)}
-                          className={`text-xl p-2 rounded-lg border-2 transition-all ${selectedAvatar === id ? 'border-blue-600 bg-blue-600/20' : 'border-slate-800 bg-slate-900'}`}
+                          className={`rounded-lg border-2 p-1.5 text-lg transition-all sm:p-2 sm:text-xl ${selectedAvatar === id ? 'border-blue-600 bg-blue-600/20' : 'border-slate-800 bg-slate-900'}`}
                         >
                           <span className="avatar-emoji">{getAvatarEmoji(id)}</span>
                         </button>
@@ -776,17 +780,19 @@ export default function App() {
                 </div>
 
                 {/* Lista de Perfis */}
-                <div className="space-y-4 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
-                  <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest">Perfis Cadastrados ({baseProfiles.length})</h4>
+                <div className="custom-scrollbar min-w-0 space-y-3 overflow-x-hidden overflow-y-auto pr-1 sm:space-y-4 sm:pr-2 md:max-h-[400px]">
+                  <h4 className="text-[10px] font-black uppercase tracking-widest text-slate-400 sm:text-xs">Perfis Cadastrados ({baseProfiles.length})</h4>
                   {baseProfiles.map(profile => (
-                    <div key={profile.id} className="flex items-center justify-between bg-slate-900/50 border border-slate-800 p-4 rounded-2xl group hover:border-blue-500/30 transition-all">
-                      <div className="flex items-center gap-3">
-                        <span className="text-2xl avatar-emoji">{getAvatarEmoji(profile.avatar)}</span>
-                        <span className="font-bold text-slate-200">{profile.nickname}</span>
+                    <div key={profile.id} className="group flex min-w-0 items-center justify-between gap-2 rounded-2xl border border-slate-800 bg-slate-900/50 p-3 transition-all hover:border-blue-500/30 sm:p-4">
+                      <div className="flex min-w-0 flex-1 items-center gap-2 sm:gap-3">
+                        <span className="shrink-0 text-xl avatar-emoji sm:text-2xl">{getAvatarEmoji(profile.avatar)}</span>
+                        <span className="min-w-0 truncate font-bold text-slate-200">{profile.nickname}</span>
                       </div>
                       <button 
+                        type="button"
                         onClick={() => handleDeleteProfile(profile.id)}
-                        className="opacity-0 group-hover:opacity-100 p-2 text-slate-600 hover:text-red-500 transition-all"
+                        className="shrink-0 p-2 text-slate-600 opacity-100 transition-all hover:text-red-500 group-hover:text-red-400 md:opacity-0 md:group-hover:opacity-100"
+                        aria-label={`Remover ${profile.nickname}`}
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
