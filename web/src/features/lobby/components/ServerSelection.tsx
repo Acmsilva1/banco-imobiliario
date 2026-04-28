@@ -100,14 +100,21 @@ export const ServerSelection = ({ rooms, onCreateRoom, onJoinRoom, onDeleteRoom,
         aria-hidden
       />
 
-      {/* Desktop / tablet: leve ~104% largura para cortar menos nas laterais dos personagens */}
+      {/* Desktop / tablet: Ken Burns (CSS) — zoom/pan lentos na mesma arte */}
       <div
-        className="absolute inset-0 hidden bg-[length:104%_auto] bg-[position:center_22%] bg-no-repeat md:block"
-        style={{ backgroundImage: "url('/lobby-bg.png')" }}
+        className="pointer-events-none absolute inset-0 z-0 hidden overflow-hidden md:block"
         aria-hidden
-      />
+      >
+        <div
+          className="lobby-bg-kenburns-desktop absolute inset-[-7%] bg-[length:104%_auto] bg-[position:center_22%] bg-no-repeat"
+          style={{
+            backgroundImage: "url('/lobby-bg.png')",
+            transformOrigin: 'center 22%'
+          }}
+        />
+      </div>
 
-      {/* Mobile: faixa inferior — imagem um pouco mais larga que o ecrã, centrada, para não cortar tanto nas bordas */}
+      {/* Mobile: faixa inferior — mesma animação subtil, origem em baixo */}
       <div
         className="pointer-events-none absolute inset-x-0 bottom-0 z-[1] h-[min(42dvh,320px)] max-h-[45%] min-h-[140px] overflow-hidden md:hidden"
         aria-hidden
@@ -116,7 +123,8 @@ export const ServerSelection = ({ rooms, onCreateRoom, onJoinRoom, onDeleteRoom,
           src="/lobby-bg.png"
           alt=""
           draggable={false}
-          className="absolute bottom-0 left-1/2 h-full w-[108%] max-w-none -translate-x-1/2 object-cover object-bottom opacity-[0.88]"
+          className="lobby-bg-kenburns-mobile absolute bottom-0 left-1/2 h-full w-[108%] max-w-none object-cover object-bottom opacity-[0.88]"
+          style={{ transformOrigin: 'center bottom' }}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-slate-950/25 via-slate-950/10 to-slate-950/65" />
       </div>
