@@ -12,6 +12,19 @@
 }
 
 @layer components {
+  /* Lobby mobile: salas em faixa horizontal com snap (deslizar ← para a próxima) */
+  .lobby-mobile-rooms-strip {
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scroll-padding-left: 0.75rem;
+    scroll-padding-right: 0.75rem;
+  }
+
+  .lobby-mobile-rooms-strip > li {
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+  }
+
   .avatar-emoji {
     display: inline-block;
     animation: avatar-float 2.2s ease-in-out infinite;

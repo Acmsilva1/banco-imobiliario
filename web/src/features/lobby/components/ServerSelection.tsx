@@ -5,6 +5,80 @@ import type { Room } from '../lobby.types';
 const glassPanel =
   'rounded-2xl border border-amber-900/30 bg-slate-950/[0.18] shadow-[0_0_40px_rgba(0,0,0,0.35)] backdrop-blur-md backdrop-saturate-125 ring-1 ring-amber-950/20';
 
+function MobileRoomSlide({
+  room,
+  i,
+  onJoinRoom,
+  onDeleteRoom,
+  isOnlyRoom
+}: {
+  room: Room;
+  i: number;
+  onJoinRoom: (roomId: string) => void;
+  onDeleteRoom: (roomId: string) => void;
+  isOnlyRoom?: boolean;
+}) {
+  const widthClass = isOnlyRoom
+    ? 'w-full min-w-[calc(100%-0.25rem)] max-w-full'
+    : 'w-[min(82vw,22rem)] max-w-[calc(100vw-2.5rem)] shrink-0';
+
+  return (
+    <motion.li
+      initial={{ opacity: 0, x: 20 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ delay: Math.min(i * 0.05, 0.25) }}
+      className={`group/row rounded-xl border border-white/[0.08] bg-black/30 shadow-inner backdrop-blur-sm ${widthClass}`}
+    >
+      <div className="flex flex-col gap-2.5 p-3 sm:gap-3 sm:p-4">
+        <div className="flex items-start justify-between gap-2">
+          <div className="min-w-0">
+            <p className="text-[9px] font-black uppercase tracking-widest text-slate-500">Sala</p>
+            <p className="text-base font-black leading-tight text-white drop-shadow-md sm:text-lg">
+              {room.nome || `Sala #${room.id.slice(0, 4)}`}
+            </p>
+            <p className="mt-0.5 text-[9px] text-slate-500 sm:mt-1 sm:text-[10px]">
+              <span className="font-bold uppercase tracking-wide text-slate-500">Código da sala</span>
+              <span className="mx-1 text-slate-600">·</span>
+              <span className="font-mono text-slate-300">{room.codigo_sala}</span>
+            </p>
+          </div>
+          <span className="shrink-0 rounded border border-emerald-500/35 bg-emerald-950/30 px-2 py-0.5 text-[9px] font-black uppercase tracking-wider text-emerald-200">
+            Online
+          </span>
+        </div>
+        <div className="grid grid-cols-2 gap-2 text-xs sm:text-sm">
+          <div className="min-w-0">
+            <p className="text-[8px] font-black uppercase text-slate-500 sm:text-[9px]">Líder</p>
+            <p className="truncate font-medium text-slate-200">{room.lider_nickname?.trim() || '—'}</p>
+          </div>
+          <div>
+            <p className="text-[8px] font-black uppercase text-slate-500 sm:text-[9px]">Jogadores</p>
+            <p className="font-mono text-sm text-amber-200/90 tabular-nums sm:text-base">{room.players_count || 0}/6</p>
+          </div>
+        </div>
+        <div className="flex gap-2">
+          <button
+            type="button"
+            onClick={() => onDeleteRoom(room.id)}
+            className="rounded-lg border border-white/10 bg-slate-950/40 p-2.5 text-slate-400 transition-colors hover:border-red-500/40 hover:text-red-300 sm:p-3"
+            title="Remover sala"
+          >
+            <Trash2 className="h-4 w-4" />
+          </button>
+          <button
+            type="button"
+            onClick={() => onJoinRoom(room.id)}
+            className="flex flex-1 items-center justify-center gap-2 rounded-lg border border-blue-500/40 bg-blue-600/70 py-2.5 text-[10px] font-black uppercase tracking-wider text-white shadow-md transition-all hover:bg-blue-600 sm:py-3 sm:text-[11px] sm:tracking-widest"
+          >
+            <Zap className="h-4 w-4" />
+            Entrar
+          </button>
+        </div>
+      </div>
+    </motion.li>
+  );
+}
+
 interface ServerSelectionProps {
   rooms: Room[];
   onCreateRoom: () => void;
@@ -151,7 +225,37 @@ export const ServerSelection = ({ rooms, onCreateRoom, onJoinRoom, onDeleteRoom,
             </p>
           </div>
         ) : (
-          <ul className="max-h-[min(38dvh,320px)] divide-y divide-white/[0.06] overflow-y-auto overscroll-contain sm:max-h-[min(44vh,400px)] md:max-h-[min(52vh,520px)]">
+          <>
+            {/* Mobile: uma sala visível + “peek” da seguinte; deslizar dedo (←) para trocar */}
+            <div className="relative md:hidden">
+              {rooms.length > 1 && (
+                <>
+                  <div
+                    className="pointer-events-none absolute inset-y-0 right-0 z-[1] w-14 bg-gradient-to-l from-slate-950 via-slate-950/75 to-transparent"
+                    aria-hidden
+                  />
+                  <p className="pointer-events-none absolute bottom-1 left-0 right-0 z-[1] px-2 text-center text-[8px] font-black uppercase leading-tight tracking-widest text-slate-400">
+                    Deslize o dedo à esquerda · mais salas
+                  </p>
+                </>
+              )}
+              <ul
+                className="lobby-mobile-rooms-strip flex max-h-[min(42dvh,340px)] flex-nowrap gap-3 overflow-x-auto overflow-y-visible overscroll-x-contain px-3 pb-8 pt-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+              >
+                {rooms.map((room, i) => (
+                  <MobileRoomSlide
+                    key={room.id}
+                    room={room}
+                    i={i}
+                    isOnlyRoom={rooms.length === 1}
+                    onJoinRoom={onJoinRoom}
+                    onDeleteRoom={onDeleteRoom}
+                  />
+                ))}
+              </ul>
+            </div>
+
+            <ul className="hidden max-h-[min(52vh,520px)] divide-y divide-white/[0.06] overflow-y-auto overscroll-contain md:block">
             {rooms.map((room, i) => (
               <motion.li
                 key={room.id}
@@ -160,54 +264,6 @@ export const ServerSelection = ({ rooms, onCreateRoom, onJoinRoom, onDeleteRoom,
                 transition={{ delay: Math.min(i * 0.04, 0.35) }}
                 className="group/row bg-transparent transition-colors hover:bg-white/[0.04]"
               >
-                {/* Mobile: bloco empilhado */}
-                <div className="flex flex-col gap-2.5 p-3 sm:gap-3 sm:p-4 md:hidden">
-                  <div className="flex items-start justify-between gap-2">
-                    <div className="min-w-0">
-                      <p className="text-[9px] font-black uppercase tracking-widest text-slate-500">Sala</p>
-                      <p className="text-base font-black leading-tight text-white drop-shadow-md sm:text-lg">{room.nome || `Sala #${room.id.slice(0, 4)}`}</p>
-                      <p className="mt-0.5 text-[9px] text-slate-500 sm:mt-1 sm:text-[10px]">
-                        <span className="font-bold uppercase tracking-wide text-slate-500">Código da sala</span>
-                        <span className="mx-1 text-slate-600">·</span>
-                        <span className="font-mono text-slate-300">{room.codigo_sala}</span>
-                      </p>
-                    </div>
-                    <span className="shrink-0 rounded border border-emerald-500/35 bg-emerald-950/30 px-2 py-0.5 text-[9px] font-black uppercase tracking-wider text-emerald-200">
-                      Online
-                    </span>
-                  </div>
-                  <div className="grid grid-cols-2 gap-2 text-xs sm:text-sm">
-                    <div className="min-w-0">
-                      <p className="text-[8px] font-black uppercase text-slate-500 sm:text-[9px]">Líder</p>
-                      <p className="truncate font-medium text-slate-200">{room.lider_nickname?.trim() || '—'}</p>
-                    </div>
-                    <div>
-                      <p className="text-[8px] font-black uppercase text-slate-500 sm:text-[9px]">Jogadores</p>
-                      <p className="font-mono text-sm text-amber-200/90 tabular-nums sm:text-base">
-                        {room.players_count || 0}/6
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex gap-2">
-                    <button
-                      type="button"
-                      onClick={() => onDeleteRoom(room.id)}
-                      className="rounded-lg border border-white/10 bg-slate-950/40 p-2.5 text-slate-400 transition-colors hover:border-red-500/40 hover:text-red-300 sm:p-3"
-                      title="Remover sala"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => onJoinRoom(room.id)}
-                      className="flex flex-1 items-center justify-center gap-2 rounded-lg border border-blue-500/40 bg-blue-600/70 py-2.5 text-[10px] font-black uppercase tracking-wider text-white shadow-md transition-all hover:bg-blue-600 sm:py-3 sm:text-[11px] sm:tracking-widest"
-                    >
-                      <Zap className="h-4 w-4" />
-                      Entrar
-                    </button>
-                  </div>
-                </div>
-
                 {/* Desktop: linha tipo MMO */}
                 <div className="hidden items-center gap-3 px-6 py-3.5 md:grid md:grid-cols-12">
                   <div className="col-span-4 min-w-0">
@@ -254,7 +310,8 @@ export const ServerSelection = ({ rooms, onCreateRoom, onJoinRoom, onDeleteRoom,
                 </div>
               </motion.li>
             ))}
-          </ul>
+            </ul>
+          </>
         )}
 
         <div className="border-t border-white/5 bg-black/20 px-4 py-2 text-center text-[10px] text-slate-500 md:text-left md:px-6">
