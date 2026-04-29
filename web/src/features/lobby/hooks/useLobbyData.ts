@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
-import { supabase } from '../../../core/supabase';
-import { throwIfSupabaseError } from '../../../core/supabase-safe';
+import { supabase } from '../../../shared/supabase';
+import { throwIfSupabaseError } from '../../../shared/supabase-safe';
 import type { BaseProfile, Room } from '../lobby.types';
 
 const randomRoomCode = () => Math.random().toString(36).slice(2, 9).toUpperCase();

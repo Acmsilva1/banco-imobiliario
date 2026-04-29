@@ -3,8 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ServerSelection } from './features/lobby/components/ServerSelection';
 import { PlayerSetup } from './features/lobby/components/PlayerSetup';
 import { useSocket } from './features/bank/hooks/useSocket';
-import { supabase } from './core/supabase';
-import { getSupabaseErrorMessage, throwIfSupabaseError } from './core/supabase-safe';
+import { supabase } from './shared/supabase';
+import { getSupabaseErrorMessage, throwIfSupabaseError } from './shared/supabase-safe';
 import { useLobbyData } from './features/lobby/hooks/useLobbyData';
 import { Wallet, ArrowRightLeft, History, RefreshCw, AlertCircle, X, Trash2, Plus, Banknote } from 'lucide-react';
 

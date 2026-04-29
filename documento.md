@@ -13,7 +13,7 @@ Aplicar melhorias de robustez, manutencao e confiabilidade no app Banco Imobilia
 - Acao: adicao de `TransactionLog` e uso em `GameState.logs`.
 
 2. Padronizacao de erro Supabase no frontend:
-- Arquivo: `web/src/core/supabase-safe.ts`
+- Arquivo: `web/src/shared/supabase-safe.ts`
 - Acao: criados helpers `getSupabaseErrorMessage` e `throwIfSupabaseError`.
 
 3. Tipos do lobby separados:
